@@ -5,6 +5,8 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT       += network
+QT        += printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -13,8 +15,12 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    Downloader.cpp \
+    qcustomplot.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    Downloader.h \
+    qcustomplot.h
 
 FORMS    += mainwindow.ui

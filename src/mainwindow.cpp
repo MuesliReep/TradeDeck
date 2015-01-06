@@ -6,6 +6,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    // downloader = Downloader();
+    // Downloader d;
+    // d.doDownload();
 }
 
 MainWindow::~MainWindow()

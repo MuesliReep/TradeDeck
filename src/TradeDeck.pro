@@ -17,10 +17,12 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     Downloader.cpp \
-    qcustomplot.cpp
+    qcustomplot.cpp \
+    config.cpp
 
 HEADERS  += mainwindow.h \
     Downloader.h \
-    qcustomplot.h
+    qcustomplot.h \
+    config.h
 
 FORMS    += mainwindow.ui

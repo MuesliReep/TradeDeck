@@ -2,6 +2,7 @@
 #include <QApplication>
 
 #include "Downloader.h"
+#include "Config.h"
 
 int main(int argc, char *argv[])
 {
@@ -11,6 +12,9 @@ int main(int argc, char *argv[])
 
     Downloader d;
     d.doDownload();
+
+    Config c;
+    c.setLastLoaded();
 
     return a.exec();
 }

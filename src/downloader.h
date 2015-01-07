@@ -9,22 +9,24 @@
 #include <QDateTime>
 #include <QFile>
 #include <QDebug>
+#include <QDateTime>
 
 class Downloader : public QObject
 {
   Q_OBJECT
-public:
-  explicit Downloader(QObject *parent = 0);
+  public:
+    explicit Downloader(QObject *parent = 0);
+    ~Downloader();
 
-  void doDownload();
+    void doDownload();
 
   signals:
 
   public slots:
-  void replyFinished (QNetworkReply *reply);
+    void replyFinished (QNetworkReply *reply);
 
-private:
-  QNetworkAccessManager *manager;
+  private:
+    QNetworkAccessManager *manager;
 
 };
 

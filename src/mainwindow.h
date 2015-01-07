@@ -7,8 +7,6 @@
 #include <QFile>
 #include <QtNetwork/qnetworkrequest.h>
 
-
-
 #include "Downloader.h"
 
 namespace Ui {

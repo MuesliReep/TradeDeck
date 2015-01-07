@@ -1,19 +1,33 @@
 #include "downloader.h"
+#include "Config.h"
 
 Downloader::Downloader(QObject *parent) :
 QObject(parent)
 {
 }
 
+Downloader::~Downloader() {
+
+  delete manager;
+}
+
 void Downloader::doDownload()
 {
+
+  QDateTime time(QDateTime::currentDateTime());
+  Config c; // TODO: config should be static
+
+  // Check if we are allowed to gather new data
+  if(!time.toTime_t() > c.getLastLoaded()+2) // TODO: expiry time should be defined somewhere not hardcoded
+    return;
+
   manager = new QNetworkAccessManager(this);
 
   connect(manager, SIGNAL(finished(QNetworkReply*)),
   this, SLOT(replyFinished(QNetworkReply*)));
 
-  // manager->get(QNetworkRequest(QUrl("https://btc-e.com/api/3/ticker/btc_usd")));
-  manager->get(QNetworkRequest(QUrl("http://google.nl")));
+  manager->get(QNetworkRequest(QUrl("https://btc-e.com/api/3/depth/btc_usd")));
+  // manager->get(QNetworkRequest(QUrl("http://google.nl")));
 }
 
 void Downloader::replyFinished (QNetworkReply *reply)
@@ -32,7 +46,7 @@ void Downloader::replyFinished (QNetworkReply *reply)
     qDebug() << reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toString();
 
     QFile *file = new QFile("C:/Dummy/downloaded.txt");
-    if(file->open(QFile::Append))
+    if(file->open(QFile::WriteOnly))
     {
       file->write(reply->readAll());
       file->flush();
@@ -41,5 +55,6 @@ void Downloader::replyFinished (QNetworkReply *reply)
     delete file;
   }
 
-  reply->deleteLater();
+  // reply->deleteLater();
+  delete reply;
 }

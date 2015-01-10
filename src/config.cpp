@@ -2,11 +2,47 @@
 
 Config::Config() {
 
+  fileName = "config.txt";
+  lastLoadedTimeStamp = 0;
 }
 
 Config::~Config() {
 
 }
+
+bool Config::loadConfigFromFile() {
+
+  bool result = false;
+
+  QFile *file = new QFile(fileName);
+  QJsonDocument json;
+
+  if(file->open(QFile::ReadOnly)) {
+    QJsonParseError error;
+
+    json = QJsonDocument().fromJson(file->readAll(), &error);
+
+    //Check if JSON was correctly parsed
+    if (error == 0)
+      result = true;
+  }
+
+  delete file;
+
+  return result;
+}
+
+void Config::saveConfigToFile(QJsonObject *object) {
+
+  QJsonDocument document(object);
+
+  QFile file(fileName);
+  file.open(QFile::WriteOnly);
+  file.write(document.toJson(QJsonDocument::Indented));
+}
+
+uint getLastLoadedTimeStamp() { return timeStamp; }
+void setLastLoadedTimeStamp(uint TimeStamp) { timeStamp = TimeStamp; }
 
 // Sets the current time as the timeStamp for the same overloaded function
 void Config::setLastLoaded() {

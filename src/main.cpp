@@ -7,14 +7,20 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    // MainWindow w;
-    // w.show();
 
+    //Load configuration from file (if any)
+    Config c;
+    c.loadConfigFromFile;
+
+    //Set up HTTP downloader
     Downloader d;
     d.doDownload();
 
-    Config c;
-    c.setLastLoaded();
+
+
+    // TODO: pass config & downloader to gui.
+    // MainWindow w;
+    // w.show();
 
     return a.exec();
 }

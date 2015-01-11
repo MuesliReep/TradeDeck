@@ -1,5 +1,4 @@
 #include "downloader.h"
-#include "Config.h"
 
 Downloader::Downloader(QObject *parent) :
 QObject(parent)
@@ -15,11 +14,14 @@ void Downloader::doDownload()
 {
 
   QDateTime time(QDateTime::currentDateTime());
-  Config c; // TODO: config should be static
 
   // Check if we are allowed to gather new data
-  if(!time.toTime_t() > c.getLastLoaded()+2) // TODO: expiry time should be defined somewhere not hardcoded
+  if(!time.toTime_t() > c->getLastLoadedTimeStamp()+c->getCoolDownTime())
     return;
+
+  // Update timestamp
+  c->setLastLoadedTimeStamp();
+  c->saveConfigToFile();
 
   manager = new QNetworkAccessManager(this);
 
@@ -58,3 +60,5 @@ void Downloader::replyFinished (QNetworkReply *reply)
   // reply->deleteLater();
   delete reply;
 }
+
+void Downloader::setConfig(Config *C) { c=C; }

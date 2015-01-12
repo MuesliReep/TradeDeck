@@ -18,11 +18,15 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     Downloader.cpp \
     qcustomplot.cpp \
-    config.cpp
+    config.cpp \
+    marketData.cpp \
+    exchangeBot.cpp
 
 HEADERS  += mainwindow.h \
     Downloader.h \
     qcustomplot.h \
-    config.h
+    config.h \
+    marketData.h \
+    exchangeBot.h
 
 FORMS    += mainwindow.ui

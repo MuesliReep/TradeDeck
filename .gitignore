@@ -79,3 +79,4 @@ $RECYCLE.BIN/
 *.lnk
 src/build-TradeDeck-Desktop_Qt_5_3_MinGW_32bit-Debug/debug/TradeDeck.exe
 src/build-TradeDeck-Desktop_Qt_5_3_MinGW_32bit-Debug/config.json
+src/build-TradeDeck-Desktop_Qt_5_3_MinGW_32bit-Debug/downloadedData.json

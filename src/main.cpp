@@ -1,23 +1,31 @@
 #include "mainwindow.h"
 #include <QApplication>
 
-#include "Downloader.h"
-#include "Config.h"
+#include "downloader.h"
+#include "config.h"
+#include "marketData.h"
+#include "exchangeBot.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    //Load configuration from file (if any)
+    // Load configuration from file (if any)
     Config c;
     c.loadConfigFromFile();
 
-    //Set up HTTP downloader
+    // Configure the downloader
     Downloader d;
     d.setConfig(&c);
-    d.doDownload();
 
-    // TODO: pass config & downloader to gui.
+    // Create market data object
+    MarketData m(&c);
+
+    // Create a market bot
+    ExchangeBot e(&c,&d,&m);
+    e.updateMarketDepth(); // TODO: remove
+
+    // TODO: pass config & marketdata to gui.
     MainWindow w;
     w.show();
 

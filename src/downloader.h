@@ -20,7 +20,12 @@ class Downloader : public QObject
     explicit Downloader(QObject *parent = 0);
     ~Downloader();
 
-    void doDownload();
+
+    QNetworkRequest generateRequest(QUrl url);
+    QNetworkRequest generateGetRequest(QUrl url);
+    QNetworkRequest generatePostRequest(QUrl url);
+
+    void doDownload(QNetworkRequest request);
     void setConfig(Config *C);
 
   signals:

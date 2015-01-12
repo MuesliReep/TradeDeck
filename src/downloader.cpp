@@ -10,28 +10,38 @@ Downloader::~Downloader() {
   delete manager;
 }
 
-void Downloader::doDownload()
-{
 
-  QDateTime time(QDateTime::currentDateTime());
+// Generates a network request based on the given url
+QNetworkRequest Downloader::generateRequest(QUrl url) {
 
-  // Check if we are allowed to gather new data
-  if(!time.toTime_t() > c->getLastLoadedTimeStamp()+c->getCoolDownTime())
-    return;
+  return QNetworkRequest(url);
+}
 
-  // Update timestamp
-  c->setLastLoadedTimeStamp();
-  c->saveConfigToFile();
+// Generates a HTTP GET request
+QNetworkRequest Downloader::generateGetRequest(QUrl url) {
+
+  return QNetworkRequest(url);
+}
+
+// Generates a HTTP POST request
+QNetworkRequest Downloader::generatePostRequest(QUrl url) {
+
+  return QNetworkRequest(url);
+}
+
+//
+void Downloader::doDownload(QNetworkRequest request) {
 
   manager = new QNetworkAccessManager(this);
 
   connect(manager, SIGNAL(finished(QNetworkReply*)),
   this, SLOT(replyFinished(QNetworkReply*)));
 
-  manager->get(QNetworkRequest(QUrl("https://btc-e.com/api/3/depth/btc_usd")));
-  // manager->get(QNetworkRequest(QUrl("http://google.nl")));
+  // manager->get(QNetworkRequest(QUrl("https://btc-e.com/api/3/depth/btc_usd")));
+  manager->get(request);
 }
 
+//
 void Downloader::replyFinished (QNetworkReply *reply)
 {
   if(reply->error())
@@ -47,7 +57,7 @@ void Downloader::replyFinished (QNetworkReply *reply)
     qDebug() << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     qDebug() << reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toString();
 
-    QFile *file = new QFile("C:/Dummy/downloaded.txt");
+    QFile *file = new QFile("downloadedData.json");
     if(file->open(QFile::WriteOnly))
     {
       file->write(reply->readAll());
@@ -57,8 +67,8 @@ void Downloader::replyFinished (QNetworkReply *reply)
     delete file;
   }
 
-  // reply->deleteLater();
-  delete reply;
+  reply->deleteLater();
+  // delete reply;
 }
 
 void Downloader::setConfig(Config *C) { c=C; }

@@ -18,6 +18,9 @@ Trade::~Trade() {
 
 }
 
+// Getters & Setters
+// TODO: setters neccessary? 
+
 QString Trade::getTradePair() { return tradePair; }
 uint Trade::getType() { return type; }
 double Trade::getPrice() { return price; }

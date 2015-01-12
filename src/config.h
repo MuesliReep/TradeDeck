@@ -25,10 +25,6 @@ public:
   uint getLastLoadedTimeStamp();
   void setLastLoadedTimeStamp();
   void setLastLoadedTimeStamp(uint LastLoadedTimeStamp);
-  
-  void setLastLoaded();
-  void setLastLoaded(uint timeStamp);
-  uint getLastLoaded();
 
   void setCoolDownTime(uint CoolDownTime);
   uint getCoolDownTime();

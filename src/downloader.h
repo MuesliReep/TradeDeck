@@ -24,14 +24,15 @@ class Downloader : public QObject
     QNetworkRequest generateGetRequest(QUrl url);
     QNetworkRequest generatePostRequest(QUrl url);
 
-    void doDownload(QNetworkRequest request);
+    // void doDownload(QNetworkRequest request);
     void doDownload(QNetworkRequest request, QObject* receiver, const char * method);
 
+    bool checkReply(QNetworkReply *reply);
 
   signals:
 
   public slots:
-    void replyFinished (QNetworkReply *reply);
+    // void replyFinished (QNetworkReply *reply);
 
   private:
     QNetworkAccessManager *manager;

@@ -5,6 +5,10 @@
 #include <QDateTime>
 #include <QDebug>
 
+#include <QJsonDocument>
+#include <QJsonParseError>
+#include <QJsonObject>
+
 #include "downloader.h"
 #include "config.h"
 #include "marketData.h"
@@ -29,6 +33,8 @@ private:
   Downloader  d;
   Config      *c;
   MarketData  m;
+
+  bool getObjectFromDocument(QNetworkReply *reply, QJsonObject *object);
 
 public slots:
   void depthDataReply(QNetworkReply *reply);

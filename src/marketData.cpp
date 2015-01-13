@@ -12,25 +12,25 @@ MarketData::~MarketData() {
 }
 
 // Parses a new market trade data set and merges it with the existing set(if any)
-void MarketData::parseRawTradeData(QJsonObject rawData) {
+void MarketData::parseRawTradeData(QJsonObject *rawData) {
 
 }
 
 // Parses new market depth data and overwrites current data
-void MarketData::parseRawDepthData(QJsonObject rawData) {
+void MarketData::parseRawDepthData(QJsonObject *rawData) {
 
   QJsonArray asks; // Sell orders
   QJsonArray bids; // Buy orders
 
   // Retrieve both arrays from JSON object
-  asks = rawData.value("asks").toArray();
-  bids = rawData.value("bids").toArray();
+  asks = rawData->value("asks").toArray();
+  bids = rawData->value("bids").toArray();
 
   // TODO: load into lists
 }
 
 // Parses new market ticker data and overwrites current data
-void MarketData::parseRawTickerData(QJsonObject rawData) {
+void MarketData::parseRawTickerData(QJsonObject *rawData) {
 
 }
 

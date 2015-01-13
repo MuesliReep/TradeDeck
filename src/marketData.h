@@ -15,9 +15,9 @@ public:
   MarketData(Config *C);
   ~MarketData();
 
-  void parseRawTradeData(QJsonObject rawData);
-  void parseRawDepthData(QJsonObject rawData);
-  void parseRawTickerData(QJsonObject rawData);
+  void parseRawTradeData(QJsonObject *rawData);
+  void parseRawDepthData(QJsonObject *rawData);
+  void parseRawTickerData(QJsonObject *rawData);
 
   void loadTradeDataFromFile();
   void saveTradeDataToFile();

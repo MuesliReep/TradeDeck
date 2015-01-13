@@ -12,6 +12,7 @@ ExchangeBot::~ExchangeBot() {
 
 }
 
+// Sets the configuration for this Exchange Bot
 void ExchangeBot::setConfig(Config *C) {
 
   c=C;
@@ -22,11 +23,14 @@ void ExchangeBot::setConfig(Config *C) {
 void ExchangeBot::updateMarketTrades(uint limit) {
 
   // Make sure the cool down timer has expired
+  if(!checkCoolDownExpiration(true))
+    return;
 
   // Create the request to download new data
+  QNetworkRequest request = d.generateGetRequest(QUrl("https://btc-e.com/api/3/trades/btc_usd"));
 
   // Execute the download
-
+  d.doDownload(request, this, SLOT(tradeDataReply(QNetworkReply*)));
 }
 
 // Updates the market depth data
@@ -54,8 +58,7 @@ void ExchangeBot::updateMarketTicker() {
   QNetworkRequest request = d.generateRequest(QUrl("https://btc-e.com/api/3/ticker/btc_usd"));
 
   // Execute the download
-  d.doDownload(request);
-
+  d.doDownload(request, this, SLOT(depthDataReply(tickerDataReply*)));
 }
 
 // Checks if the current cool down timer has expired
@@ -82,22 +85,77 @@ bool ExchangeBot::checkCoolDownExpiration(bool reset) {
   return false;
 }
 
+// Grabs a JSON object from a Network reply
+// Returns true if succesfull
+bool ExchangeBot::getObjectFromDocument(QNetworkReply *reply, QJsonObject *object) {
+
+  QJsonDocument   jsonDoc;
+  QJsonParseError error;
+
+  jsonDoc = QJsonDocument().fromJson(reply->readAll(), &error);
+  *object = jsonDoc.object();
+
+  return true; // TODO: check json validity
+}
+
 // Slots
 
 void ExchangeBot::depthDataReply(QNetworkReply *reply) {
 
-  qDebug() << "SIGNAL RECEIVED!";
-  // TODO: send to parser
+  if(!reply->error()) {
+
+    QJsonObject jsonObj;
+    QJsonObject depthData;
+
+    // Extract JSON object from network reply
+    getObjectFromDocument(reply, &jsonObj);
+
+    // Extract the market data we want
+    depthData = jsonObj.value("btc_usd").toObject();
+
+    // Send the data to be parsed
+    m.parseRawDepthData(&depthData);
+  }
 
   reply->deleteLater();
 }
 
 void ExchangeBot::tickerDataReply(QNetworkReply *reply) {
 
+  if(!reply->error()) {
+
+    QJsonObject jsonObj;
+    QJsonObject tickerData;
+
+    // Extract JSON object from network reply
+    getObjectFromDocument(reply, &jsonObj);
+
+    // Extract the market data we want
+    tickerData = jsonObj.value("btc_usd").toObject();
+
+    // Send the data to be parsed
+    m.parseRawTickerData(&tickerData);
+  }
+
   reply->deleteLater();
 }
 
 void ExchangeBot::tradeDataReply(QNetworkReply *reply) {
+
+  if(!reply->error()) {
+
+    QJsonObject jsonObj;
+    QJsonObject tradeData;
+
+    // Extract JSON object from network reply
+    getObjectFromDocument(reply, &jsonObj);
+
+    // Extract the market data we want
+    tradeData = jsonObj.value("btc_usd").toObject();
+
+    // Send the data to be parsed
+    m.parseRawTradeData(&tradeData);
+  }
 
   reply->deleteLater();
 }

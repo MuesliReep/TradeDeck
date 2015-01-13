@@ -37,7 +37,17 @@ void Downloader::doDownload(QNetworkRequest request) {
   connect(manager, SIGNAL(finished(QNetworkReply*)),
   this, SLOT(replyFinished(QNetworkReply*)));
 
-  // manager->get(QNetworkRequest(QUrl("https://btc-e.com/api/3/depth/btc_usd")));
+  manager->get(request);
+}
+
+//
+void Downloader::doDownload(QNetworkRequest request, QObject * receiver, const char * method) {
+
+  manager = new QNetworkAccessManager(this);
+
+  connect(manager, SIGNAL(finished(QNetworkReply*)),
+  receiver, method);
+
   manager->get(request);
 }
 
@@ -70,5 +80,3 @@ void Downloader::replyFinished (QNetworkReply *reply)
   reply->deleteLater();
   // delete reply;
 }
-
-void Downloader::setConfig(Config *C) { c=C; }

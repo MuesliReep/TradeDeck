@@ -11,6 +11,7 @@ class MarketData
 {
 
 public:
+  MarketData();
   MarketData(Config *C);
   ~MarketData();
 

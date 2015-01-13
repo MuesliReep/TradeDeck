@@ -3,15 +3,19 @@
 
 #include "exchangeBot.h"
 
-ExchangeBot::ExchangeBot(Config *C, Downloader *D, MarketData *M) {
-
-  c = C;
-  d = D;
-  m = M;
+ExchangeBot::ExchangeBot(QObject *parent) :
+QObject(parent)
+{
 }
 
 ExchangeBot::~ExchangeBot() {
 
+}
+
+void ExchangeBot::setConfig(Config *C) {
+
+  c=C;
+  MarketData m = MarketData(c);
 }
 
 // Updates the market trades data
@@ -33,20 +37,24 @@ void ExchangeBot::updateMarketDepth() {
     return;
 
   // Create the request to download new data
-  QNetworkRequest request = d->generateRequest(QUrl("https://btc-e.com/api/3/depth/btc_usd"));
+  QNetworkRequest request = d.generateRequest(QUrl("https://btc-e.com/api/3/depth/btc_usd"));
 
   // Execute the download
-  d->doDownload(request);
+  d.doDownload(request, this, SLOT(depthDataReply(QNetworkReply*)));
 }
 
 // Updates the market ticker data
 void ExchangeBot::updateMarketTicker() {
 
   // Make sure the cool down timer has expired
+  if(!checkCoolDownExpiration(true))
+    return;
 
   // Create the request to download new data
+  QNetworkRequest request = d.generateRequest(QUrl("https://btc-e.com/api/3/ticker/btc_usd"));
 
   // Execute the download
+  d.doDownload(request);
 
 }
 
@@ -72,4 +80,24 @@ bool ExchangeBot::checkCoolDownExpiration(bool reset) {
   }
 
   return false;
+}
+
+// Slots
+
+void ExchangeBot::depthDataReply(QNetworkReply *reply) {
+
+  qDebug() << "SIGNAL RECEIVED!";
+  // TODO: send to parser
+
+  reply->deleteLater();
+}
+
+void ExchangeBot::tickerDataReply(QNetworkReply *reply) {
+
+  reply->deleteLater();
+}
+
+void ExchangeBot::tradeDataReply(QNetworkReply *reply) {
+
+  reply->deleteLater();
 }

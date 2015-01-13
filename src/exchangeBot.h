@@ -1,18 +1,23 @@
 #ifndef EXCHANGEBOT_H
 #define EXCHANGEBOT_H
 
+#include <QObject>
 #include <QDateTime>
+#include <QDebug>
 
+#include "downloader.h"
 #include "config.h"
 #include "marketData.h"
-#include "downloader.h"
 
-class ExchangeBot
+
+class ExchangeBot : public QObject
 {
-
+  Q_OBJECT
 public:
-  ExchangeBot(Config *C, Downloader *D, MarketData *M);
+  explicit ExchangeBot(QObject *parent = 0);
   ~ExchangeBot();
+
+  void setConfig(Config *C);
 
   void updateMarketTrades(uint limit);
   void updateMarketDepth();
@@ -21,9 +26,17 @@ public:
   bool checkCoolDownExpiration(bool reset);
 
 private:
-  Downloader  *d;
+  Downloader  d;
   Config      *c;
-  MarketData  *m;
+  MarketData  m;
+
+public slots:
+  void depthDataReply(QNetworkReply *reply);
+  void tickerDataReply(QNetworkReply *reply);
+  void tradeDataReply(QNetworkReply *reply);
+
+private slots:
+
 };
 
 #endif // EXCHANGEBOT_H

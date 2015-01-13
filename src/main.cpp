@@ -1,9 +1,7 @@
 #include "mainwindow.h"
 #include <QApplication>
 
-#include "downloader.h"
 #include "config.h"
-#include "marketData.h"
 #include "exchangeBot.h"
 
 int main(int argc, char *argv[])
@@ -14,15 +12,9 @@ int main(int argc, char *argv[])
     Config c;
     c.loadConfigFromFile();
 
-    // Configure the downloader
-    Downloader d;
-    d.setConfig(&c);
-
-    // Create market data object
-    MarketData m(&c);
-
     // Create a market bot
-    ExchangeBot e(&c,&d,&m);
+    ExchangeBot e;
+    e.setConfig(&c);
     e.updateMarketDepth(); // TODO: remove
 
     // TODO: pass config & marketdata to gui.

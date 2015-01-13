@@ -11,7 +11,6 @@
 #include <QDebug>
 #include <QDateTime>
 
-#include "Config.h"
 
 class Downloader : public QObject
 {
@@ -26,7 +25,8 @@ class Downloader : public QObject
     QNetworkRequest generatePostRequest(QUrl url);
 
     void doDownload(QNetworkRequest request);
-    void setConfig(Config *C);
+    void doDownload(QNetworkRequest request, QObject* receiver, const char * method);
+
 
   signals:
 
@@ -35,7 +35,6 @@ class Downloader : public QObject
 
   private:
     QNetworkAccessManager *manager;
-    Config *c;
 
 };
 

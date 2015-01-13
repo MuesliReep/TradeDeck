@@ -1,5 +1,8 @@
 #include "marketData.h"
 
+MarketData::MarketData() {
+}
+
 MarketData::MarketData(Config *C) {
   c = C;
 }

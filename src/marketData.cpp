@@ -19,14 +19,32 @@ void MarketData::parseRawTradeData(QJsonObject *rawData) {
 // Parses new market depth data and overwrites current data
 void MarketData::parseRawDepthData(QJsonObject *rawData) {
 
-  QJsonArray asks; // Sell orders
-  QJsonArray bids; // Buy orders
+  QJsonArray jAsks; // Sell orders
+  QJsonArray jBids; // Buy orders
 
   // Retrieve both arrays from JSON object
-  asks = rawData->value("asks").toArray();
-  bids = rawData->value("bids").toArray();
+  jAsks = rawData->value("asks").toArray();
+  jBids = rawData->value("bids").toArray();
 
-  // TODO: load into lists
+  // Erase both QLists in preperation for new data
+  asks.removeAll();
+  bids.removeAll();
+
+  // Populate ask orders list
+  for(int i=0;i<jAsks.size();i++) {
+
+    double pair1 = jAsks[i].toArray()[0].toDouble();
+    double pair2 = jAsks[i].toArray()[1].toDouble();
+    asks.append(Order("BTC/USD",pair1,pai2));
+  }
+
+  // Populate bid orders list
+  for(int i=0;i<jBids.size();i++) { // TODO: order should be in reverse
+
+    double pair1 = jBids[i].toArray()[0].toDouble();
+    double pair2 = jBids[i].toArray()[1].toDouble();
+    bids.append(Order("BTC/USD",pair1,pai2));
+  }
 }
 
 // Parses new market ticker data and overwrites current data

@@ -24,7 +24,7 @@ void ExchangeBot::marketUpdateTick() {
     return;
 
   // Update market data
-  // updateMarketDepth();
+  updateMarketDepth();
 
   // Send signal to GUI to update
   sendNewMarketData();

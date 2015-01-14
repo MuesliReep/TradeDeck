@@ -1,11 +1,14 @@
 #ifndef MARKETDATA_H
 #define MARKETDATA_H
 
+#include <QList>
+
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QJsonArray>
 
 #include "config.h"
+#include "order.h"
 
 class MarketData
 {
@@ -24,6 +27,9 @@ public:
 
 private:
   Config *c;
+
+  QList<Order> asks;
+  QList<Order> bids;
 };
 
 class Ticker {

@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QDateTime>
 #include <QDebug>
+#include <QTimer>
 
 #include <QJsonDocument>
 #include <QJsonParseError>
@@ -21,6 +22,7 @@ public:
   explicit ExchangeBot(QObject *parent = 0);
   ~ExchangeBot();
 
+  void startBot();
   void setConfig(Config *C);
 
   void updateMarketTrades(uint limit);
@@ -33,6 +35,7 @@ private:
   Downloader  d;
   Config      *c;
   MarketData  m;
+  QTimer *timer;
 
   bool getObjectFromDocument(QNetworkReply *reply, QJsonObject *object);
 
@@ -42,6 +45,10 @@ public slots:
   void tradeDataReply(QNetworkReply *reply);
 
 private slots:
+  void marketUpdateTick();
+
+signals:
+  void sendNewMarketData();
 
 };
 

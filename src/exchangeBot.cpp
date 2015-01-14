@@ -4,12 +4,39 @@
 #include "exchangeBot.h"
 
 ExchangeBot::ExchangeBot(QObject *parent) :
-QObject(parent)
-{
+QObject(parent) {
+
+  // Start timer
+  timer = new QTimer(this);
+  connect(timer, SIGNAL(timeout()), this, SLOT(marketUpdateTick()));
 }
 
 ExchangeBot::~ExchangeBot() {
 
+  delete timer;
+}
+
+//
+void ExchangeBot::marketUpdateTick() {
+
+  // Make sure the cool down timer has expired
+  if(!checkCoolDownExpiration(true))
+    return;
+
+  // Update market data
+  // updateMarketDepth();
+
+  // Send signal to GUI to update
+  sendNewMarketData();
+}
+
+// Starts the Exchange Bot
+void ExchangeBot::startBot() {
+
+  // TODO: gather historical data
+
+  // Start the interval timer
+  timer->start(c->getCoolDownTime());
 }
 
 // Sets the configuration for this Exchange Bot
@@ -22,10 +49,6 @@ void ExchangeBot::setConfig(Config *C) {
 // Updates the market trades data
 void ExchangeBot::updateMarketTrades(uint limit) {
 
-  // Make sure the cool down timer has expired
-  if(!checkCoolDownExpiration(true))
-    return;
-
   // Create the request to download new data
   QNetworkRequest request = d.generateGetRequest(QUrl("https://btc-e.com/api/3/trades/btc_usd"));
 
@@ -36,10 +59,6 @@ void ExchangeBot::updateMarketTrades(uint limit) {
 // Updates the market depth data
 void ExchangeBot::updateMarketDepth() {
 
-  // Make sure the cool down timer has expired
-  if(!checkCoolDownExpiration(true))
-    return;
-
   // Create the request to download new data
   QNetworkRequest request = d.generateRequest(QUrl("https://btc-e.com/api/3/depth/btc_usd"));
 
@@ -49,10 +68,6 @@ void ExchangeBot::updateMarketDepth() {
 
 // Updates the market ticker data
 void ExchangeBot::updateMarketTicker() {
-
-  // Make sure the cool down timer has expired
-  if(!checkCoolDownExpiration(true))
-    return;
 
   // Create the request to download new data
   QNetworkRequest request = d.generateRequest(QUrl("https://btc-e.com/api/3/ticker/btc_usd"));

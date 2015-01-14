@@ -15,10 +15,12 @@ int main(int argc, char *argv[])
     // Create a market bot
     ExchangeBot e;
     e.setConfig(&c);
-    e.updateMarketDepth(); // TODO: remove
+    e.startBot();
 
-    // TODO: pass config & marketdata to gui.
+    // TODO: pass list of bots to window
     MainWindow w;
+    w.setExchangeBots(&e);
+    // w.setStyleSheet("QMainWindow {background: rgb(50, 53, 54);}");
     w.show();
 
     return a.exec();

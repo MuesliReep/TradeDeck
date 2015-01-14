@@ -24,6 +24,7 @@ bool Config::loadConfigFromFile() {
 
     json = QJsonDocument().fromJson(file->readAll(), &error);
 
+    // TODO:
     //Check if JSON was correctly parsed
     // if (error.ParseError == QJsonParseError::NoError)
     //   result = true;
@@ -32,11 +33,6 @@ bool Config::loadConfigFromFile() {
     QJsonObject object = json.object();
     lastLoadedTimeStamp = (uint)object.value("lastLoadedTimeStamp").toInt();
     coolDownTime        = (uint)object.value("coolDownTime").toInt();
-
-    // qDebug() << "lastLoadedTimeStamp";
-    // qDebug() << lastLoadedTimeStamp;
-    // qDebug() << "coolDownTime";
-    // qDebug() << coolDownTime;
   }
 
   delete file;
@@ -60,8 +56,6 @@ void Config::saveConfigToFile() {
   QFile file(fileName);
   file.open(QFile::WriteOnly);
   file.write(document.toJson(QJsonDocument::Indented));
-
-  qDebug() << "Running config saved";
 }
 
 void Config::setCoolDownTime(uint CoolDownTime) { coolDownTime = CoolDownTime; }

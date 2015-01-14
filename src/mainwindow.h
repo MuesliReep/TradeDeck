@@ -7,6 +7,8 @@
 #include <QFile>
 #include <QtNetwork/qnetworkrequest.h>
 
+#include "ExchangeBot.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -19,10 +21,15 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void setExchangeBots(ExchangeBot *E);
 
 private:
-
     Ui::MainWindow *ui;
+
+    ExchangeBot *e;
+
+public slots:
+  void receiveNewMarketData();
 
 };
 

@@ -7,18 +7,28 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>577</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>TradeDeck</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QListWidget" name="listWidget">
+   <widget class="QListWidget" name="listWidgetAsks">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>20</y>
+      <x>10</x>
+      <y>10</y>
+      <width>256</width>
+      <height>192</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="listWidgetBids">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>220</y>
       <width>256</width>
       <height>192</height>
      </rect>

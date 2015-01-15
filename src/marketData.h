@@ -10,6 +10,8 @@
 #include "config.h"
 #include "order.h"
 
+class Ticker;
+
 class MarketData
 {
 
@@ -25,8 +27,12 @@ public:
   void loadTradeDataFromFile();
   void saveTradeDataToFile();
 
+  QList<Order> getAsks();
+  QList<Order> getBids();
+
 private:
   Config *c;
+  // Ticker t;
 
   QList<Order> asks;
   QList<Order> bids;
@@ -35,7 +41,12 @@ private:
 class Ticker {
 
 public:
-  // TODO: Constructor
+  Ticker();
+  Ticker( double high,    double low,
+          double avg,     double vol,
+          double vol_cur, double last,
+          double buy,     double sell,
+          uint updated );
 
 private:
   double high;

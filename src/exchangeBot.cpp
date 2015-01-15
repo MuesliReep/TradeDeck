@@ -113,6 +113,11 @@ bool ExchangeBot::getObjectFromDocument(QNetworkReply *reply, QJsonObject *objec
   return true; // TODO: check json validity
 }
 
+MarketData* ExchangeBot::getMarketData() {
+
+  return &m;
+}
+
 // Slots
 
 void ExchangeBot::depthDataReply(QNetworkReply *reply) {

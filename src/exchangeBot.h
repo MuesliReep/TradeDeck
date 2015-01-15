@@ -25,11 +25,7 @@ public:
   void startBot();
   void setConfig(Config *C);
 
-  void updateMarketTrades(uint limit);
-  void updateMarketDepth();
-  void updateMarketTicker();
-
-  bool checkCoolDownExpiration(bool reset);
+  MarketData* getMarketData();
 
 private:
   Downloader  d;
@@ -37,7 +33,12 @@ private:
   MarketData  m;
   QTimer *timer;
 
+  void updateMarketTrades(uint limit);
+  void updateMarketDepth();
+  void updateMarketTicker();
+
   bool getObjectFromDocument(QNetworkReply *reply, QJsonObject *object);
+  bool checkCoolDownExpiration(bool reset);
 
 public slots:
   void depthDataReply(QNetworkReply *reply);

@@ -27,15 +27,16 @@ void MarketData::parseRawDepthData(QJsonObject *rawData) {
   jBids = rawData->value("bids").toArray();
 
   // Erase both QLists in preperation for new data
-  asks.removeAll();
-  bids.removeAll();
+  // TODO: Look into appending data to existing list
+  asks.clear();
+  bids.clear();
 
   // Populate ask orders list
   for(int i=0;i<jAsks.size();i++) {
 
     double pair1 = jAsks[i].toArray()[0].toDouble();
     double pair2 = jAsks[i].toArray()[1].toDouble();
-    asks.append(Order("BTC/USD",pair1,pai2));
+    asks.append(Order("BTC/USD",pair1,pair2));
   }
 
   // Populate bid orders list
@@ -43,7 +44,7 @@ void MarketData::parseRawDepthData(QJsonObject *rawData) {
 
     double pair1 = jBids[i].toArray()[0].toDouble();
     double pair2 = jBids[i].toArray()[1].toDouble();
-    bids.append(Order("BTC/USD",pair1,pai2));
+    bids.append(Order("BTC/USD",pair1,pair2));
   }
 }
 
@@ -60,4 +61,14 @@ void MarketData::loadTradeDataFromFile() {
 // Loads a market data set from a specified file
 void MarketData::saveTradeDataToFile() {
 
+}
+
+// Returns a pointer to the ask orders list
+QList<Order> MarketData::getAsks() {
+  return asks;
+}
+
+// Returns a pointer to the bid orders list
+QList<Order> MarketData::getBids() {
+  return bids;
 }

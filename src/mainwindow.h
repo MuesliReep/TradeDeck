@@ -2,12 +2,14 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QUrl>
-#include <QtNetwork/QNetworkAccessManager>
-#include <QFile>
-#include <QtNetwork/qnetworkrequest.h>
+#include <QList>
+#include <QLocale>
+#include <QString>
 
-#include "ExchangeBot.h"
+#include "exchangeBot.h"
+#include "marketData.h"
+#include "order.h"
+#include "trade.h"
 
 namespace Ui {
 class MainWindow;

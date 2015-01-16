@@ -1,8 +1,10 @@
 #include "downloader.h"
 
 Downloader::Downloader(QObject *parent) :
-QObject(parent)
-{
+QObject(parent) {
+
+  manager = new QNetworkAccessManager(this);
+  inUse   = false;
 }
 
 Downloader::~Downloader() {
@@ -32,8 +34,6 @@ QNetworkRequest Downloader::generatePostRequest(QUrl url) {
 //
 void Downloader::doDownload(QNetworkRequest request, QObject * receiver, const char * method) {
 
-  manager = new QNetworkAccessManager(this);
-
   connect(manager, SIGNAL(finished(QNetworkReply*)),
   receiver, method);
 
@@ -61,6 +61,8 @@ bool Downloader::checkReply(QNetworkReply *reply) {
     return true;
   }
 }
+
+QNetworkAccessManager* Downloader::getManager() { return manager; }
 
 // //
 // void Downloader::doDownload(QNetworkRequest request) {

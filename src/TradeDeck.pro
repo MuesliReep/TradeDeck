@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     config.cpp \
     marketData.cpp \
     exchangeBot.cpp \
-    order.cpp
+    order.cpp \
+    trade.cpp
 
 HEADERS  += mainwindow.h \
     downloader.h \
@@ -29,6 +30,7 @@ HEADERS  += mainwindow.h \
     config.h \
     marketData.h \
     exchangeBot.h \
-    order.h
+    order.h \
+    trade.h
 
 FORMS    += mainwindow.ui

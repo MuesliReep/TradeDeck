@@ -15,27 +15,33 @@
 class Downloader : public QObject
 {
   Q_OBJECT
-  public:
-    explicit Downloader(QObject *parent = 0);
-    ~Downloader();
+
+public:
+  explicit Downloader(QObject *parent = 0);
+  ~Downloader();
 
 
-    QNetworkRequest generateRequest(QUrl url);
-    QNetworkRequest generateGetRequest(QUrl url);
-    QNetworkRequest generatePostRequest(QUrl url);
+  QNetworkRequest generateRequest(QUrl url);
+  QNetworkRequest generateGetRequest(QUrl url);
+  QNetworkRequest generatePostRequest(QUrl url);
 
-    // void doDownload(QNetworkRequest request);
-    void doDownload(QNetworkRequest request, QObject* receiver, const char * method);
+  // void doDownload(QNetworkRequest request);
+  void doDownload(QNetworkRequest request, QObject* receiver, const char * method);
 
-    bool checkReply(QNetworkReply *reply);
+  bool checkReply(QNetworkReply *reply);
 
-  signals:
+  QNetworkAccessManager* getManager();
 
-  public slots:
-    // void replyFinished (QNetworkReply *reply);
+private:
+  QNetworkAccessManager *manager;
+  bool inUse;
 
-  private:
-    QNetworkAccessManager *manager;
+signals:
+
+public slots:
+  // void replyFinished (QNetworkReply *reply);
+
+
 
 };
 

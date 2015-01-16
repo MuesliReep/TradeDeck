@@ -2,6 +2,7 @@
 #define MARKETDATA_H
 
 #include <QList>
+#include <QString>
 
 #include <QJsonObject>
 #include <QJsonValue>
@@ -9,6 +10,7 @@
 
 #include "config.h"
 #include "order.h"
+#include "trade.h"
 
 class Ticker;
 
@@ -36,6 +38,8 @@ private:
 
   QList<Order> asks;
   QList<Order> bids;
+
+  QList<Trade> tradeData;
 };
 
 class Ticker {

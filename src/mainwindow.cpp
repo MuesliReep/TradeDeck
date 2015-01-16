@@ -27,11 +27,19 @@ void MainWindow::receiveNewMarketData() {
 
   qDebug() << "new Market Data received";
 
+  // Update the individual screen elements
+  updateTradeDepth();
+}
+
+void MainWindow::updateTradeDepth() {
+
   ui->listWidgetAsks->clear();
   ui->listWidgetBids->clear();
 
   QList<Order> asks = e->getMarketData()->getAsks();
   QList<Order> bids = e->getMarketData()->getBids();
+
+  qDebug() << asks.size();
 
   if(asks.size()>0) {
 
@@ -60,5 +68,4 @@ void MainWindow::receiveNewMarketData() {
       new QListWidgetItem(pair1+" / "+pair2, ui->listWidgetBids);
     }
   }
-
 }

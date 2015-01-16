@@ -30,6 +30,8 @@ private:
 
     ExchangeBot *e;
 
+    void updateTradeDepth();
+
 public slots:
   void receiveNewMarketData();
 

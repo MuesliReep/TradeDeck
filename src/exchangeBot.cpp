@@ -23,11 +23,13 @@ void ExchangeBot::marketUpdateTick() {
   if(!checkCoolDownExpiration(true))
     return;
 
+  qDebug() << "tick";
+
   // Update market data
   updateMarketDepth();
 
   // Send signal to GUI to update
-  sendNewMarketData();
+  sendNewMarketData(); //TODO: this should send specific data and should be in a signal not here
 }
 
 // Starts the Exchange Bot
@@ -64,6 +66,8 @@ void ExchangeBot::updateMarketDepth() {
 
   // Execute the download
   d.doDownload(request, this, SLOT(depthDataReply(QNetworkReply*)));
+
+  qDebug() << "Do download";
 }
 
 // Updates the market ticker data
@@ -122,6 +126,12 @@ MarketData* ExchangeBot::getMarketData() {
 
 void ExchangeBot::depthDataReply(QNetworkReply *reply) {
 
+  // Disconnect the signal and release the downloader
+  disconnect(d.getManager(), 0, this, 0);
+  // d.setInUse(false);
+
+  qDebug() << "depth Reply";
+
   if(!reply->error()) {
 
     QJsonObject jsonObj;
@@ -136,6 +146,8 @@ void ExchangeBot::depthDataReply(QNetworkReply *reply) {
     // Send the data to be parsed
     m.parseRawDepthData(&depthData);
   }
+  else
+    qDebug() << "Packet error";
 
   reply->deleteLater();
 }

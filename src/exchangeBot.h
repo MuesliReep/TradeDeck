@@ -52,7 +52,7 @@ private slots:
   void marketUpdateTick();
 
 signals:
-  void sendNewMarketData();
+  void sendNewMarketData(int dataType);
 
 };
 

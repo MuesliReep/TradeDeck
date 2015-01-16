@@ -22,7 +22,7 @@ public:
   MarketData(Config *C);
   ~MarketData();
 
-  void parseRawTradeData(QJsonObject *rawData);
+  void parseRawTradeData(QJsonArray *rawData);
   void parseRawDepthData(QJsonObject *rawData);
   void parseRawTickerData(QJsonObject *rawData);
 
@@ -31,6 +31,7 @@ public:
 
   QList<Order> getAsks();
   QList<Order> getBids();
+  QList<Trade> getTrades();
 
 private:
   Config *c;

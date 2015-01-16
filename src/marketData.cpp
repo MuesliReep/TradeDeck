@@ -12,36 +12,43 @@ MarketData::~MarketData() {
 }
 
 // Parses a new market trade data set and merges it with the existing set(if any)
-void MarketData::parseRawTradeData(QJsonObject *rawData) {
+void MarketData::parseRawTradeData(QJsonArray *rawData) {
 
-  QJsonArray jTrades;
+  // QJsonArray jTrades;
 
   // Retrieve array form JSON object
-  jTrades = rawData->value("asks").toArray();
+  // jTrades = rawData->value("btc_usd").toArray();
+
+  if(!rawData->size()>0)
+    return;
 
   // Append new trades to the beginning of the trades list
   // Work through the list from oldest to newest
-  for(int i=jTrades.size();i>=0;i--) {
+  for(int i=rawData->size();i>=0;i--) {
 
-    uint timeStamp = (uint)jTrades[i].toObject().value("timestamp").toInt();
+    uint timeStamp = (uint)rawData->at(i).toObject().value("timestamp").toInt();
 
-    // Check if the timestamp is newer than the first in the list
-    // otherwise skip it and go to the next
-    if(timeStamp < tradeData[0].getTimeStamp())
-      continue;
-
-    // If timestamps are the same check the tradeIDs
-    // if they are the same skip it
-    if(timeStamp == tradeData[0].getTimeStamp()) {
-
-      uint tradeID = (uint)jTrades[i].toObject().value("tid").toInt();
-
-      if(tradeID == tradeData[0].getTradeID())
+    // Check if there is any data to begin with
+    if(tradeData.size() > 0) {
+      
+      // Check if the timestamp is newer than the first in the list
+      // otherwise skip it and go to the next
+      if(timeStamp < tradeData[0].getTimeStamp())
         continue;
+
+      // If timestamps are the same check the tradeIDs
+      // if they are the same skip it
+      if(timeStamp == tradeData[0].getTimeStamp()) {
+
+        uint tradeID = (uint)rawData->at(i).toObject().value("tid").toInt();
+
+        if(tradeID == tradeData[0].getTradeID())
+          continue;
+      }
     }
 
     // Create a new trade object from the JSON values
-    QJsonObject tradeObject = jTrades[i].toObject();
+    QJsonObject tradeObject = rawData->at(i).toObject();
 
     // QString tradePair = "btc_usd";
     uint type         = (uint)tradeObject.value("type").toInt();
@@ -111,4 +118,8 @@ QList<Order> MarketData::getAsks() {
 // Returns a pointer to the bid orders list
 QList<Order> MarketData::getBids() {
   return bids;
+}
+
+QList<Trade> MarketData::getTrades() {
+  return tradeData;
 }

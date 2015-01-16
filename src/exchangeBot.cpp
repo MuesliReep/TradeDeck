@@ -25,9 +25,8 @@ void ExchangeBot::marketUpdateTick() {
 
   // Update market data
   updateMarketDepth();
+  updateMarketTrades(2000);
 
-  // Send signal to GUI to update
-  sendNewMarketData(); //TODO: this should send specific data and should be in a signal not here
 }
 
 // Starts the Exchange Bot
@@ -122,11 +121,6 @@ MarketData* ExchangeBot::getMarketData() {
 
 void ExchangeBot::depthDataReply(QNetworkReply *reply) {
 
-  // Disconnect the signal and release
-  disconnect(depthDownloadManager, 0, this, 0);
-
-  qDebug() << "depth Reply";
-
   if(!reply->error()) {
 
     QJsonObject jsonObj;
@@ -140,18 +134,21 @@ void ExchangeBot::depthDataReply(QNetworkReply *reply) {
 
     // Send the data to be parsed
     m.parseRawDepthData(&depthData);
+
+    // Send signal to GUI to update
+    sendNewMarketData(1);
   }
   else
-    qDebug() << "Packet error";
+    qDebug() << "Depth Packet error";
+
+  // Disconnect the signal and release
+  disconnect(depthDownloadManager, 0, this, 0);
 
   reply->deleteLater();
   depthDownloadManager->deleteLater();
 }
 
 void ExchangeBot::tickerDataReply(QNetworkReply *reply) {
-
-  // Disconnect the signal and release
-  disconnect(tickerDownloadManager, 0, this, 0);
 
   if(!reply->error()) {
 
@@ -166,7 +163,15 @@ void ExchangeBot::tickerDataReply(QNetworkReply *reply) {
 
     // Send the data to be parsed
     m.parseRawTickerData(&tickerData);
+
+    // Send signal to GUI to update
+    sendNewMarketData(2);
   }
+  else
+    qDebug() << "Ticker Packet error";
+
+  // Disconnect the signal and release
+  disconnect(tickerDownloadManager, 0, this, 0);
 
   reply->deleteLater();
   tickerDownloadManager->deleteLater();
@@ -174,23 +179,29 @@ void ExchangeBot::tickerDataReply(QNetworkReply *reply) {
 
 void ExchangeBot::tradeDataReply(QNetworkReply *reply) {
 
-  // Disconnect the signal and release
-  disconnect(tradeDownloadManager, 0, this, 0);
 
   if(!reply->error()) {
 
     QJsonObject jsonObj;
-    QJsonObject tradeData;
+    QJsonArray tradeData;
 
     // Extract JSON object from network reply
     getObjectFromDocument(reply, &jsonObj);
 
     // Extract the market data we want
-    tradeData = jsonObj.value("btc_usd").toObject();
+    tradeData = jsonObj.value("btc_usd").toArray();
 
     // Send the data to be parsed
     m.parseRawTradeData(&tradeData);
+
+    // Send signal to GUI to update
+    sendNewMarketData(0);
   }
+  else
+    qDebug() << "Trade Packet error";
+
+  // Disconnect the signal and release
+  disconnect(tradeDownloadManager, 0, this, 0);
 
   reply->deleteLater();
   tradeDownloadManager->deleteLater();

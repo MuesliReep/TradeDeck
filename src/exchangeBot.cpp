@@ -142,7 +142,7 @@ void ExchangeBot::depthDataReply(QNetworkReply *reply) {
     qDebug() << "Depth Packet error";
 
   // Disconnect the signal and release
-  disconnect(depthDownloadManager, 0, this, 0);
+  // disconnect(depthDownloadManager, 0, this, 0);
 
   reply->deleteLater();
   depthDownloadManager->deleteLater();
@@ -171,14 +171,13 @@ void ExchangeBot::tickerDataReply(QNetworkReply *reply) {
     qDebug() << "Ticker Packet error";
 
   // Disconnect the signal and release
-  disconnect(tickerDownloadManager, 0, this, 0);
+  // disconnect(tickerDownloadManager, 0, this, 0);
 
   reply->deleteLater();
   tickerDownloadManager->deleteLater();
 }
 
 void ExchangeBot::tradeDataReply(QNetworkReply *reply) {
-
 
   if(!reply->error()) {
 
@@ -201,7 +200,7 @@ void ExchangeBot::tradeDataReply(QNetworkReply *reply) {
     qDebug() << "Trade Packet error";
 
   // Disconnect the signal and release
-  disconnect(tradeDownloadManager, 0, this, 0);
+  // disconnect(tradeDownloadManager, 0, this, 0);
 
   reply->deleteLater();
   tradeDownloadManager->deleteLater();

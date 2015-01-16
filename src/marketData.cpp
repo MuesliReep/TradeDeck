@@ -28,21 +28,51 @@ void MarketData::parseRawTradeData(QJsonArray *rawData) {
 
     uint timeStamp = (uint)rawData->at(i).toObject().value("timestamp").toInt();
 
-    // Check if there is any data to begin with
+    // Check if there is any existing data to begin with
     if(tradeData.size() > 0) {
-      
+
       // Check if the timestamp is newer than the first in the list
       // otherwise skip it and go to the next
       if(timeStamp < tradeData[0].getTimeStamp())
         continue;
 
       // If timestamps are the same check the tradeIDs
-      // if they are the same skip it
+      // Because more than two trades can happen in one second,
+      // the number of trades in that second needs to be known
       if(timeStamp == tradeData[0].getTimeStamp()) {
 
+        // Counter starts at 1 because the first trade has already been found to
+        // be in the same timestamp
+        int x = 1;
+
+        while(true) {
+
+          if(timeStamp == tradeData[x].getTimeStamp()) {
+
+            x++;
+            continue;
+          }
+          break;
+        }
+
+        // The number of trades with the same timestamp is now known.
+        // Next check the trade IDs
+
+        // Trade ID of the trade we want to insert
         uint tradeID = (uint)rawData->at(i).toObject().value("tid").toInt();
 
-        if(tradeID == tradeData[0].getTradeID())
+        bool duplicate = false;
+
+        for(int j=0;j<x;j++) {
+
+          if(tradeID == tradeData[j].getTradeID()) {
+
+            duplicate = true;
+            break;
+          }
+        }
+
+        if(duplicate)
           continue;
       }
     }

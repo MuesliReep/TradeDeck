@@ -23,8 +23,6 @@ void ExchangeBot::marketUpdateTick() {
   if(!checkCoolDownExpiration(true))
     return;
 
-  qDebug() << "tick";
-
   // Update market data
   updateMarketDepth();
 
@@ -55,7 +53,7 @@ void ExchangeBot::updateMarketTrades(uint limit) {
   QNetworkRequest request = d.generateGetRequest(QUrl("https://btc-e.com/api/3/trades/btc_usd"));
 
   // Execute the download
-  d.doDownload(request, this, SLOT(tradeDataReply(QNetworkReply*)));
+  tradeDownloadManager = d.doDownload(request, this, SLOT(tradeDataReply(QNetworkReply*)));
 }
 
 // Updates the market depth data
@@ -65,9 +63,7 @@ void ExchangeBot::updateMarketDepth() {
   QNetworkRequest request = d.generateRequest(QUrl("https://btc-e.com/api/3/depth/btc_usd"));
 
   // Execute the download
-  d.doDownload(request, this, SLOT(depthDataReply(QNetworkReply*)));
-
-  qDebug() << "Do download";
+  depthDownloadManager = d.doDownload(request, this, SLOT(depthDataReply(QNetworkReply*)));
 }
 
 // Updates the market ticker data
@@ -77,7 +73,7 @@ void ExchangeBot::updateMarketTicker() {
   QNetworkRequest request = d.generateRequest(QUrl("https://btc-e.com/api/3/ticker/btc_usd"));
 
   // Execute the download
-  d.doDownload(request, this, SLOT(depthDataReply(tickerDataReply*)));
+  tickerDownloadManager = d.doDownload(request, this, SLOT(depthDataReply(tickerDataReply*)));
 }
 
 // Checks if the current cool down timer has expired
@@ -126,9 +122,8 @@ MarketData* ExchangeBot::getMarketData() {
 
 void ExchangeBot::depthDataReply(QNetworkReply *reply) {
 
-  // Disconnect the signal and release the downloader
-  disconnect(d.getManager(), 0, this, 0);
-  // d.setInUse(false);
+  // Disconnect the signal and release
+  disconnect(depthDownloadManager, 0, this, 0);
 
   qDebug() << "depth Reply";
 
@@ -150,9 +145,13 @@ void ExchangeBot::depthDataReply(QNetworkReply *reply) {
     qDebug() << "Packet error";
 
   reply->deleteLater();
+  depthDownloadManager->deleteLater();
 }
 
 void ExchangeBot::tickerDataReply(QNetworkReply *reply) {
+
+  // Disconnect the signal and release
+  disconnect(tickerDownloadManager, 0, this, 0);
 
   if(!reply->error()) {
 
@@ -170,9 +169,13 @@ void ExchangeBot::tickerDataReply(QNetworkReply *reply) {
   }
 
   reply->deleteLater();
+  tickerDownloadManager->deleteLater();
 }
 
 void ExchangeBot::tradeDataReply(QNetworkReply *reply) {
+
+  // Disconnect the signal and release
+  disconnect(tradeDownloadManager, 0, this, 0);
 
   if(!reply->error()) {
 
@@ -190,4 +193,5 @@ void ExchangeBot::tradeDataReply(QNetworkReply *reply) {
   }
 
   reply->deleteLater();
+  tradeDownloadManager->deleteLater();
 }

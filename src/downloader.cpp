@@ -3,15 +3,11 @@
 Downloader::Downloader(QObject *parent) :
 QObject(parent) {
 
-  manager = new QNetworkAccessManager(this);
-  inUse   = false;
 }
 
 Downloader::~Downloader() {
 
-  delete manager;
 }
-
 
 // Generates a network request based on the given url
 QNetworkRequest Downloader::generateRequest(QUrl url) {
@@ -32,12 +28,16 @@ QNetworkRequest Downloader::generatePostRequest(QUrl url) {
 }
 
 //
-void Downloader::doDownload(QNetworkRequest request, QObject * receiver, const char * method) {
+QNetworkAccessManager* Downloader::doDownload(QNetworkRequest request, QObject * receiver, const char * method) {
+
+  QNetworkAccessManager *manager = new QNetworkAccessManager(this);
 
   connect(manager, SIGNAL(finished(QNetworkReply*)),
   receiver, method);
 
   manager->get(request);
+
+  return manager;
 }
 
 // Checks the validity of a network reply
@@ -61,8 +61,6 @@ bool Downloader::checkReply(QNetworkReply *reply) {
     return true;
   }
 }
-
-QNetworkAccessManager* Downloader::getManager() { return manager; }
 
 // //
 // void Downloader::doDownload(QNetworkRequest request) {

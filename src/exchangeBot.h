@@ -32,6 +32,9 @@ private:
   Config      *c;
   MarketData  m;
   QTimer *timer;
+  QNetworkAccessManager* depthDownloadManager;
+  QNetworkAccessManager* tickerDownloadManager;
+  QNetworkAccessManager* tradeDownloadManager;
 
   void updateMarketTrades(uint limit);
   void updateMarketDepth();

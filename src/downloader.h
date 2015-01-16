@@ -26,15 +26,12 @@ public:
   QNetworkRequest generatePostRequest(QUrl url);
 
   // void doDownload(QNetworkRequest request);
-  void doDownload(QNetworkRequest request, QObject* receiver, const char * method);
+  QNetworkAccessManager* doDownload(QNetworkRequest request, QObject* receiver, const char * method);
 
   bool checkReply(QNetworkReply *reply);
 
-  QNetworkAccessManager* getManager();
 
 private:
-  QNetworkAccessManager *manager;
-  bool inUse;
 
 signals:
 

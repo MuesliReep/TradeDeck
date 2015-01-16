@@ -39,8 +39,6 @@ void MainWindow::updateTradeDepth() {
   QList<Order> asks = e->getMarketData()->getAsks();
   QList<Order> bids = e->getMarketData()->getBids();
 
-  qDebug() << asks.size();
-
   if(asks.size()>0) {
 
     QString pair1;

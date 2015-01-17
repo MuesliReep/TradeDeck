@@ -18,15 +18,35 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
+       <widget class="QLabel" name="labelExchangeMarket">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>BTC-e USD/BTC</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QListWidget" name="listWidgetBids">
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Sunken</enum>
+        </property>
         <property name="sizeAdjustPolicy">
-         <enum>QAbstractScrollArea::AdjustToContents</enum>
+         <enum>QAbstractScrollArea::AdjustIgnored</enum>
         </property>
         <property name="editTriggers">
          <set>QAbstractItemView::NoEditTriggers</set>
-        </property>
-        <property name="alternatingRowColors">
-         <bool>true</bool>
         </property>
         <property name="selectionMode">
          <enum>QAbstractItemView::NoSelection</enum>

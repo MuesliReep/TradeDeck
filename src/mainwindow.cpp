@@ -76,7 +76,8 @@ void MainWindow::updateTradeDepth() {
 
       new QListWidgetItem(pair1+" / "+pair2, ui->listWidgetAsks);
     }
-  }
+  } else
+    new QListWidgetItem("No orders", ui->listWidgetAsks);
 
   if(bids.size()>0) {
 
@@ -90,7 +91,15 @@ void MainWindow::updateTradeDepth() {
 
       new QListWidgetItem(pair1+" / "+pair2, ui->listWidgetBids);
     }
-  }
+  } else
+    new QListWidgetItem("No orders", ui->listWidgetBids);
+
+  // listWidget sizes
+  ui->listWidgetAsks->setMinimumHeight(ui->listWidgetAsks->sizeHintForRow(0)*15+5);
+  ui->listWidgetAsks->setMaximumHeight(ui->listWidgetAsks->sizeHintForRow(0)*15+5);
+
+  ui->listWidgetBids->setMinimumHeight(ui->listWidgetAsks->sizeHintForRow(0)*15+5);
+  ui->listWidgetBids->setMaximumHeight(ui->listWidgetAsks->sizeHintForRow(0)*15+5);
 }
 
 // Slots

@@ -22,7 +22,7 @@ public:
 
 
   QNetworkRequest generateRequest(QUrl url);
-  QNetworkRequest generateGetRequest(QUrl url);
+  QNetworkRequest generateGetRequest(QUrl url, QByteArray headerName, QByteArray headerValue);
   QNetworkRequest generatePostRequest(QUrl url);
 
   // void doDownload(QNetworkRequest request);

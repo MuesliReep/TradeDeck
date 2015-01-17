@@ -25,7 +25,7 @@ void ExchangeBot::marketUpdateTick() {
 
   // Update market data
   updateMarketDepth();
-  updateMarketTrades(2000);
+  updateMarketTrades(1000);
 
 }
 
@@ -49,7 +49,7 @@ void ExchangeBot::setConfig(Config *C) {
 void ExchangeBot::updateMarketTrades(uint limit) {
 
   // Create the request to download new data
-  QNetworkRequest request = d.generateGetRequest(QUrl("https://btc-e.com/api/3/trades/btc_usd"));
+  QNetworkRequest request = d.generateRequest(QUrl("https://btc-e.com/api/3/trades/btc_usd?limit=1000"));
 
   // Execute the download
   tradeDownloadManager = d.doDownload(request, this, SLOT(tradeDataReply(QNetworkReply*)));
@@ -59,7 +59,7 @@ void ExchangeBot::updateMarketTrades(uint limit) {
 void ExchangeBot::updateMarketDepth() {
 
   // Create the request to download new data
-  QNetworkRequest request = d.generateRequest(QUrl("https://btc-e.com/api/3/depth/btc_usd"));
+  QNetworkRequest request = d.generateRequest(QUrl("https://btc-e.com/api/3/depth/btc_usd?limit=20"));
 
   // Execute the download
   depthDownloadManager = d.doDownload(request, this, SLOT(depthDataReply(QNetworkReply*)));

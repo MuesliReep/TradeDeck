@@ -16,9 +16,13 @@ QNetworkRequest Downloader::generateRequest(QUrl url) {
 }
 
 // Generates a HTTP GET request
-QNetworkRequest Downloader::generateGetRequest(QUrl url) {
+QNetworkRequest Downloader::generateGetRequest(QUrl url, QByteArray headerName, QByteArray headerValue) {
 
-  return QNetworkRequest(url);
+  QNetworkRequest request(url);
+
+  request.setRawHeader(headerName, headerValue);
+
+  return request;
 }
 
 // Generates a HTTP POST request

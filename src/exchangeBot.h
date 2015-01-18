@@ -13,6 +13,7 @@
 #include "downloader.h"
 #include "config.h"
 #include "marketData.h"
+#include "tradeHistory.h"
 
 
 class ExchangeBot : public QObject

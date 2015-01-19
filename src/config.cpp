@@ -16,34 +16,49 @@ bool Config::loadConfigFromFile() {
 
   bool result = false;
 
-  QFile *file = new QFile(fileName);
+  QFile file(fileName);
   QJsonDocument json;
 
-  if(file->open(QFile::ReadOnly)) {
+  if(file.open(QFile::ReadOnly)) {
     QJsonParseError error;
 
-    json = QJsonDocument().fromJson(file->readAll(), &error);
+    json = QJsonDocument().fromJson(file.readAll(), &error);
 
     // TODO:
     //Check if JSON was correctly parsed
-    // if (error.ParseError == QJsonParseError::NoError)
-    //   result = true;
+    if (error.error == QJsonParseError::NoError)
+      result = true;
+    else
+      return result;
 
     // Read JSON values
     QJsonObject object  = json.object();
     lastLoadedTimeStamp = (uint)object.value("lastLoadedTimeStamp").toInt();
     coolDownTime        = (uint)object.value("coolDownTime").toInt();
 
-
     // Read history values
     QJsonObject historyObject = object.value("historySources").toObject();
+    historySourceID           = historyObject.value("historySourceID").toInt();
+    QJsonArray  historyArray  = historyObject.value("sourcesList").toArray();
 
-    historySource = historyObject.value("historySource").toInt();
+    // Read history source object from array and add it to the sources list
+    historySources.clear();
 
-    QJsonArray  historyArray = historyObject.value("historySources").toArray();
+    for(int i=0;i<historyArray.size();i++) {
+
+      QJsonObject sourceObject = historyArray[i].toObject();
+
+      HistorySource source( sourceObject.value("sourceID").toInt(),
+                            (uint)sourceObject.value("historyCoolDownTime").toInt(),
+                            (uint)sourceObject.value("historyLastLoadedTimeStamp").toInt() );
+
+      historySources.append(source);
+    }
+
+    // Set the current history cooldown and timestamp values
+    historyCoolDownTime         = historySources[historySourceID].getHistoryLastLoadedTimeStamp();
+    historyLastLoadedTimeStamp  = historySources[historySourceID].getHistoryCoolDownTime();
   }
-
-  delete file;
 
   return result;
 }
@@ -61,9 +76,21 @@ void Config::saveConfigToFile() {
   QJsonObject historyObject;
   QJsonArray  historyArray;
 
-  historyObject.insert("historySource", QJsonvalue(historySource));
+  historyObject.insert("historySourceID", QJsonValue(historySourceID));
 
-  // Add the sources list array to the history object
+  // Create an array for the historical data sources
+  for(int i=0;i<historySources.size();i++) {
+
+    QJsonObject source;
+
+    source.insert("sourceID", QJsonValue(historySources[i].getSourceID()));
+    source.insert("historyCoolDownTime", QJsonValue((int)historySources[i].getHistoryCoolDownTime()));
+    source.insert("historyLastLoadedTimeStamp", QJsonValue((int)historySources[i].getHistoryLastLoadedTimeStamp()));
+
+    historyArray.append(QJsonValue(source));
+  }
+
+  // Add the sources array to the history object
   historyObject.insert("sourcesList", QJsonValue(historyArray));
 
   // Add the history object to the JSON object
@@ -84,7 +111,7 @@ uint Config::getCoolDownTime() { return coolDownTime; }
 uint Config::getLastLoadedTimeStamp() { return lastLoadedTimeStamp; }
 void Config::setLastLoadedTimeStamp(uint LastLoadedTimeStamp) { lastLoadedTimeStamp = LastLoadedTimeStamp; }
 
-int Config::getHistorySource() { return historySource; }
+int  Config::getHistorySource() { return historySourceID; }
 uint Config::getHistoryCoolDownTime() { return historyCoolDownTime; }
 void Config::setHistoryLastLoadedTimeStamp(uint timeStamp) { historyLastLoadedTimeStamp = timeStamp; }
 uint Config::getHistoryLastLoadedTimeStamp() { return historyLastLoadedTimeStamp; }
@@ -97,12 +124,12 @@ void Config::setLastLoadedTimeStamp() {
 }
 
 //
-HistorySource::HistorySource(int SourceID, uint HistoryCoolDownTIme, uint HistoryLastLoadedTimeStamp) {
-    sourceID = SourceID;
-    historyCoolDownTIme = HistoryCoolDownTIme;
-    historyLastLoadedTimeStamp = HistoryLastLoadedTimeStamp;
+HistorySource::HistorySource(int SourceID, uint HistoryCoolDownTime, uint HistoryLastLoadedTimeStamp) {
+    sourceID                    = SourceID;
+    historyCoolDownTime         = HistoryCoolDownTime;
+    historyLastLoadedTimeStamp  = HistoryLastLoadedTimeStamp;
 }
-uint HistorySource::getHistoryCoolDownTime() { return HistoryCoolDownTIme; }
-void HistorySource::setHistoryLastLoadedTimeStamp(int timeStamp) { historyLastLoadedTimeStamp = timeStmap; }
+uint HistorySource::getHistoryCoolDownTime() { return historyCoolDownTime; }
+void HistorySource::setHistoryLastLoadedTimeStamp(int timeStamp) { historyLastLoadedTimeStamp = timeStamp; }
 uint HistorySource::getHistoryLastLoadedTimeStamp() { return historyLastLoadedTimeStamp; }
 int  HistorySource::getSourceID() { return sourceID; }

@@ -12,7 +12,7 @@
 #include <QJsonObject>
 #include <QJsonParseError>
 #include <QJsonValue>
-
+#include <QJsonArray>
 
 class HistorySource
 {
@@ -27,9 +27,9 @@ public:
 
 private:
   int  sourceID;
-  uint HistoryCoolDownTime;
-  uint HistoryLastLoadedTimeStamp;
-}
+  uint historyCoolDownTime;
+  uint historyLastLoadedTimeStamp;
+};
 
 class Config
 {
@@ -48,7 +48,7 @@ public:
   void setCoolDownTime(uint CoolDownTime);
   uint getCoolDownTime();
 
-  int getHistorySource();
+  int  getHistorySource();
   uint getHistoryCoolDownTime();
   void setHistoryLastLoadedTimeStamp(uint timeStamp);
   uint getHistoryLastLoadedTimeStamp();
@@ -59,7 +59,7 @@ private:
   uint lastLoadedTimeStamp;
   uint coolDownTime;
 
-  int historySource;
+  int  historySourceID;
   uint historyCoolDownTime;
   uint historyLastLoadedTimeStamp;
 

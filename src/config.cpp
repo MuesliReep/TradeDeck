@@ -20,12 +20,12 @@ bool Config::loadConfigFromFile() {
   QJsonDocument json;
 
   if(file.open(QFile::ReadOnly)) {
+
     QJsonParseError error;
 
     json = QJsonDocument().fromJson(file.readAll(), &error);
 
-    // TODO:
-    //Check if JSON was correctly parsed
+    // Check if JSON was correctly parsed
     if (error.error == QJsonParseError::NoError)
       result = true;
     else {

@@ -33,6 +33,9 @@ void ExchangeBot::marketUpdateTick() {
 void ExchangeBot::startBot() {
 
   // TODO: gather historical data
+  // Check last trade timestamp to fill in the gap between last run and now
+  // Also check the oldest trade timestamp to get full data set
+  m.getOldestTrade();
 
   // Start the interval timer
   timer->start(c->getCoolDownTime());

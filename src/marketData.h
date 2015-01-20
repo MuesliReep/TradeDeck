@@ -26,8 +26,10 @@ public:
   void parseRawDepthData(QJsonObject *rawData);
   void parseRawTickerData(QJsonObject *rawData);
 
-  void loadTradeDataFromFile();
+  bool loadTradeDataFromFile();
   void saveTradeDataToFile();
+
+  uint getOldestTrade();
 
   QList<Order> getAsks();
   QList<Order> getBids();
@@ -36,6 +38,7 @@ public:
 private:
   Config *c;
   // Ticker t;
+  QString tradeDataFileName;
 
   QList<Order> asks;
   QList<Order> bids;

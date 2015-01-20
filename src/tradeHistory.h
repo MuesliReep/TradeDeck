@@ -8,9 +8,11 @@
 #include <QUrl>
 #include <QDebug>
 #include <QDateTime>
+#include <QList>
 
 #include "config.h"
 #include "downloader.h"
+#include "trade.h"
 
 
 class TradeHistory : public QObject
@@ -22,17 +24,23 @@ public:
   ~TradeHistory();
 
 private:
-  Config *C;
+  Config *c;
+  Downloader d;
   int source;
+  QList<Trade> newData;
+
+  QNetworkAccessManager* historyDownloadManager;
 
   void setConfig(Config *C);
   void loadDataSince(uint timeStamp);
-  void addTradeDataTo();
+  void addTradeDataTo(QList<Trade> *tradeData);
   bool checkCoolDownExpiration(bool reset);
 
 signals:
 
 public slots:
+
+  void historyDataReply(QNetworkReply *reply);
 
 };
 

@@ -52,6 +52,7 @@ void MarketData::parseRawTradeData(QJsonArray *rawData) {
             x++;
             continue;
           }
+          
           break;
         }
 
@@ -65,7 +66,7 @@ void MarketData::parseRawTradeData(QJsonArray *rawData) {
 
         for(int j=0;j<x;j++) {
 
-          if(tradeID == tradeData[j].getTradeID()) {
+          if(tradeID == tradeData[j].getTradeID()) { // TODO: Check if historical data, historical data will have timestamp = 0;
 
             duplicate = true;
             break;

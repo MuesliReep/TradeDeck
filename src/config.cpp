@@ -28,8 +28,11 @@ bool Config::loadConfigFromFile() {
     //Check if JSON was correctly parsed
     if (error.error == QJsonParseError::NoError)
       result = true;
-    else
+    else {
+
+      qDebug() << error.errorString();
       return result;
+    }
 
     // Read JSON values
     QJsonObject object  = json.object();
@@ -69,6 +72,7 @@ void Config::saveConfigToFile() {
   // Create JSON object from current configuration
   QJsonObject object;
 
+  // Add generic values
   object.insert("lastLoadedTimeStamp", QJsonValue((int)lastLoadedTimeStamp));
   object.insert("coolDownTime", QJsonValue((int)coolDownTime));
 

@@ -27,6 +27,14 @@ void TradeHistory::setConfig(Config *C) {
 // Loads historical trade data from a set data source
 void TradeHistory::loadDataSince(uint timeStamp) {
 
+  // TODO: if cooldown has not yet expired set a timer to when it will be expired
+
+  // Create the request to download new data
+  // QNetworkRequest request = d.generateRequest(QUrl("http://api.bitcoincharts.com/v1/trades.csv?symbol=SYMBOL&start="+timeStamp.toString()));
+  QNetworkRequest request = d.generateRequest(QUrl("http://api.bitcoincharts.com/v1/trades.csv?symbol=btceUSD&start=1404172800")); //TODO: real url
+
+  // Execute the download
+  historyDownloadManager  = d.doDownload(request, this, SLOT(historyDataReply(QNetworkReply*)));
 }
 
 // Appends historical trade data to an existing data set
@@ -57,4 +65,51 @@ bool TradeHistory::checkCoolDownExpiration(bool reset) {
   }
 
   return false;
+}
+
+// Slots
+
+void TradeHistory::historyDataReply(QNetworkReply *reply) {
+
+  if(!reply->error()) {
+
+    newData.clear();
+
+    // Read the raw data from the reply and split it
+    QString     replyData;
+    QStringList dataList;
+
+    replyData = reply->readAll();
+    dataList  = replyData.split(" ", QString::SkipEmptyParts);
+
+    // Create trades from the split data and add them to the newData list
+    for(int i=0;i<dataList.size();i++) {
+
+      QString     tradeString;
+      QStringList splitTrade;
+
+      // Split the individual values from the string
+      splitTrade = tradeString.split(",");
+
+      // Create a trade object from the data
+      uint    type        = 2;
+      double  price       = splitTrade[1].toDouble();
+      double  amount      = splitTrade[2].toDouble();
+      uint    tradeID     = 0;
+      uint    timeStamp   = (uint)splitTrade[0].toInt();
+
+      Trade trade(type, price, amount, tradeID, timeStamp);
+
+      // Prepend the new trade object to the list
+      // Bitcoincharts data is in reverse order
+      newData.prepend(trade);
+    }
+
+  }
+  else
+    qDebug() << "History Packet error";
+
+    // Disconnect the signal and release
+    reply->deleteLater();
+    historyDownloadManager->deleteLater();
 }

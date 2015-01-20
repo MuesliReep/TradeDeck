@@ -48,11 +48,22 @@ void MainWindow::updateTradeList() {
       new QListWidgetItem(time+" \t "+value+" \t "+amount, ui->listWidgetTrades);
     }
 
+    // Update the current price and set the correct colour
+    QString oldPrice = ui->labelLastTradeValue->text();
     QString price;
-    price.setNum(trades[0].getPrice());
 
+    price.setNum(trades[0].getPrice());
     ui->labelLastTradeValue->setText(price);
+
+    QPalette palette = ui->labelLastTradeValue->palette();
+    if(oldPrice.toDouble() > price.toDouble())
+        palette.setColor(ui->labelLastTradeValue->foregroundRole(), Qt::darkRed);
+    else
+        palette.setColor(ui->labelLastTradeValue->foregroundRole(), Qt::darkGreen);
+
+    ui->labelLastTradeValue->setPalette(palette);
   }
+
 }
 
 //

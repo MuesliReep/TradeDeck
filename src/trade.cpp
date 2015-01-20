@@ -4,9 +4,8 @@ Trade::Trade() {
 
 }
 
-Trade::Trade(uint Type, double Price, double Amount, uint TradeID, uint TimeStamp) {
+Trade::Trade(double Price, double Amount, uint TradeID, uint TimeStamp) {
 
-  type      = Type;
   price     = Price;
   amount    = Amount;
   tradeID   = TradeID;
@@ -19,7 +18,6 @@ Trade::~Trade() {
 
 // Getters
 
-uint    Trade::getType()      { return type; }
 double  Trade::getPrice()     { return price; }
 double  Trade::getAmount()    { return amount; }
 uint    Trade::getTradeID()   { return tradeID; }

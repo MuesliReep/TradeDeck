@@ -5,7 +5,7 @@ MarketData::MarketData() {
 
 MarketData::MarketData(Config *C) {
   c = C;
-  tradeDataFileName = "btce_USD/BTC.json"; // TODO: should be created by exchangeNot according to market
+  // tradeDataFileName = "btce_USD-BTC.json"; // TODO: should be created by exchangeNot according to market
 }
 
 MarketData::~MarketData() {
@@ -83,16 +83,19 @@ void MarketData::parseRawTradeData(QJsonArray *rawData) {
     QJsonObject tradeObject = rawData->at(i).toObject();
 
     // QString tradePair = "btc_usd";
-    uint type         = (uint)tradeObject.value("type").toInt();
+    // uint type         = (uint)tradeObject.value("type").toInt();
     double price      = tradeObject.value("price").toDouble();
     double amount     = tradeObject.value("amount").toDouble();
     uint tradeID      = (uint)tradeObject.value("tid").toInt();
 
-    Trade trade(type, price, amount, tradeID, timeStamp);
+    Trade trade(price, amount, tradeID, timeStamp);
 
     // Insert the new trade object into the trade data list
     tradeData.insert(0,trade);
   }
+
+  // Save the new data to file // TODO: should this be run every update?
+  saveTradeDataToFile();
 }
 
 // Parses new market depth data and overwrites current data
@@ -168,14 +171,13 @@ bool MarketData::loadTradeDataFromFile() {
       // Convert the JSON values
       QJsonObject tradeObject = marketData[i].toObject();
 
-      uint    type      = (uint)tradeObject.value("type").toInt();
       double  price     = tradeObject.value("price").toDouble();
       double  amount    = tradeObject.value("amount").toDouble();
       uint    tradeID   = (uint)tradeObject.value("tradeID").toInt();
       uint    timeStamp = (uint)tradeObject.value("timeStamp").toInt();
 
       // Create a trade object from the converted values
-      Trade trade(type, price, amount, tradeID, timeStamp);
+      Trade trade(price, amount, tradeID, timeStamp);
 
       // Append the new trade object to the trade list
       tradeData.append(trade);
@@ -188,6 +190,9 @@ bool MarketData::loadTradeDataFromFile() {
 // Loads a market data set from a specified file
 void MarketData::saveTradeDataToFile() {
 
+    if(!tradeData.size()>0)
+        return;
+
   QJsonObject object;
   QJsonArray marketData;
 
@@ -197,7 +202,6 @@ void MarketData::saveTradeDataToFile() {
     QJsonObject tradeObject;
     Trade trade = tradeData[i];
 
-    tradeObject.insert("type", QJsonValue((int)trade.getType()));
     tradeObject.insert("price", QJsonValue(trade.getPrice()));
     tradeObject.insert("amount", QJsonValue(trade.getAmount()));
     tradeObject.insert("tradeID", QJsonValue((int)trade.getTradeID()));
@@ -220,7 +224,11 @@ void MarketData::saveTradeDataToFile() {
 
 // Returns the oldest stored trade
 uint MarketData::getOldestTrade() {
-  return tradeData[tradeData.size()].getTimeStamp();
+
+  if(!tradeData.size()>0)
+    return 0;
+
+  return tradeData[tradeData.size()-1].getTimeStamp();
 }
 
 // Returns a pointer to the ask orders list

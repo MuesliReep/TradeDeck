@@ -92,13 +92,12 @@ void TradeHistory::historyDataReply(QNetworkReply *reply) {
       splitTrade = tradeString.split(",");
 
       // Create a trade object from the data
-      uint    type        = 2;
       double  price       = splitTrade[1].toDouble();
       double  amount      = splitTrade[2].toDouble();
       uint    tradeID     = 0;
       uint    timeStamp   = (uint)splitTrade[0].toInt();
 
-      Trade trade(type, price, amount, tradeID, timeStamp);
+      Trade trade(price, amount, tradeID, timeStamp);
 
       // Prepend the new trade object to the list
       // Bitcoincharts data is in reverse order

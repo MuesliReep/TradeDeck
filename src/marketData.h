@@ -3,8 +3,10 @@
 
 #include <QList>
 #include <QString>
+#include <QFile>
 
 #include <QJsonObject>
+#include <QJsonDocument>
 #include <QJsonValue>
 #include <QJsonArray>
 
@@ -38,7 +40,7 @@ public:
 private:
   Config *c;
   // Ticker t;
-  QString tradeDataFileName;
+  QString tradeDataFileName = "btce_USD-BTC.json";
 
   QList<Order> asks;
   QList<Order> bids;

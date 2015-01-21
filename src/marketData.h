@@ -16,6 +16,30 @@
 
 class Ticker;
 
+class DataPoint {
+
+public:
+  DataPoint(uint TimeStamp, double Open, double Close, double Average) {
+
+    timeStamp = TimeStamp;
+    open      = Open;
+    close     = Close;
+    average   = Average;
+  }
+
+  double  getOpen()       { return open; }
+  double  getClose()      { return close; }
+  uint    getTimeStamp()  { return timeStamp; }
+  double  getAverage()    { return average; }
+
+private:
+  double  open;
+  double  close;
+  uint    timeStamp;
+  double  average;
+
+};
+
 class MarketData
 {
 
@@ -46,6 +70,12 @@ private:
   QList<Order> bids;
 
   QList<Trade> tradeData;
+
+  int dataPoints = 250;
+  int dataLength = 3*60;
+
+  void analyzeTradeData();
+  QList<DataPoint> priceList;
 };
 
 class Ticker {

@@ -12,6 +12,89 @@ MarketData::~MarketData() {
 
 }
 
+// Analyzes current trade data and creates a plottable format
+void MarketData::analyzeTradeData() {
+
+  // TODO: Check if a list is already active, else create one
+  priceList.clear();
+
+  // Determine the oldest allowed trade according to the number of data points & time interval
+  int maxTimeStampAge   = dataPoints * dataLength;
+  int currentTimeStamp  = QDateTime::currentDateTime().toTime_t();
+  int maxTimeStamp      = currentTimeStamp - maxTimeStampAge;
+
+  // Work through the data list
+  // Go from old to new
+
+  // Find the oldest timestamp in the trade data
+  int i;
+  for(i = 0; i < tradeData.size(); i++) {
+
+    if(tradeData[i].getTimeStamp() < maxTimeStamp) {
+
+      i--; // -1 because current timestamp will not be used
+      break;
+    }
+  }
+
+  int minIntervalStamp = maxTimeStamp; // The youngest timestamp
+  int maxIntervalStamp = maxTimeStamp; // The oldest timestamp
+
+  int x = i; // Keep track of where we are in the tradeData list so we dont look at values twice
+
+  // For each time interval calculate the opening and closing prices.
+  // Also calculate the average price
+  for(int j = dataPoints; j < dataPoints; j++) {
+
+    // Determine the min and max timestamps for this time interval
+    minIntervalStamp = maxTimeStamp + dataLength * (j+1);
+    maxIntervalStamp = maxTimeStamp + dataLength * j;
+
+    // Create a list with all the trades that occured in this time interval
+    QList<Trade> intervalTrades;
+
+    for(x; x >= 0; x--) {
+
+      if(!(tradeData[x].getTimeStamp() >= maxIntervalStamp && tradeData[x].getTimeStamp() <= minIntervalStamp)) {
+
+        x++;
+        break;
+      }
+
+      intervalTrades.prepend(tradeData[x]);
+    }
+
+    // If no trades took place or no data is available for the time interval
+    // use the previous value. If no previous value is available use zero.
+    if(!intervalTrades.size()>0) {
+
+      // Check if there is a previous value to use
+      if(!priceList.size()>0) {
+
+        priceList.prepend(DataPoint(maxIntervalStamp,0,0,0));
+      } else { // Use the previous value
+
+        priceList.prepend(priceList[j+1]);
+      }
+    }
+
+    // Create a dataPoint from the intervalTrades list
+    double  open      = intervalTrades[intervalTrades.size()-1].getPrice();
+    double  close     = intervalTrades[0].getPrice();
+    uint    timeStamp = intervalTrades[0].getTimeStamp();
+    double  average;
+
+    double sum = 0;
+    for(int k=0; k < intervalTrades.size(); k++)
+      sum += intervalTrades[k].getPrice();
+
+    average = sum / intervalTrades.size();
+
+    DataPoint dataPoint(timeStamp, open, close, average);
+  }
+
+}
+
 // Parses a new market trade data set and merges it with the existing set(if any)
 void MarketData::parseRawTradeData(QJsonArray *rawData) {
 
@@ -96,6 +179,9 @@ void MarketData::parseRawTradeData(QJsonArray *rawData) {
 
   // Save the new data to file // TODO: should this be run every update?
   saveTradeDataToFile();
+
+  // Now analyze the new data
+  analyzeTradeData(); // TODO: called from exchangeBot?
 }
 
 // Parses new market depth data and overwrites current data

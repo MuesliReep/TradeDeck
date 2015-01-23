@@ -43,7 +43,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QListWidget" name="listWidgetBids">
+         <widget class="QListWidget" name="listWidgetAsks">
           <property name="maximumSize">
            <size>
             <width>250</width>
@@ -71,6 +71,9 @@
           <property name="movement">
            <enum>QListView::Snap</enum>
           </property>
+          <property name="modelColumn">
+           <number>0</number>
+          </property>
          </widget>
         </item>
         <item>
@@ -91,7 +94,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QListWidget" name="listWidgetAsks">
+         <widget class="QListWidget" name="listWidgetBids">
           <property name="maximumSize">
            <size>
             <width>250</width>

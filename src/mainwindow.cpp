@@ -110,7 +110,7 @@ void MainWindow::scaleTradePlot() {
       low   = dataPoints[i].getLow();
   }
 
-  ui->tradePlot->yAxis->setRange((int)high+5, (int)low-5);
+  ui->tradePlot->yAxis->setRange((int)high+3, (int)low-3);
 }
 
 //
@@ -150,12 +150,21 @@ void MainWindow::updateTradeDepth() {
     QString pair1;
     QString pair2;
 
-    for(int i=0;i<asks.size()&&i<15;i++) {
+    int j = asks.size();
+
+    if(asks.size() >= 15)
+      j = 15;
+
+    for(int i=j-1;i>=0;i--) {
 
       pair1.setNum(asks[i].getPair1());
       pair2.setNum(asks[i].getPair2());
 
-      new QListWidgetItem(pair1+" / "+pair2, ui->listWidgetAsks);
+      // new QListWidgetItem(pair1+" \t "+pair2, ui->listWidgetAsks);
+
+      QListWidgetItem *newItem = new QListWidgetItem;
+      newItem->setText(pair1+" \t "+pair2);
+      ui->listWidgetAsks->addItem(newItem);
     }
   } else
     new QListWidgetItem("No orders", ui->listWidgetAsks);
@@ -170,7 +179,7 @@ void MainWindow::updateTradeDepth() {
       pair1.setNum(bids[i].getPair1());
       pair2.setNum(bids[i].getPair2());
 
-      new QListWidgetItem(pair1+" / "+pair2, ui->listWidgetBids);
+      new QListWidgetItem(pair1+" \t "+pair2, ui->listWidgetBids);
     }
   } else
     new QListWidgetItem("No orders", ui->listWidgetBids);

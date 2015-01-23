@@ -19,22 +19,28 @@ class Ticker;
 class DataPoint {
 
 public:
-  DataPoint(uint TimeStamp, double Open, double Close, double Average) {
+  DataPoint(uint TimeStamp, double Open, double Close, double High, double Low, double Average) {
 
     timeStamp = TimeStamp;
     open      = Open;
     close     = Close;
     average   = Average;
+    high      = High;
+    low       = Low;
   }
 
   double  getOpen()       { return open; }
   double  getClose()      { return close; }
   uint    getTimeStamp()  { return timeStamp; }
   double  getAverage()    { return average; }
+  double  getHigh()       { return high; }
+  double  getLow()        { return low; }
 
 private:
   double  open;
   double  close;
+  double  high;
+  double  low;
   uint    timeStamp;
   double  average;
 
@@ -57,9 +63,10 @@ public:
 
   uint getOldestTrade();
 
-  QList<Order> getAsks();
-  QList<Order> getBids();
-  QList<Trade> getTrades();
+  QList<Order>      getAsks();
+  QList<Order>      getBids();
+  QList<Trade>      getTrades();
+  QList<DataPoint>  getPriceList();
 
 private:
   Config *c;
@@ -71,8 +78,8 @@ private:
 
   QList<Trade> tradeData;
 
-  int dataPoints = 250;
-  int dataLength = 3*60;
+  int dataPoints  = 250;
+  int binSize     = 1*60;
 
   void analyzeTradeData();
   QList<DataPoint> priceList;

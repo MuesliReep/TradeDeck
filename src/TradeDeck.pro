@@ -15,8 +15,8 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
     downloader.cpp \
+    mainwindow.cpp \
     qcustomplot.cpp \
     config.cpp \
     marketData.cpp \
@@ -25,9 +25,9 @@ SOURCES += main.cpp\
     trade.cpp \
     tradeHistory.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS  += qcustomplot.h \
+    mainwindow.h \
     downloader.h \
-    qcustomplot.h \
     config.h \
     marketData.h \
     exchangeBot.h \

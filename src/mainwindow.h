@@ -11,6 +11,8 @@
 #include "order.h"
 #include "trade.h"
 
+#include "qcustomplot.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -30,8 +32,13 @@ private:
 
     ExchangeBot *e;
 
+    QCPFinancial *candlesticks;
+
     void updateTradeDepth();
     void updateTradeList();
+    void updateTradePlot();
+
+    void setupPlot();
 
 public slots:
   void receiveNewMarketData(int dataType);

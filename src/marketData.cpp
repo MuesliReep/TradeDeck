@@ -18,10 +18,10 @@ void MarketData::analyzeTradeData() {
   // TODO: Check if a list is already active, else create one
   priceList.clear();
 
-  // Determine the oldest allowed trade according to the number of data points & time interval
-  int maxTimeStampAge   = dataPoints * dataLength;
-  int currentTimeStamp  = QDateTime::currentDateTime().toTime_t();
-  int maxTimeStamp      = currentTimeStamp - maxTimeStampAge;
+  // Determine the oldest allowed trade according to the number of data points & bin size
+  uint maxTimeStampAge   = dataPoints * binSize;
+  uint currentTimeStamp  = QDateTime::currentDateTime().toTime_t();
+  uint maxTimeStamp      = currentTimeStamp - maxTimeStampAge;            // TODO: Bins need to be locked to clock, so bin of 3 min is at 12:03 & 12:06
 
   // Work through the data list
   // Go from old to new
@@ -37,27 +37,31 @@ void MarketData::analyzeTradeData() {
     }
   }
 
-  int minIntervalStamp = maxTimeStamp; // The youngest timestamp
-  int maxIntervalStamp = maxTimeStamp; // The oldest timestamp
+  uint minIntervalStamp = maxTimeStamp; // The youngest timestamp
+  uint maxIntervalStamp = maxTimeStamp; // The oldest timestamp
 
-  int x = i; // Keep track of where we are in the tradeData list so we dont look at values twice
+  int x = i; // Keep track of where we are in the tradeData list so we dont look at the same values twice
 
   // For each time interval calculate the opening and closing prices.
   // Also calculate the average price
-  for(int j = dataPoints; j < dataPoints; j++) {
+  int counter = 0;
+  for(int j = dataPoints-1; j >= 0; j--) {
+
+    counter++;
 
     // Determine the min and max timestamps for this time interval
-    minIntervalStamp = maxTimeStamp + dataLength * (j+1);
-    maxIntervalStamp = maxTimeStamp + dataLength * j;
+    minIntervalStamp = maxTimeStamp + binSize * (counter+1);
+    maxIntervalStamp = maxTimeStamp + binSize * counter;
 
     // Create a list with all the trades that occured in this time interval
     QList<Trade> intervalTrades;
 
-    for(x; x >= 0; x--) {
+    for( ; x >= 0; x--) {
 
-      if(!(tradeData[x].getTimeStamp() >= maxIntervalStamp && tradeData[x].getTimeStamp() <= minIntervalStamp)) {
+      // If a timestamp is found that is not part of our search area break out of the for loop
+      if(!(tradeData[x].getTimeStamp() >= maxIntervalStamp && tradeData[x].getTimeStamp() <= minIntervalStamp)) { // TODO: FIX THIS
 
-        x++;
+        // x++;
         break;
       }
 
@@ -71,28 +75,47 @@ void MarketData::analyzeTradeData() {
       // Check if there is a previous value to use
       if(!priceList.size()>0) {
 
-        priceList.prepend(DataPoint(maxIntervalStamp,0,0,0));
+        priceList.prepend(DataPoint(maxIntervalStamp,0,0,0,0,0)); // The list is empty, create a zero value datapoint
       } else { // Use the previous value
 
-        priceList.prepend(priceList[j+1]);
+        DataPoint previousPoint(maxIntervalStamp, priceList[0].getOpen(), priceList[0].getClose(),priceList[0].getHigh() ,priceList[0].getLow() ,priceList[0].getAverage()); // TODO: should use only median values
+        priceList.prepend(previousPoint); // Zero is used because all items are prepended, so the last item will be at zero
       }
+    } else {
+
+      // Create a dataPoint from the intervalTrades list
+      double  open      = intervalTrades[intervalTrades.size()-1].getPrice();
+      double  close     = intervalTrades[0].getPrice();
+      uint    timeStamp = intervalTrades[0].getTimeStamp();
+      double  high      = intervalTrades[0].getPrice();
+      double  low       = intervalTrades[0].getPrice();
+
+      // Find High & Low values
+      for(int k = 0; k < intervalTrades.size(); k++) {
+
+        if(intervalTrades[k].getPrice() > high)
+          high = intervalTrades[k].getPrice();
+
+        if(intervalTrades[k].getPrice() < low)
+          low = intervalTrades[k].getPrice();
+      }
+
+      // Calculate average over bin set
+      double  average;
+      double  sum = 0;
+
+      for(int k=0; k < intervalTrades.size(); k++)
+        sum += intervalTrades[k].getPrice();
+
+      average = sum / intervalTrades.size();
+
+      DataPoint dataPoint(timeStamp, open, close, high, low, average);
+
+      priceList.prepend(dataPoint);
     }
-
-    // Create a dataPoint from the intervalTrades list
-    double  open      = intervalTrades[intervalTrades.size()-1].getPrice();
-    double  close     = intervalTrades[0].getPrice();
-    uint    timeStamp = intervalTrades[0].getTimeStamp();
-    double  average;
-
-    double sum = 0;
-    for(int k=0; k < intervalTrades.size(); k++)
-      sum += intervalTrades[k].getPrice();
-
-    average = sum / intervalTrades.size();
-
-    DataPoint dataPoint(timeStamp, open, close, average);
   }
 
+  // qDebug() << "price list: " << priceList.size();
 }
 
 // Parses a new market trade data set and merges it with the existing set(if any)
@@ -329,4 +352,8 @@ QList<Order> MarketData::getBids() {
 
 QList<Trade> MarketData::getTrades() {
   return tradeData;
+}
+
+QList<DataPoint>  MarketData::getPriceList() {
+  return priceList;
 }

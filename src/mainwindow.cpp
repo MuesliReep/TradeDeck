@@ -6,10 +6,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow) {
 
     ui->setupUi(this);
+    setupPlot();
 }
 
 MainWindow::~MainWindow() {
 
+    // delete candlesticks;
     delete ui;
 }
 
@@ -63,6 +65,48 @@ void MainWindow::updateTradeList() {
 
     ui->labelLastTradeValue->setPalette(palette);
   }
+}
+
+void MainWindow::setupPlot() {
+
+  ui->tradePlot->legend->setVisible(true);
+
+  candlesticks = new QCPFinancial(ui->tradePlot->xAxis, ui->tradePlot->yAxis);
+  ui->tradePlot->addPlottable(candlesticks);
+
+  candlesticks->setName("Candlestick");
+  candlesticks->setChartStyle(QCPFinancial::csCandlestick);
+  candlesticks->setWidth(1);
+  candlesticks->setTwoColored(true);
+  candlesticks->setBrushPositive(QColor(76, 175, 80));
+  candlesticks->setBrushNegative(QColor(244, 67, 54));
+  candlesticks->setPenPositive(QPen(QColor(0, 0, 0)));
+  candlesticks->setPenNegative(QPen(QColor(0, 0, 0)));
+
+  ui->tradePlot->xAxis->setRange(0, 270);
+  ui->tradePlot->yAxis->setRange(210, 230);
+
+  ui->tradePlot->replot();
+}
+
+//
+void MainWindow::updateTradePlot() {
+
+  // Retrieve the latest data
+  QList<DataPoint> dataPoints = e->getMarketData()->getPriceList();
+
+  candlesticks->clearData();
+
+  double key = 1;
+  for(int i = dataPoints.size()-1; i >= 0; i--) {
+
+    candlesticks->addData(key, dataPoints[i].getOpen(), dataPoints[i].getHigh(), dataPoints[i].getLow(), dataPoints[i].getClose());
+    key++;
+  }
+
+  ui->tradePlot->replot();
+
+  // candlesticks->rescaleValueAxis();
 
 }
 
@@ -125,6 +169,7 @@ void MainWindow::receiveNewMarketData(int dataType) {
 
     case 0:
       updateTradeList();
+      updateTradePlot();
       qDebug() << "new Trade Data received";
       break;
     case 1:

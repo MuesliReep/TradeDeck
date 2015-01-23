@@ -52,7 +52,7 @@ void ExchangeBot::setConfig(Config *C) {
 void ExchangeBot::updateMarketTrades(uint limit) {
 
   // Create the request to download new data
-  QNetworkRequest request = d.generateRequest(QUrl("https://btc-e.com/api/3/trades/btc_usd?limit=1000"));
+  QNetworkRequest request = d.generateRequest(QUrl("https://btc-e.com/api/3/trades/btc_usd?limit=2000"));
 
   // Execute the download
   tradeDownloadManager = d.doDownload(request, this, SLOT(tradeDataReply(QNetworkReply*)));

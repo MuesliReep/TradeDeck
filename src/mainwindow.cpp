@@ -7,6 +7,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->setupUi(this);
     setupPlot();
+
+    QPalette palette = ui->labelExchangeMarket->palette();
+    palette.setColor(ui->labelExchangeMarket->foregroundRole(), QColor(41, 121, 255));
+    ui->labelExchangeMarket->setPalette(palette);
 }
 
 MainWindow::~MainWindow() {
@@ -67,6 +71,7 @@ void MainWindow::updateTradeList() {
   }
 }
 
+//
 void MainWindow::setupPlot() {
 
   ui->tradePlot->legend->setVisible(true);
@@ -90,6 +95,25 @@ void MainWindow::setupPlot() {
 }
 
 //
+void MainWindow::scaleTradePlot() {
+
+  QList<DataPoint> dataPoints = e->getMarketData()->getPriceList();
+
+  double high = dataPoints[0].getHigh();
+  double low  = dataPoints[0].getLow();
+
+  for(int i = 0; i < dataPoints.size(); i++) {
+
+    if(dataPoints[i].getHigh() > high)
+      high  = dataPoints[i].getHigh();
+    if(dataPoints[i].getLow() < low && dataPoints[i].getLow() != 0)
+      low   = dataPoints[i].getLow();
+  }
+
+  ui->tradePlot->yAxis->setRange((int)high+5, (int)low-5);
+}
+
+//
 void MainWindow::updateTradePlot() {
 
   // Retrieve the latest data
@@ -103,6 +127,8 @@ void MainWindow::updateTradePlot() {
     candlesticks->addData(key, dataPoints[i].getOpen(), dataPoints[i].getHigh(), dataPoints[i].getLow(), dataPoints[i].getClose());
     key++;
   }
+
+  scaleTradePlot();
 
   ui->tradePlot->replot();
 

@@ -37,6 +37,7 @@ private:
     void updateTradeDepth();
     void updateTradeList();
     void updateTradePlot();
+    void scaleTradePlot();
 
     void setupPlot();
 

@@ -59,9 +59,9 @@ void MainWindow::updateTradeList() {
 
     QPalette palette = ui->labelLastTradeValue->palette();
     if(oldPrice.toDouble() > price.toDouble())
-        palette.setColor(ui->labelLastTradeValue->foregroundRole(), Qt::darkRed);
+        palette.setColor(ui->labelLastTradeValue->foregroundRole(), QColor(244, 67, 54));
     else
-        palette.setColor(ui->labelLastTradeValue->foregroundRole(), Qt::darkGreen);
+        palette.setColor(ui->labelLastTradeValue->foregroundRole(), QColor(76, 175, 80));
 
     ui->labelLastTradeValue->setPalette(palette);
   }
@@ -76,7 +76,7 @@ void MainWindow::setupPlot() {
 
   candlesticks->setName("Candlestick");
   candlesticks->setChartStyle(QCPFinancial::csCandlestick);
-  candlesticks->setWidth(1);
+  candlesticks->setWidth(0.9);
   candlesticks->setTwoColored(true);
   candlesticks->setBrushPositive(QColor(76, 175, 80));
   candlesticks->setBrushNegative(QColor(244, 67, 54));

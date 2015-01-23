@@ -77,12 +77,14 @@ private:
   QList<Order> bids;
 
   QList<Trade> tradeData;
+  QList<DataPoint> priceList;
 
   int dataPoints  = 250;
   int binSize     = 1*60;
 
   void analyzeTradeData();
-  QList<DataPoint> priceList;
+  uint findClosestBin();
+
 };
 
 class Ticker {

@@ -5,11 +5,20 @@ MarketData::MarketData() {
 
 MarketData::MarketData(Config *C) {
   c = C;
-  // tradeDataFileName = "btce_USD-BTC.json"; // TODO: should be created by exchangeNot according to market
+  // tradeDataFileName = "btce_USD-BTC.json"; // TODO: should be created by exchangeBot, according to market
 }
 
 MarketData::~MarketData() {
 
+}
+
+// Finds the current closest bin according to the clock
+// For example: the time is 12:02:33 & binsize = 3min, closest bin would be 12:03:00
+// Formula: ClosestBin = CurrentTime - (CurrentTime % binSize) + binSize
+uint MarketData::findClosestBin() {
+
+  uint currentTime = QDateTime::currentDateTime().toTime_t();
+  return currentTime - (currentTime % binSize) + binSize;
 }
 
 // Analyzes current trade data and creates a plottable format
@@ -20,8 +29,8 @@ void MarketData::analyzeTradeData() {
 
   // Determine the oldest allowed trade according to the number of data points & bin size
   uint maxTimeStampAge   = dataPoints * binSize;
-  uint currentTimeStamp  = QDateTime::currentDateTime().toTime_t();
-  uint maxTimeStamp      = currentTimeStamp - maxTimeStampAge;            // TODO: Bins need to be locked to clock, so bin of 3 min is at 12:03 & 12:06
+  uint currentTimeStamp  = findClosestBin();
+  uint maxTimeStamp      = currentTimeStamp - maxTimeStampAge;
 
   // Work through the data list
   // Go from old to new

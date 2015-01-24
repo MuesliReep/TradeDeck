@@ -84,10 +84,12 @@ void MarketData::analyzeTradeData() {
       // Check if there is a previous value to use
       if(!priceList.size()>0) {
 
-        priceList.prepend(DataPoint(maxIntervalStamp,0,0,0,0,0)); // The list is empty, create a zero value datapoint
+        priceList.prepend(DataPoint(maxIntervalStamp,0,0,0,0,0,0)); // The list is empty, create a zero value datapoint
       } else { // Use the previous value
 
-        DataPoint previousPoint(maxIntervalStamp, priceList[0].getOpen(), priceList[0].getClose(),priceList[0].getHigh() ,priceList[0].getLow() ,priceList[0].getAverage()); // TODO: should use only median values
+        DataPoint previousPoint(maxIntervalStamp, priceList[0].getOpen(),     priceList[0].getClose(),
+                                                  priceList[0].getHigh(),     priceList[0].getLow(),
+                                                  priceList[0].getAverage(),  priceList[0].getVolume()); // TODO: should use only median values
         priceList.prepend(previousPoint); // Zero is used because all items are prepended, so the last item will be at zero
       }
     } else {
@@ -98,8 +100,9 @@ void MarketData::analyzeTradeData() {
       uint    timeStamp = intervalTrades[0].getTimeStamp();
       double  high      = intervalTrades[0].getPrice();
       double  low       = intervalTrades[0].getPrice();
+      double  volume    = 0;
 
-      // Find High & Low values
+      // Find High/Low values & calculate volume
       for(int k = 0; k < intervalTrades.size(); k++) {
 
         if(intervalTrades[k].getPrice() > high)
@@ -107,6 +110,8 @@ void MarketData::analyzeTradeData() {
 
         if(intervalTrades[k].getPrice() < low)
           low = intervalTrades[k].getPrice();
+
+        volume += intervalTrades[k].getAmount();
       }
 
       // Calculate average over bin set
@@ -118,7 +123,7 @@ void MarketData::analyzeTradeData() {
 
       average = sum / intervalTrades.size();
 
-      DataPoint dataPoint(timeStamp, open, close, high, low, average);
+      DataPoint dataPoint(timeStamp, open, close, high, low, average, volume);
 
       priceList.prepend(dataPoint);
     }

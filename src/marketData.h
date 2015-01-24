@@ -19,7 +19,7 @@ class Ticker;
 class DataPoint {
 
 public:
-  DataPoint(uint TimeStamp, double Open, double Close, double High, double Low, double Average) {
+  DataPoint(uint TimeStamp, double Open, double Close, double High, double Low, double Average, double Volume) {
 
     timeStamp = TimeStamp;
     open      = Open;
@@ -27,6 +27,7 @@ public:
     average   = Average;
     high      = High;
     low       = Low;
+    volume    = Volume;
   }
 
   double  getOpen()       { return open; }
@@ -35,6 +36,7 @@ public:
   double  getAverage()    { return average; }
   double  getHigh()       { return high; }
   double  getLow()        { return low; }
+  double  getVolume()     { return volume;}
 
 private:
   double  open;
@@ -43,6 +45,7 @@ private:
   double  low;
   uint    timeStamp;
   double  average;
+  double  volume;
 
 };
 

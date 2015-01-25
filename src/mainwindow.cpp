@@ -8,9 +8,44 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setupPlot();
 
+
+
+   // ui->labelExchangeMarket->setFont();
+
     QPalette palette = ui->labelExchangeMarket->palette();
-    palette.setColor(ui->labelExchangeMarket->foregroundRole(), QColor(41, 121, 255));
+    palette.setColor(ui->labelExchangeMarket->foregroundRole(), QColor(227, 242, 253));
     ui->labelExchangeMarket->setPalette(palette);
+
+    palette = ui->tradeDepthWidget->palette();
+    palette.setColor(QPalette::Background, QColor(187, 222, 251));
+    ui->tradeDepthWidget->setPalette(palette);
+
+    palette = ui->tradesWidget->palette();
+    palette.setColor(QPalette::Background, QColor(187, 222, 251));
+    ui->tradesWidget->setPalette(palette);
+
+    // Colour headers
+    QColor headerColour(33, 150, 243);
+
+    palette = ui->headerWidget->palette();
+    palette.setColor(QPalette::Background, headerColour);
+    ui->headerWidget->setPalette(palette);
+
+    palette = ui->tradesWidgetHeader->palette();
+    palette.setColor(QPalette::Background, headerColour);
+    ui->tradesWidgetHeader->setPalette(palette);
+
+    palette = ui->tradeDepthWidgetHeader->palette();
+    palette.setColor(QPalette::Background, headerColour);
+    ui->tradeDepthWidgetHeader->setPalette(palette);
+
+    palette = ui->balancesWidgetHeader->palette();
+    palette.setColor(QPalette::Background, headerColour);
+    ui->balancesWidgetHeader->setPalette(palette);
+
+    palette = ui->ordersWidgetHeader->palette();
+    palette.setColor(QPalette::Background, headerColour);
+    ui->ordersWidgetHeader->setPalette(palette);
 }
 
 MainWindow::~MainWindow() {
@@ -92,6 +127,9 @@ void MainWindow::setupPlot() {
   ui->tradePlot->yAxis->setRange(210, 230);
 
   ui->tradePlot->replot();
+
+  // Setup volume graph
+
 }
 
 //
@@ -125,15 +163,15 @@ void MainWindow::updateTradePlot() {
   for(int i = dataPoints.size()-1; i >= 0; i--) {
 
     candlesticks->addData(key, dataPoints[i].getOpen(), dataPoints[i].getHigh(), dataPoints[i].getLow(), dataPoints[i].getClose());
+
+    // Add volume information
+
     key++;
   }
 
   scaleTradePlot();
 
   ui->tradePlot->replot();
-
-  // candlesticks->rescaleValueAxis();
-
 }
 
 //

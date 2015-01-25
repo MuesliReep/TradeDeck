@@ -8,6 +8,17 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
+    QFontDatabase fontDatabase;
+    // int font = fontDatabase.addApplicationFont(":/resources/fonts/Roboto-Regular.ttf");
+    int font = fontDatabase.addApplicationFont(":/resources/fonts/Roboto-Medium.ttf");
+    // int font = fontDatabase.addApplicationFont(":/resources/fonts/Roboto-Thin.ttf");
+
+    qDebug() << "font families: " << fontDatabase.applicationFontFamilies(font);
+    qDebug() << "font styles: " << fontDatabase.styles("roboto");
+
+    // Set font for application
+    a.setFont(fontDatabase.font("Roboto","Normal",8));
+
     // Load configuration from file (if any)
     Config c;
     c.loadConfigFromFile();

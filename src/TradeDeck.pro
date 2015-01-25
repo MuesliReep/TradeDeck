@@ -36,3 +36,8 @@ HEADERS  += qcustomplot.h \
     tradeHistory.h
 
 FORMS    += mainwindow.ui
+
+OTHER_FILES +=
+
+RESOURCES += \
+    TradeDeck.qrc

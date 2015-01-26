@@ -38,6 +38,8 @@ bool Config::loadConfigFromFile() {
     QJsonObject object  = json.object();
     lastLoadedTimeStamp = (uint)object.value("lastLoadedTimeStamp").toInt();
     coolDownTime        = (uint)object.value("coolDownTime").toInt();
+    apiKey              = object.value("apiKey").toString();
+    apiSecret           = object.value("apiSecret").toString();
 
     // Read history values
     QJsonObject historyObject = object.value("historySources").toObject();
@@ -75,6 +77,8 @@ void Config::saveConfigToFile() {
   // Add generic values
   object.insert("lastLoadedTimeStamp", QJsonValue((int)lastLoadedTimeStamp));
   object.insert("coolDownTime", QJsonValue((int)coolDownTime));
+  object.insert("apiKey", QJsonValue(apiKey);
+  object.insert("apiSecret", QJsonValue(apiSecret);
 
   // Add history values to history object
   QJsonObject historyObject;
@@ -114,6 +118,9 @@ uint Config::getCoolDownTime() { return coolDownTime; }
 
 uint Config::getLastLoadedTimeStamp() { return lastLoadedTimeStamp; }
 void Config::setLastLoadedTimeStamp(uint LastLoadedTimeStamp) { lastLoadedTimeStamp = LastLoadedTimeStamp; }
+
+QString Config::getApiKey() { return apiKey; }
+QString Config::getApiSecret() { return apiSecret; }
 
 int  Config::getHistorySource() { return historySourceID; }
 uint Config::getHistoryCoolDownTime() { return historyCoolDownTime; }

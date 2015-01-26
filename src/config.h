@@ -45,6 +45,9 @@ public:
   void setLastLoadedTimeStamp();
   void setLastLoadedTimeStamp(uint LastLoadedTimeStamp);
 
+  QString getApiKey();
+  QString getApiSecret();
+
   void setCoolDownTime(uint CoolDownTime);
   uint getCoolDownTime();
 
@@ -58,6 +61,8 @@ private:
   QString fileName;
   uint lastLoadedTimeStamp;
   uint coolDownTime;
+  QString apiKey;
+  QString apiSecret;
 
   int  historySourceID;
   uint historyCoolDownTime;

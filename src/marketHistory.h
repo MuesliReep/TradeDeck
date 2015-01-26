@@ -15,12 +15,12 @@
 #include "trade.h"
 
 
-class TradeHistory : public QObject
+class MarketHistory : public QObject
 {
   Q_OBJECT
 
 public:
-  explicit TradeHistory(QObject *parent = 0);
+  explicit MarketHistory(QObject *parent = 0);
   ~TradeHistory();
 
 private:

@@ -15,21 +15,27 @@ QNetworkRequest Downloader::generateRequest(QUrl url) {
   return QNetworkRequest(url);
 }
 
-// Generates a HTTP GET request
-QNetworkRequest Downloader::generateGetRequest(QUrl url, QByteArray headerName, QByteArray headerValue) {
+// Adds a custuom header to the given request
+void Downloader::addHeaderToRequest(QNetworkRequest *request, QByteArray headerName, QByteArray headerValue) {
 
-  QNetworkRequest request(url);
-
-  request.setRawHeader(headerName, headerValue);
-
-  return request;
+  request->setRawHeader(headerName, headerValue);
 }
 
-// Generates a HTTP POST request
-QNetworkRequest Downloader::generatePostRequest(QUrl url) {
-
-  return QNetworkRequest(url);
-}
+// // Generates a HTTP GET request
+// QNetworkRequest Downloader::generateGetRequest(QUrl url, QByteArray headerName, QByteArray headerValue) {
+//
+//   QNetworkRequest request(url);
+//
+//   request.setRawHeader(headerName, headerValue);
+//
+//   return request;
+// }
+//
+// // Generates a HTTP POST request
+// QNetworkRequest Downloader::generatePostRequest(QUrl url) {
+//
+//   return QNetworkRequest(url);
+// }
 
 //
 QNetworkAccessManager* Downloader::doDownload(QNetworkRequest request, QObject * receiver, const char * method) {
@@ -40,6 +46,18 @@ QNetworkAccessManager* Downloader::doDownload(QNetworkRequest request, QObject *
   receiver, method);
 
   manager->get(request);
+
+  return manager;
+}
+
+QNetworkAccessManager* Downloader::doPostDownload(QNetworkRequest request, QByteArray data, QObject * receiver, const char * method) {
+
+  QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+
+  connect(manager, SIGNAL(finished(QNetworkReply*)),
+  receiver, method);
+
+  manager->post(request, data);
 
   return manager;
 }

@@ -23,7 +23,7 @@ SOURCES += main.cpp\
     exchangeBot.cpp \
     order.cpp \
     trade.cpp \
-    tradeHistory.cpp
+    marketHistory.cpp
 
 HEADERS  += qcustomplot.h \
     mainwindow.h \
@@ -33,7 +33,7 @@ HEADERS  += qcustomplot.h \
     exchangeBot.h \
     order.h \
     trade.h \
-    tradeHistory.h
+    marketHistory.h
 
 FORMS    += mainwindow.ui
 

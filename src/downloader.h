@@ -22,11 +22,14 @@ public:
 
 
   QNetworkRequest generateRequest(QUrl url);
-  QNetworkRequest generateGetRequest(QUrl url, QByteArray headerName, QByteArray headerValue);
-  QNetworkRequest generatePostRequest(QUrl url);
+  void addHeaderToRequest(QNetworkRequest *request, QByteArray headerName, QByteArray headerValue);
+
+  // QNetworkRequest generateGetRequest(QUrl url, QByteArray headerName, QByteArray headerValue);
+  // QNetworkRequest generatePostRequest(QUrl url);
 
   // void doDownload(QNetworkRequest request);
   QNetworkAccessManager* doDownload(QNetworkRequest request, QObject* receiver, const char * method);
+  QNetworkAccessManager* doPostDownload(QNetworkRequest request, QByteArray data, QObject* receiver, const char * method);
 
   bool checkReply(QNetworkReply *reply);
 

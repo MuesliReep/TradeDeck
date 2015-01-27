@@ -27,6 +27,7 @@ void ExchangeBot::marketUpdateTick() {
   updateMarketDepth();
   updateMarketTrades(1000);
 
+  getInfo();
 }
 
 // Starts the Exchange Bot
@@ -44,9 +45,227 @@ void ExchangeBot::startBot() {
 // Sets the configuration for this Exchange Bot
 void ExchangeBot::setConfig(Config *C) {
 
-  c=C;
+  c = C;
   MarketData m = MarketData(c);
 }
+
+//----------------------------------//
+//      Private API functions       //
+//----------------------------------//
+
+//
+void ExchangeBot::getInfo() {
+
+  // Create POST data from method and nonce
+  QByteArray method("method=getInfo");
+  QByteArray nonce;
+  nonce.setNum(QDateTime::currentDateTime().toTime_t()); //TODO: better nonce creation
+  nonce.prepend("nonce=");
+  QByteArray data(method +"&"+ nonce);
+
+  // Sign the data
+  QByteArray sign = QMessageAuthenticationCode::hash(data, c->getApiSecret().toUtf8(), QCryptographicHash::Sha512).toHex();
+
+  // Create request
+  QNetworkRequest request = d.generateRequest(QUrl("https://btc-e.com/tapi/3/"));
+
+  // Add headers
+  d.addHeaderToRequest(&request, QByteArray("Content-type"), QByteArray("application/x-www-form-urlencoded"));
+  d.addHeaderToRequest(&request, QByteArray("Key"), c->getApiKey().toUtf8());
+  d.addHeaderToRequest(&request, QByteArray("Sign"), sign);
+
+  // Execute download
+  infoDownloadManager = d.doPostDownload(request, data, this, SLOT(infoDataReply(QNetworkReply*)));
+}
+
+//
+void ExchangeBot::createTrade(QString pair, int type, double price, double amount) {
+
+  // Create POST data from method and nonce
+  QByteArray method("method=Trade");
+  QByteArray nonce;
+  nonce.setNum(QDateTime::currentDateTime().toTime_t()); //TODO: better nonce creation
+  nonce.prepend("nonce=");
+  QByteArray data(method +"&"+ nonce);
+
+  // Sign the data
+  QByteArray sign = QMessageAuthenticationCode::hash(data, c->getApiSecret().toUtf8(), QCryptographicHash::Sha512).toHex();
+
+  // Create request
+  QNetworkRequest request = d.generateRequest(QUrl("https://btc-e.com/tapi/3/"));
+
+  // Add headers
+  d.addHeaderToRequest(&request, QByteArray("Content-type"), QByteArray("application/x-www-form-urlencoded"));
+  d.addHeaderToRequest(&request, QByteArray("Key"), c->getApiKey().toUtf8());
+  d.addHeaderToRequest(&request, QByteArray("Sign"), sign);
+
+  // Execute download
+  createTradeDownloadManager = d.doPostDownload(request, data, this, SLOT(createTradeDataReply(QNetworkReply*)));
+}
+
+//
+void ExchangeBot::getActiveOrders(QString pair) {
+
+  // Create POST data from method and nonce
+  QByteArray method("method=ActiveOrders");
+  QByteArray nonce;
+  nonce.setNum(QDateTime::currentDateTime().toTime_t()); //TODO: better nonce creation
+  nonce.prepend("nonce=");
+  QByteArray data(method +"&"+ nonce);
+
+  // Sign the data
+  QByteArray sign = QMessageAuthenticationCode::hash(data, c->getApiSecret().toUtf8(), QCryptographicHash::Sha512).toHex();
+
+  // Create request
+  QNetworkRequest request = d.generateRequest(QUrl("https://btc-e.com/tapi/3/"));
+
+  // Add headers
+  d.addHeaderToRequest(&request, QByteArray("Content-type"), QByteArray("application/x-www-form-urlencoded"));
+  d.addHeaderToRequest(&request, QByteArray("Key"), c->getApiKey().toUtf8());
+  d.addHeaderToRequest(&request, QByteArray("Sign"), sign);
+
+  // Execute download
+  activeOrdersDownloadManager = d.doPostDownload(request, data, this, SLOT(activeOrdersDataReply(QNetworkReply*)));
+}
+
+//
+void ExchangeBot::getOrderInfo(uint orderID) {
+
+  // Create POST data from method and nonce
+  QByteArray method("method=OrderInfo");
+  QByteArray nonce;
+  nonce.setNum(QDateTime::currentDateTime().toTime_t()); //TODO: better nonce creation
+  nonce.prepend("nonce=");
+  QByteArray data(method +"&"+ nonce);
+
+  // Sign the data
+  QByteArray sign = QMessageAuthenticationCode::hash(data, c->getApiSecret().toUtf8(), QCryptographicHash::Sha512).toHex();
+
+  // Create request
+  QNetworkRequest request = d.generateRequest(QUrl("https://btc-e.com/tapi/3/"));
+
+  // Add headers
+  d.addHeaderToRequest(&request, QByteArray("Content-type"), QByteArray("application/x-www-form-urlencoded"));
+  d.addHeaderToRequest(&request, QByteArray("Key"), c->getApiKey().toUtf8());
+  d.addHeaderToRequest(&request, QByteArray("Sign"), sign);
+
+  // Execute download
+  orderInfoDownloadManager = d.doPostDownload(request, data, this, SLOT(orderInfoDataReply(QNetworkReply*)));
+}
+
+//
+void ExchangeBot::cancelOrder(uint orderID) {
+
+  // Create POST data from method and nonce
+  QByteArray method("method=CancelOrder");
+  QByteArray nonce;
+  nonce.setNum(QDateTime::currentDateTime().toTime_t()); //TODO: better nonce creation
+  nonce.prepend("nonce=");
+  QByteArray data(method +"&"+ nonce);
+
+  // Sign the data
+  QByteArray sign = QMessageAuthenticationCode::hash(data, c->getApiSecret().toUtf8(), QCryptographicHash::Sha512).toHex();
+
+  // Create request
+  QNetworkRequest request = d.generateRequest(QUrl("https://btc-e.com/tapi/3/"));
+
+  // Add headers
+  d.addHeaderToRequest(&request, QByteArray("Content-type"), QByteArray("application/x-www-form-urlencoded"));
+  d.addHeaderToRequest(&request, QByteArray("Key"), c->getApiKey().toUtf8());
+  d.addHeaderToRequest(&request, QByteArray("Sign"), sign);
+
+  // Execute download
+  cancelOrderDownloadManager = d.doPostDownload(request, data, this, SLOT(cancelOrderDataReply(QNetworkReply*)));
+}
+
+// Updates the users trade history on the exchange
+void ExchangeBot::updateTradeHistory() {
+
+  // Set optional parameters
+  uint    from    = 0;	       // trade ID, from which the display starts	numerical	0
+  uint    count   = 0;	       // the number of trades for display	numerical	1000
+  uint    from_id = 0;	       // trade ID, from which the display starts	numerical	0
+  uint    end_id  = 0;	       // trade ID on which the display ends	numerical	∞
+  bool    order   = true;	     // Sorting	ASC or DESC	DESC
+  uint    since   = 0;	       // the time to start the display	UNIX time	0
+  uint    end     = 0;	       // the time to end the display	UNIX time	∞
+  QString pair    = "btc_usd";
+
+  // Create POST data from method and nonce
+  QByteArray method("method=TradeHistory");
+  QByteArray nonce;
+  nonce.setNum(QDateTime::currentDateTime().toTime_t()); //TODO: better nonce creation
+  nonce.prepend("nonce=");
+  QByteArray data(method +"&"+ nonce);
+
+  // Sign the data
+  QByteArray sign = QMessageAuthenticationCode::hash(data, c->getApiSecret().toUtf8(), QCryptographicHash::Sha512).toHex();
+
+  // Create request
+  QNetworkRequest request = d.generateRequest(QUrl("https://btc-e.com/tapi/3/"));
+
+  // Add headers
+  d.addHeaderToRequest(&request, QByteArray("Content-type"), QByteArray("application/x-www-form-urlencoded"));
+  d.addHeaderToRequest(&request, QByteArray("Key"), c->getApiKey().toUtf8());
+  d.addHeaderToRequest(&request, QByteArray("Sign"), sign);
+
+  // Execute download
+  tradeHistoryDownloadManager = d.doPostDownload(request, data, this, SLOT(tradeHistoryDataReply(QNetworkReply*)));
+}
+
+//
+void ExchangeBot::updateTransactionHistory() {
+
+  // Set optional parameters
+  uint from     = 0;  	// transaction ID, from which the display starts	numerical	0
+  uint count    = 0;  	// number of transaction to be displayed	numerical	1000
+  uint from_id  = 0;  	// transaction ID, from which the display starts	numerical	0
+  uint end_id   = 0;  	// transaction ID on which the display ends	numerical	∞
+  uint order    = 0;  	// sorting	ASC or DESC	DESC
+  uint since    = 0;  	// the time to start the display	UNIX time	0
+  uint end      = 0;    // the time to end the display
+
+  // Create POST data from method and nonce
+  QByteArray method("method=TransHistory");
+  QByteArray nonce;
+  nonce.setNum(QDateTime::currentDateTime().toTime_t()); //TODO: better nonce creation
+  nonce.prepend("nonce=");
+  QByteArray data(method +"&"+ nonce);
+
+  // Sign the data
+  QByteArray sign = QMessageAuthenticationCode::hash(data, c->getApiSecret().toUtf8(), QCryptographicHash::Sha512).toHex();
+
+  // Create request
+  QNetworkRequest request = d.generateRequest(QUrl("https://btc-e.com/tapi/3/"));
+
+  // Add headers
+  d.addHeaderToRequest(&request, QByteArray("Content-type"), QByteArray("application/x-www-form-urlencoded"));
+  d.addHeaderToRequest(&request, QByteArray("Key"), c->getApiKey().toUtf8());
+  d.addHeaderToRequest(&request, QByteArray("Sign"), sign);
+
+  // Execute download
+  transHistoryDownloadManager = d.doPostDownload(request, data, this, SLOT(transHistoryDataReply(QNetworkReply*)));
+}
+
+//
+bool ExchangeBot::checkSuccess(QJsonObject *object) {
+
+  bool result = false;
+
+  if(object->value("success").toInt() == 1)
+    result = true;
+
+  return result;
+}
+
+QString ExchangeBot::getRequestErrorMessage(QJsonObject *object) {
+
+  return object->value("error").toString();
+}
+
+//----------------------------------//
+//        Public API functions      //
+//----------------------------------//
 
 // Updates the market trades data
 void ExchangeBot::updateMarketTrades(uint limit) {
@@ -115,12 +334,240 @@ bool ExchangeBot::getObjectFromDocument(QNetworkReply *reply, QJsonObject *objec
   return true; // TODO: check json validity
 }
 
-MarketData* ExchangeBot::getMarketData() {
+//----------------------------------//
+//              Slots               //
+//----------------------------------//
 
-  return &m;
+void ExchangeBot::infoDataReply(QNetworkReply *reply) {
+
+  if(!reply->error()) {
+
+    QJsonObject jsonObj;
+    QJsonObject infoData;
+
+    // Extract JSON object from network reply
+    getObjectFromDocument(reply, &jsonObj);
+
+    // Check if authentication was a succes
+    if(checkSuccess(&jsonObj)) {
+
+      // Extract the info data we want
+      infoData = jsonObj.value("result").toObject();
+
+      // Parse new data
+
+      // Send signal to GUI to update
+
+    }
+    else {
+
+      qDebug() << "getInfo error: " << getRequestErrorMessage(&jsonObj);
+    }
+
+  } else
+    qDebug() << "getInfo Packet error";
+
+    reply->deleteLater();
+    infoDownloadManager->deleteLater();
 }
 
-// Slots
+void ExchangeBot::createTradeDataReply(QNetworkReply *reply) {
+
+  if(!reply->error()) {
+
+    QJsonObject jsonObj;
+    QJsonObject tradeData;
+
+    // Extract JSON object from network reply
+    getObjectFromDocument(reply, &jsonObj);
+
+    // Check if authentication was a succes
+    if(checkSuccess(&jsonObj)) {
+
+      // Extract the info data we want
+      tradeData = jsonObj.value("result").toObject();
+
+      // Parse new data
+
+      // Send signal to GUI to update
+
+    }
+    else {
+
+      qDebug() << "Trade error: " << getRequestErrorMessage(&jsonObj);
+    }
+
+  } else
+    qDebug() << "Trade Packet error";
+
+    reply->deleteLater();
+    createTradeDownloadManager->deleteLater();
+}
+
+void ExchangeBot::activeOrdersDataReply(QNetworkReply *reply) {
+
+  if(!reply->error()) {
+
+    QJsonObject jsonObj;
+    QJsonObject activeOrdersData;
+
+    // Extract JSON object from network reply
+    getObjectFromDocument(reply, &jsonObj);
+
+    // Check if authentication was a succes
+    if(checkSuccess(&jsonObj)) {
+
+      // Extract the info data we want
+      activeOrdersData = jsonObj.value("result").toObject();
+
+      // Parse new data
+
+      // Send signal to GUI to update
+
+    }
+    else {
+
+      qDebug() << "ActiveOrders error: " << getRequestErrorMessage(&jsonObj);
+    }
+
+  } else
+    qDebug() << "ActiveOrders Packet error";
+
+    reply->deleteLater();
+    activeOrdersDownloadManager->deleteLater();
+}
+
+void ExchangeBot::orderInfoDataReply(QNetworkReply *reply) {
+
+  if(!reply->error()) {
+
+    QJsonObject jsonObj;
+    QJsonObject orderInfoData;
+
+    // Extract JSON object from network reply
+    getObjectFromDocument(reply, &jsonObj);
+
+    // Check if authentication was a succes
+    if(checkSuccess(&jsonObj)) {
+
+      // Extract the info data we want
+      orderInfoData = jsonObj.value("result").toObject();
+
+      // Parse new data
+
+      // Send signal to GUI to update
+
+    }
+    else {
+
+      qDebug() << "OrderInfo error: " << getRequestErrorMessage(&jsonObj);
+    }
+
+  } else
+    qDebug() << "OrderInfo Packet error";
+
+    reply->deleteLater();
+    orderInfoDownloadManager->deleteLater();
+}
+
+void ExchangeBot::cancelOrderDataReply(QNetworkReply *reply) {
+
+  if(!reply->error()) {
+
+    QJsonObject jsonObj;
+    QJsonObject cancelOrderData;
+
+    // Extract JSON object from network reply
+    getObjectFromDocument(reply, &jsonObj);
+
+    // Check if authentication was a succes
+    if(checkSuccess(&jsonObj)) {
+
+      // Extract the info data we want
+      cancelOrderData = jsonObj.value("result").toObject();
+
+      // Parse new data
+
+      // Send signal to GUI to update
+
+    }
+    else {
+
+      qDebug() << "CancelOrder error: " << getRequestErrorMessage(&jsonObj);
+    }
+
+  } else
+    qDebug() << "CancelOrder Packet error";
+
+    reply->deleteLater();
+    cancelOrderDownloadManager->deleteLater();
+}
+
+void ExchangeBot::tradeHistoryDataReply(QNetworkReply *reply) {
+
+  if(!reply->error()) {
+
+    QJsonObject jsonObj;
+    QJsonObject tradeHistoryData;
+
+    // Extract JSON object from network reply
+    getObjectFromDocument(reply, &jsonObj);
+
+    // Check if authentication was a succes
+    if(checkSuccess(&jsonObj)) {
+
+      // Extract the info data we want
+      tradeHistoryData = jsonObj.value("result").toObject();
+
+      // Parse new data
+
+      // Send signal to GUI to update
+
+    }
+    else {
+
+      qDebug() << "TradeHistory error: " << getRequestErrorMessage(&jsonObj);
+    }
+
+  } else
+    qDebug() << "TradeHistory Packet error";
+
+    reply->deleteLater();
+    tradeHistoryDownloadManager->deleteLater();
+}
+
+void ExchangeBot::transHistoryDataReply(QNetworkReply *reply) {
+
+  if(!reply->error()) {
+
+    QJsonObject jsonObj;
+    QJsonObject transHistoryData;
+
+    // Extract JSON object from network reply
+    getObjectFromDocument(reply, &jsonObj);
+
+    // Check if authentication was a succes
+    if(checkSuccess(&jsonObj)) {
+
+      // Extract the info data we want
+      transHistoryData = jsonObj.value("result").toObject();
+
+      // Parse new data
+
+      // Send signal to GUI to update
+
+    }
+    else {
+
+      qDebug() << "TransHistory error: " << getRequestErrorMessage(&jsonObj);
+    }
+
+  } else
+    qDebug() << "TransHistory Packet error";
+
+    reply->deleteLater();
+    transHistoryDownloadManager->deleteLater();
+}
 
 void ExchangeBot::depthDataReply(QNetworkReply *reply) {
 
@@ -207,4 +654,11 @@ void ExchangeBot::tradeDataReply(QNetworkReply *reply) {
 
   reply->deleteLater();
   tradeDownloadManager->deleteLater();
+}
+
+// Getters & Setters
+
+MarketData* ExchangeBot::getMarketData() {
+
+  return &m;
 }

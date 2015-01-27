@@ -49,7 +49,7 @@ bool Config::loadConfigFromFile() {
     // Read history source object from array and add it to the sources list
     historySources.clear();
 
-    for(int i=0;i<historyArray.size();i++) {
+    for(int i=0;i<historyArray.size();i++) {    //TODO: throw error if list empty
 
       QJsonObject sourceObject = historyArray[i].toObject();
 
@@ -77,8 +77,8 @@ void Config::saveConfigToFile() {
   // Add generic values
   object.insert("lastLoadedTimeStamp", QJsonValue((int)lastLoadedTimeStamp));
   object.insert("coolDownTime", QJsonValue((int)coolDownTime));
-  object.insert("apiKey", QJsonValue(apiKey);
-  object.insert("apiSecret", QJsonValue(apiSecret);
+  object.insert("apiKey", QJsonValue(apiKey));
+  object.insert("apiSecret", QJsonValue(apiSecret));
 
   // Add history values to history object
   QJsonObject historyObject;

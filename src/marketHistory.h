@@ -21,7 +21,7 @@ class MarketHistory : public QObject
 
 public:
   explicit MarketHistory(QObject *parent = 0);
-  ~TradeHistory();
+  ~MarketHistory();
 
 private:
   Config *c;

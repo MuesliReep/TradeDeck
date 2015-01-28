@@ -40,6 +40,7 @@ private:
     void scaleTradePlot();
 
     void setupPlot();
+    void setupOrdersTable();
 
 public slots:
   void receiveNewMarketData(int dataType);

@@ -9,15 +9,21 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     QFontDatabase fontDatabase;
-    // int font = fontDatabase.addApplicationFont(":/resources/fonts/Roboto-Regular.ttf");
-    int font = fontDatabase.addApplicationFont(":/resources/fonts/Roboto-Medium.ttf");
+    // int fontNum = fontDatabase.addApplicationFont(":/resources/fonts/Roboto-Regular.ttf");
+    // int font = fontDatabase.addApplicationFont(":/resources/fonts/Roboto-Medium.ttf");
     // int font = fontDatabase.addApplicationFont(":/resources/fonts/Roboto-Thin.ttf");
 
-    qDebug() << "font families: " << fontDatabase.applicationFontFamilies(font);
+    int fontNum = fontDatabase.addApplicationFont(":/resources/fonts/Arimo-Regular.ttf");
+    // int fontNum = fontDatabase.addApplicationFont(":/resources/fonts/Arimo-Bold.ttf");
+
+    qDebug() << "font families: " << fontDatabase.applicationFontFamilies(fontNum);
     qDebug() << "font styles: " << fontDatabase.styles("roboto");
 
     // Set font for application
-    a.setFont(fontDatabase.font("Roboto","Normal",8));
+    QFont font = fontDatabase.font("Arimo","Normal",8);
+    font.setStyleStrategy(QFont::PreferAntialias);
+    // font.setStyleStrategy(QFont::NoAntialias);
+    a.setFont(font);
 
     // Load configuration from file (if any)
     Config c;
@@ -31,7 +37,7 @@ int main(int argc, char *argv[])
     // TODO: pass list of bots to window
     MainWindow w;
     w.setExchangeBots(&e);
-    w.setStyleSheet("QMainWindow {background: rgb(38, 50, 56);} QListWidget {background: rgb(69,90,100);} QListWidget::item { color: rgb(245,245,245); background-color:transparent; }");
+    w.setStyleSheet("QMainWindow {background: rgb(21, 35, 44);} QListWidget {background: rgb(30, 43, 52);} QListWidget::item { color: rgb(245,245,245); background-color:transparent; }");
 
     w.show();
 

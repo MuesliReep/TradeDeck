@@ -3,5 +3,7 @@
         <file>fonts/Roboto-Regular.ttf</file>
         <file>fonts/Roboto-Medium.ttf</file>
         <file>fonts/Roboto-Thin.ttf</file>
+        <file>fonts/Arimo-Bold.ttf</file>
+        <file>fonts/Arimo-Regular.ttf</file>
     </qresource>
 </RCC>

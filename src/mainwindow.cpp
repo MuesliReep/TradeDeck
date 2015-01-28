@@ -7,45 +7,68 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->setupUi(this);
     setupPlot();
+    setupOrdersTable();
 
+    // Set colours
+    QColor headerColour(47, 61, 69);
+    QColor bodyColour(30, 43, 52);
+    QColor backgroundColour(21, 35, 44);
+    QColor textColour(255, 255, 255);
 
+    QString widgetStyle("QWidget {background-color:rgb(47, 61, 69);}");
+    QString headerStyle("QWidget {background-color:rgb(47, 61, 69);} QLabel {color:rgb(255, 255, 255);}");
+    QString tableStyle("QTableWidget {gridline-color: rgb(52, 64, 73); background-color: rgb(30, 43, 52);} QHeaderView::section {background-color:rgb(30, 43, 52);}");
 
-   // ui->labelExchangeMarket->setFont();
+    // ui->labelExchangeMarket->setFont();
 
-    QPalette palette = ui->labelExchangeMarket->palette();
-    palette.setColor(ui->labelExchangeMarket->foregroundRole(), QColor(227, 242, 253));
-    ui->labelExchangeMarket->setPalette(palette);
+    QPalette palette;
+
+    // Set widget body colours
+
+    // ui->tradeDepthWidget->setStyleSheet(widgetStyle);
+    // ui->tradesWidget->setStyleSheet(widgetStyle);
+    // ui->balancesWidget->setStyleSheet(widgetStyle);
+    // ui->ordersWidget->setStyleSheet(widgetStyle);
+    // ui->priceChartWidget->setStyleSheet(widgetStyle);
+    // ui->buySellWidget->setStyleSheet(widgetStyle);
 
     palette = ui->tradeDepthWidget->palette();
-    palette.setColor(QPalette::Background, QColor(187, 222, 251));
+    palette.setColor(QPalette::Background, bodyColour);
     ui->tradeDepthWidget->setPalette(palette);
 
     palette = ui->tradesWidget->palette();
-    palette.setColor(QPalette::Background, QColor(187, 222, 251));
+    palette.setColor(QPalette::Background, bodyColour);
     ui->tradesWidget->setPalette(palette);
 
-    // Colour headers
-    QColor headerColour(33, 150, 243);
+    palette = ui->balancesWidget->palette();
+    palette.setColor(QPalette::Background, bodyColour);
+    ui->balancesWidget->setPalette(palette);
 
-    palette = ui->headerWidget->palette();
-    palette.setColor(QPalette::Background, headerColour);
-    ui->headerWidget->setPalette(palette);
+    palette = ui->ordersWidget->palette();
+    palette.setColor(QPalette::Background, bodyColour);
+    ui->ordersWidget->setPalette(palette);
 
-    palette = ui->tradesWidgetHeader->palette();
-    palette.setColor(QPalette::Background, headerColour);
-    ui->tradesWidgetHeader->setPalette(palette);
+    palette = ui->priceChartWidget->palette();
+    palette.setColor(QPalette::Background, bodyColour);
+    ui->priceChartWidget->setPalette(palette);
 
-    palette = ui->tradeDepthWidgetHeader->palette();
-    palette.setColor(QPalette::Background, headerColour);
-    ui->tradeDepthWidgetHeader->setPalette(palette);
+    palette = ui->buySellWidget->palette();
+    palette.setColor(QPalette::Background, bodyColour);
+    ui->buySellWidget->setPalette(palette);
 
-    palette = ui->balancesWidgetHeader->palette();
-    palette.setColor(QPalette::Background, headerColour);
-    ui->balancesWidgetHeader->setPalette(palette);
+    // Set the header styles
 
-    palette = ui->ordersWidgetHeader->palette();
-    palette.setColor(QPalette::Background, headerColour);
-    ui->ordersWidgetHeader->setPalette(palette);
+    ui->headerWidget->setStyleSheet(headerStyle);
+    ui->tradesWidgetHeader->setStyleSheet(headerStyle);
+    ui->tradeDepthWidgetHeader->setStyleSheet(headerStyle);
+    ui->balancesWidgetHeader->setStyleSheet(headerStyle);
+    ui->ordersWidgetHeader->setStyleSheet(headerStyle);
+    ui->priceChartWidgetHeader->setStyleSheet(headerStyle);
+    ui->buySellWidgetHeader->setStyleSheet(headerStyle);
+
+    // Set table styles
+    ui->tableWidgetBalances->setStyleSheet(tableStyle);
+    ui->tableWidgetOrders->setStyleSheet(tableStyle);
 }
 
 MainWindow::~MainWindow() {
@@ -109,7 +132,14 @@ void MainWindow::updateTradeList() {
 //
 void MainWindow::setupPlot() {
 
-  ui->tradePlot->legend->setVisible(true);
+  // Set colours
+
+  QColor bodyColour(30, 43, 52);
+  QColor lineColour(52, 64, 73);
+  QColor gridColour(52, 64, 73);
+
+  // Turn on the legend
+  // ui->tradePlot->legend->setVisible(true);
 
   candlesticks = new QCPFinancial(ui->tradePlot->xAxis, ui->tradePlot->yAxis);
   ui->tradePlot->addPlottable(candlesticks);
@@ -120,16 +150,55 @@ void MainWindow::setupPlot() {
   candlesticks->setTwoColored(true);
   candlesticks->setBrushPositive(QColor(76, 175, 80));
   candlesticks->setBrushNegative(QColor(244, 67, 54));
-  candlesticks->setPenPositive(QPen(QColor(0, 0, 0)));
-  candlesticks->setPenNegative(QPen(QColor(0, 0, 0)));
+  candlesticks->setPenPositive(QPen(QColor(76, 175, 80)));
+  candlesticks->setPenNegative(QPen(QColor(244, 67, 54)));
 
   ui->tradePlot->xAxis->setRange(0, 270);
   ui->tradePlot->yAxis->setRange(210, 230);
+
+  ui->tradePlot->setBackground(bodyColour);
+
+  ui->tradePlot->xAxis->setBasePen(QPen(lineColour, 1));
+  ui->tradePlot->yAxis->setBasePen(QPen(lineColour, 1));
+  ui->tradePlot->xAxis->setTickPen(QPen(lineColour, 1));
+  ui->tradePlot->yAxis->setTickPen(QPen(lineColour, 1));
+  ui->tradePlot->xAxis->setSubTickPen(QPen(lineColour, 1));
+  ui->tradePlot->yAxis->setSubTickPen(QPen(lineColour, 1));
+  ui->tradePlot->xAxis->setTickLabelColor(lineColour);
+  ui->tradePlot->yAxis->setTickLabelColor(lineColour);
+  ui->tradePlot->xAxis->grid()->setPen(QPen(gridColour, 1, Qt::DotLine));
+  ui->tradePlot->yAxis->grid()->setPen(QPen(gridColour, 1, Qt::DotLine));
 
   ui->tradePlot->replot();
 
   // Setup volume graph
 
+}
+
+void MainWindow::setupOrdersTable() {
+
+  QColor bodyColour(30, 43, 52);
+
+  // QPalette palette = ui->tableWidgetOrders->palette();
+  // palette.setColor(QPalette::Background, bodyColour);
+  // ui->tableWidgetOrders->setPalette(palette);
+
+
+
+//  background-color: QMainWindow
+
+  QStringList labels;
+  labels  << "Time" << "Type" << "Amount" << "Price" << "Remaining" << "Status" ;
+
+  ui->tableWidgetOrders->setHorizontalHeaderLabels(labels);
+
+  for(int i=0;i<6;i++) {
+
+    QTableWidgetItem item;
+    item.setText("Test");
+
+    ui->tableWidgetOrders->setItem(1,i,&item);
+  }
 }
 
 //

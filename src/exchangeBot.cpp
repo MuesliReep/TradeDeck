@@ -27,7 +27,7 @@ void ExchangeBot::marketUpdateTick() {
   updateMarketDepth();
   updateMarketTrades(1000);
 
-  getInfo();
+  // getInfo();
 }
 
 // Starts the Exchange Bot

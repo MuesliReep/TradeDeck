@@ -36,6 +36,7 @@ private:
   Config      *c;
   MarketData  m;
   QTimer *timer;
+  QTimer *timer2;
 
   QNetworkAccessManager* infoDownloadManager;
   QNetworkAccessManager* createTradeDownloadManager;
@@ -86,6 +87,7 @@ public slots:
 
 private slots:
   void marketUpdateTick();
+  void privateUpdateTick();
 
 signals:
   void sendNewMarketData(int dataType);

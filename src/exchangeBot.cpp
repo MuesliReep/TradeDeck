@@ -6,9 +6,12 @@
 ExchangeBot::ExchangeBot(QObject *parent) :
 QObject(parent) {
 
-  // Start timer
+  // Start timers
   timer = new QTimer(this);
+  timer2 = new QTimer(this);
+
   connect(timer, SIGNAL(timeout()), this, SLOT(marketUpdateTick()));
+  connect(timer2, SIGNAL(timeout()), this, SLOT(privateUpdateTick()));
 }
 
 ExchangeBot::~ExchangeBot() {
@@ -27,7 +30,14 @@ void ExchangeBot::marketUpdateTick() {
   updateMarketDepth();
   updateMarketTrades(1000);
 
+}
+
+//
+void ExchangeBot::privateUpdateTick() {
+
+
   // getInfo();
+  updateTradeHistory();
 }
 
 // Starts the Exchange Bot
@@ -39,7 +49,8 @@ void ExchangeBot::startBot() {
   m.getOldestTrade();
 
   // Start the interval timer
-  timer->start(c->getCoolDownTime());
+  timer->start(c->getCoolDownTime()*1000);
+  timer2->start(5*1000); // TODO: determine correct amount
 }
 
 // Sets the configuration for this Exchange Bot
@@ -505,6 +516,8 @@ void ExchangeBot::cancelOrderDataReply(QNetworkReply *reply) {
 
 void ExchangeBot::tradeHistoryDataReply(QNetworkReply *reply) {
 
+  qDebug() << "New tradeHistory Packet " << QDateTime::currentDateTime().toTime_t();
+
   if(!reply->error()) {
 
     QJsonObject jsonObj;
@@ -522,7 +535,7 @@ void ExchangeBot::tradeHistoryDataReply(QNetworkReply *reply) {
       // Parse new data
 
       // Send signal to GUI to update
-
+      sendNewMarketData(8);
     }
     else {
 
@@ -595,7 +608,9 @@ void ExchangeBot::depthDataReply(QNetworkReply *reply) {
   // disconnect(depthDownloadManager, 0, this, 0);
 
   reply->deleteLater();
-  depthDownloadManager->deleteLater();
+
+  if(depthDownloadManager != NULL)
+      depthDownloadManager->deleteLater();
 }
 
 void ExchangeBot::tickerDataReply(QNetworkReply *reply) {

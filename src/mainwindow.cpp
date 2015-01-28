@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QColor backgroundColour(21, 35, 44);
     QColor textColour(255, 255, 255);
 
-    QString widgetStyle("QWidget {background-color:rgb(47, 61, 69);}");
+    QString widgetStyle("QWidget {background-color:rgb(47, 61, 69);} QListWidget::item { color: rgb(183,190,195); background-color:transparent; }");
     QString headerStyle("QWidget {background-color:rgb(47, 61, 69);} QLabel {color:rgb(255, 255, 255);}");
     QString tableStyle("QTableWidget {gridline-color: rgb(52, 64, 73); background-color: rgb(30, 43, 52);} QHeaderView::section {background-color:rgb(30, 43, 52);}");
 
@@ -137,6 +137,8 @@ void MainWindow::setupPlot() {
   QColor bodyColour(30, 43, 52);
   QColor lineColour(52, 64, 73);
   QColor gridColour(52, 64, 73);
+  QColor textLightColour(183,190,195);
+  QColor textMediumColour(137,145,152);
 
   // Turn on the legend
   // ui->tradePlot->legend->setVisible(true);
@@ -146,15 +148,15 @@ void MainWindow::setupPlot() {
 
   candlesticks->setName("Candlestick");
   candlesticks->setChartStyle(QCPFinancial::csCandlestick);
-  candlesticks->setWidth(0.9);
+  candlesticks->setWidth(0.5);
   candlesticks->setTwoColored(true);
   candlesticks->setBrushPositive(QColor(76, 175, 80));
   candlesticks->setBrushNegative(QColor(244, 67, 54));
   candlesticks->setPenPositive(QPen(QColor(76, 175, 80)));
   candlesticks->setPenNegative(QPen(QColor(244, 67, 54)));
 
-  ui->tradePlot->xAxis->setRange(0, 270);
-  ui->tradePlot->yAxis->setRange(210, 230);
+  ui->tradePlot->xAxis->setRange(0, 250);
+  ui->tradePlot->yAxis->setRange(0, 500);
 
   ui->tradePlot->setBackground(bodyColour);
 
@@ -164,8 +166,8 @@ void MainWindow::setupPlot() {
   ui->tradePlot->yAxis->setTickPen(QPen(lineColour, 1));
   ui->tradePlot->xAxis->setSubTickPen(QPen(lineColour, 1));
   ui->tradePlot->yAxis->setSubTickPen(QPen(lineColour, 1));
-  ui->tradePlot->xAxis->setTickLabelColor(lineColour);
-  ui->tradePlot->yAxis->setTickLabelColor(lineColour);
+  ui->tradePlot->xAxis->setTickLabelColor(textMediumColour);
+  ui->tradePlot->yAxis->setTickLabelColor(textMediumColour);
   ui->tradePlot->xAxis->grid()->setPen(QPen(gridColour, 1, Qt::DotLine));
   ui->tradePlot->yAxis->grid()->setPen(QPen(gridColour, 1, Qt::DotLine));
 
@@ -233,7 +235,7 @@ void MainWindow::updateTradePlot() {
 
     candlesticks->addData(key, dataPoints[i].getOpen(), dataPoints[i].getHigh(), dataPoints[i].getLow(), dataPoints[i].getClose());
 
-    // Add volume information
+    // TODO: Add volume information
 
     key++;
   }
@@ -307,6 +309,13 @@ void MainWindow::receiveNewMarketData(int dataType) {
   // 0 = Trade data
   // 1 = Depth data
   // 2 = Ticker data
+  // 3 = info data
+  // 4 = new trade
+  // 5 = active orders
+  // 6 = order info
+  // 7 = cancel order
+  // 8 = trade history
+  // 9 = trans history
   switch(dataType) {
 
     case 0:
@@ -319,6 +328,9 @@ void MainWindow::receiveNewMarketData(int dataType) {
       qDebug() << "new Depth Data received";
       break;
     case 2:
+      break;
+    default:
+      qDebug() << "UI received unknown data";
       break;
   }
 }

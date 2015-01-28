@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     // TODO: pass list of bots to window
     MainWindow w;
     w.setExchangeBots(&e);
-    w.setStyleSheet("QMainWindow {background: rgb(21, 35, 44);} QListWidget {background: rgb(30, 43, 52);} QListWidget::item { color: rgb(245,245,245); background-color:transparent; }");
+    w.setStyleSheet("QMainWindow {background: rgb(21, 35, 44);} QListWidget {background: rgb(30, 43, 52);} QListWidget::item { color: rgb(183,190,195); background-color:transparent; }");
 
     w.show();
 

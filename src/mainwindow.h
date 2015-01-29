@@ -43,6 +43,7 @@ private:
 
     void setupPlot();
     void setupOrdersTable();
+    void setupBalancesTable();
 
 public slots:
   void receiveNewMarketData(int dataType);

@@ -17,7 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QString widgetStyle("QWidget {background-color:rgb(47, 61, 69);} QListWidget::item { color: rgb(183,190,195); background-color:transparent; }");
     QString headerStyle("QWidget {background-color:rgb(47, 61, 69);} QLabel {color:rgb(255, 255, 255);}");
-    QString tableStyle("QTableWidget {gridline-color: rgb(52, 64, 73); background-color: rgb(30, 43, 52);} QHeaderView::section {background-color:rgb(30, 43, 52);}");
+    QString tableStyle("QTableWidget {gridline-color: rgb(52, 64, 73); background-color: rgb(30, 43, 52); color: rgb(183,190,195)} QHeaderView {background-color:rgb(30, 43, 52);} QHeaderView::section {background-color:rgb(30, 43, 52);}");
+    QString tabStyle("QTabWidet {background-color: rgb(30, 43, 52);}");
 
     // ui->labelExchangeMarket->setFont();
 
@@ -69,6 +70,13 @@ MainWindow::MainWindow(QWidget *parent) :
     // Set table styles
     ui->tableWidgetBalances->setStyleSheet(tableStyle);
     ui->tableWidgetOrders->setStyleSheet(tableStyle);
+
+    // ui->tableWidgetBalances->horizontalHeader()->resizeSections(QHeaderView::Stretch);
+    ui->tableWidgetBalances->horizontalHeader()->setStretchLastSection(true);
+    ui->tableWidgetOrders->horizontalHeader()->setStretchLastSection(true);
+
+    // Set tab styles
+    ui->tabWidget->setStyleSheet(tabStyle);
 }
 
 MainWindow::~MainWindow() {
@@ -185,6 +193,7 @@ void MainWindow::setupPlot() {
 
 }
 
+//
 void MainWindow::setupOrdersTable() {
 
   QColor bodyColour(30, 43, 52);
@@ -209,6 +218,20 @@ void MainWindow::setupOrdersTable() {
 
     ui->tableWidgetOrders->setItem(1,i,&item);
   }
+}
+
+//
+void MainWindow::setupBalancesTable() {
+
+  QColor textLightColour(183,190,195);
+  QColor textMediumColour(137,145,152);
+
+  ui->tableWidgetBalances->itemAt(1,1)->setTextColor(textMediumColour);
+  ui->tableWidgetBalances->itemAt(1,2)->setTextColor(textMediumColour);
+
+  ui->tableWidgetBalances->itemAt(2,1)->setTextColor(textLightColour);
+  ui->tableWidgetBalances->itemAt(2,2)->setTextColor(textLightColour);
+
 }
 
 //

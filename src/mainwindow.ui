@@ -467,14 +467,14 @@
          <widget class="QWidget" name="balancesWidget" native="true">
           <property name="minimumSize">
            <size>
-            <width>350</width>
+            <width>250</width>
             <height>0</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>400</width>
-            <height>16777215</height>
+            <width>250</width>
+            <height>125</height>
            </size>
           </property>
           <property name="autoFillBackground">
@@ -548,6 +548,24 @@
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
+             <property name="autoScroll">
+              <bool>false</bool>
+             </property>
+             <property name="editTriggers">
+              <set>QAbstractItemView::NoEditTriggers</set>
+             </property>
+             <property name="tabKeyNavigation">
+              <bool>false</bool>
+             </property>
+             <property name="showDropIndicator" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="dragDropOverwriteMode">
+              <bool>false</bool>
+             </property>
+             <property name="selectionMode">
+              <enum>QAbstractItemView::NoSelection</enum>
+             </property>
              <property name="showGrid">
               <bool>false</bool>
              </property>
@@ -557,6 +575,9 @@
              <property name="columnCount">
               <number>2</number>
              </property>
+             <attribute name="horizontalHeaderVisible">
+              <bool>false</bool>
+             </attribute>
              <attribute name="verticalHeaderVisible">
               <bool>false</bool>
              </attribute>
@@ -635,13 +656,13 @@
          <widget class="QWidget" name="buySellWidget" native="true">
           <property name="minimumSize">
            <size>
-            <width>350</width>
+            <width>250</width>
             <height>0</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>400</width>
+            <width>250</width>
             <height>16777215</height>
            </size>
           </property>
@@ -708,11 +729,120 @@
               <attribute name="title">
                <string>Buy</string>
               </attribute>
+              <layout class="QVBoxLayout" name="verticalLayoutBuyTab">
+               <item>
+                <layout class="QHBoxLayout" name="HorizontalLayoutBuyTab1">
+                 <item>
+                  <widget class="QLabel" name="labelBuyAmount">
+                   <property name="text">
+                    <string>Amount</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QTextEdit" name="textEditBuyAmount">
+                   <property name="minimumSize">
+                    <size>
+                     <width>50</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>100</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="HorizontalLayoutBuyTab2">
+                 <item>
+                  <widget class="QLabel" name="labelBuyPrice">
+                   <property name="text">
+                    <string>Price</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QTextEdit" name="textEditBuyPrice">
+                   <property name="minimumSize">
+                    <size>
+                     <width>100</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>100</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="HorizontalLayoutBuyTab3">
+                 <item>
+                  <widget class="QLabel" name="labelBuyTotal">
+                   <property name="text">
+                    <string>Total</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="labelBuyTotalAmount">
+                   <property name="text">
+                    <string>0.0</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButtonBuy">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>45</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>45</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>BUY</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </widget>
              <widget class="QWidget" name="tabSell">
               <attribute name="title">
                <string>Sell</string>
               </attribute>
+              <layout class="QVBoxLayout" name="verticalLayoutSellTab"/>
              </widget>
             </widget>
            </item>
@@ -725,7 +855,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>

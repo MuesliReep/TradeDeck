@@ -32,7 +32,9 @@ private:
 
     ExchangeBot *e;
 
-    QCPFinancial *candlesticks;
+    QCPFinancial  *candlesticks;
+    QCPGraph      *MA1;
+    QCPGraph      *MA2;
 
     void updateTradeDepth();
     void updateTradeList();

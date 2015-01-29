@@ -21,8 +21,40 @@ uint MarketData::findClosestBin() {
   return currentTime - (currentTime % binSize) + binSize;
 }
 
+// Calculates the Exponential Moving Average over a data set
+QList<double> MarketData::runEMA(int weight) {
+
+  // TODO: get EMAX from old java project
+}
+
+// Calculates the Simple Moving Average over a data set
+// SMA = (Pi + ... + Pi-(n-1)) / n
+QList<double> MarketData::runSMA(int size) {
+
+  QList<double> SMAList;
+
+  for(int i=dataPoints-1;i >= 0; i--) {
+
+    double accumulator = 0;
+
+    for(int j = 0; j < size; j++) {
+
+      // If we go outside dataset break so we can go to the next bin
+      if(i+j > dataPoints-1)
+        break;
+
+      // Add the closing price
+      accumulator += priceList[i+j].getClose();
+    }
+
+    SMAList.prepend(accumulator / (double)size);
+  }
+
+  return SMAList;
+}
+
 // Analyzes current trade data and creates a plottable format
-void MarketData::analyzeTradeData() {
+void MarketData::binTradeData() {
 
   // TODO: Check if a list is already active, else create one
   priceList.clear();
@@ -87,7 +119,7 @@ void MarketData::analyzeTradeData() {
         priceList.prepend(DataPoint(maxIntervalStamp,0,0,0,0,0,0)); // The list is empty, create a zero value datapoint
       } else { // Use the previous value
 
-        DataPoint previousPoint(maxIntervalStamp, priceList[0].getOpen(),     priceList[0].getClose(),
+        DataPoint previousPoint(maxIntervalStamp, priceList[0].getOpen(),     priceList[0].getClose(),  // TODO: is zero correct?
                                                   priceList[0].getHigh(),     priceList[0].getLow(),
                                                   priceList[0].getAverage(),  priceList[0].getVolume()); // TODO: should use only median values
         priceList.prepend(previousPoint); // Zero is used because all items are prepended, so the last item will be at zero
@@ -145,7 +177,7 @@ void MarketData::parseRawTradeData(QJsonArray *rawData) {
 
   // Append new trades to the beginning of the trades list
   // Work through the list from oldest to newest
-  for(int i=rawData->size();i>=0;i--) {
+  for(int i = rawData->size(); i >= 0; i--) {
 
     uint timeStamp = (uint)rawData->at(i).toObject().value("timestamp").toInt();
 
@@ -185,7 +217,7 @@ void MarketData::parseRawTradeData(QJsonArray *rawData) {
 
         bool duplicate = false;
 
-        for(int j=0;j<x;j++) {
+        for(int j = 0; j < x; j++) {
 
           if(tradeID == tradeData[j].getTradeID()) { // TODO: Check if historical data, historical data will have timestamp = 0;
 
@@ -217,8 +249,20 @@ void MarketData::parseRawTradeData(QJsonArray *rawData) {
   // Save the new data to file // TODO: should this be run every update?
   saveTradeDataToFile();
 
-  // Now analyze the new data
-  analyzeTradeData(); // TODO: called from exchangeBot?
+  // Now bin the new data
+  binTradeData(); // TODO: called from exchangeBot?
+
+  // Calculate the MAs
+  // Use 7 & 30
+  MAList.clear();
+
+  for(int i = 0; i < 2; i++) { // TODO: Number of MAs should be variable
+
+      if(i==1)
+        MAList.append(runSMA(7));
+      else
+        MAList.append(runSMA(30));
+  }
 }
 
 // Parses new market depth data and overwrites current data
@@ -370,4 +414,8 @@ QList<Trade> MarketData::getTrades() {
 
 QList<DataPoint>  MarketData::getPriceList() {
   return priceList;
+}
+
+QList<QList<double> > MarketData::getMAList() {
+  return MAList;
 }

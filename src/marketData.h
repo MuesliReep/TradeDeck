@@ -70,6 +70,7 @@ public:
   QList<Order>      getBids();
   QList<Trade>      getTrades();
   QList<DataPoint>  getPriceList();
+  QList<QList<double> >     getMAList();
 
 private:
   Config *c;
@@ -82,11 +83,15 @@ private:
   QList<Trade> tradeData;
   QList<DataPoint> priceList;
 
+  QList<QList<double> > MAList;
+
   int dataPoints  = 250;
   int binSize     = 1*60;
 
-  void analyzeTradeData();
+  void binTradeData();
   uint findClosestBin();
+  QList<double> runEMA(int weight);
+  QList<double> runSMA(int size);
 
 };
 

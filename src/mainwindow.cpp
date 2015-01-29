@@ -171,6 +171,14 @@ void MainWindow::setupPlot() {
   ui->tradePlot->xAxis->grid()->setPen(QPen(gridColour, 1, Qt::DotLine));
   ui->tradePlot->yAxis->grid()->setPen(QPen(gridColour, 1, Qt::DotLine));
 
+  // Setup moving averages
+
+  MA1 =  ui->tradePlot->addGraph();
+  MA2 =  ui->tradePlot->addGraph();
+
+  MA1->setPen(QPen(textLightColour, 1));
+  MA2->setPen(QPen(textMediumColour, 1));
+
   ui->tradePlot->replot();
 
   // Setup volume graph
@@ -229,13 +237,23 @@ void MainWindow::updateTradePlot() {
   QList<DataPoint> dataPoints = e->getMarketData()->getPriceList();
 
   candlesticks->clearData();
+  MA1->clearData();
+  MA2->clearData();
+
+  QList<double> MA1List = e->getMarketData()->getMAList()[0];
+  QList<double> MA2List = e->getMarketData()->getMAList()[1];
 
   double key = 1;
   for(int i = dataPoints.size()-1; i >= 0; i--) {
 
+    // Update candlesticks
     candlesticks->addData(key, dataPoints[i].getOpen(), dataPoints[i].getHigh(), dataPoints[i].getLow(), dataPoints[i].getClose());
 
     // TODO: Add volume information
+
+    // Update moving averages
+    MA1->addData(key, MA1List[i]);
+    MA2->addData(key, MA2List[i]);
 
     key++;
   }

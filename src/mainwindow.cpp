@@ -226,11 +226,11 @@ void MainWindow::setupBalancesTable() {
   QColor textLightColour(183,190,195);
   QColor textMediumColour(137,145,152);
 
-  ui->tableWidgetBalances->itemAt(1,1)->setTextColor(textMediumColour);
-  ui->tableWidgetBalances->itemAt(1,2)->setTextColor(textMediumColour);
+  ui->tableWidgetBalances->itemAt(0,0)->setTextColor(textMediumColour);
+  ui->tableWidgetBalances->itemAt(1,0)->setTextColor(textMediumColour);
 
-  ui->tableWidgetBalances->itemAt(2,1)->setTextColor(textLightColour);
-  ui->tableWidgetBalances->itemAt(2,2)->setTextColor(textLightColour);
+  ui->tableWidgetBalances->itemAt(0,1)->setTextColor(textLightColour);
+  ui->tableWidgetBalances->itemAt(1,1)->setTextColor(textLightColour);
 
 }
 
@@ -342,6 +342,22 @@ void MainWindow::updateTradeDepth() {
   ui->listWidgetBids->setMaximumHeight(ui->listWidgetAsks->sizeHintForRow(0)*15+5);
 }
 
+//
+void MainWindow::updateBalances() {
+
+  QString usd;
+  QString btc;
+
+  usd.setNum(e->getUSDBalance());
+  btc.setNum(e->getBTCBalance());
+
+  ui->tableWidgetBalances->item(0,1)->setText(usd);
+  ui->tableWidgetBalances->item(1,1)->setText(btc);
+
+  qDebug() << "Num rows" << ui->tableWidgetBalances->columnCount();
+  qDebug() << "Num cols" << ui->tableWidgetBalances->rowCount();
+}
+
 // Slots
 
 void MainWindow::receiveNewMarketData(int dataType) {
@@ -369,6 +385,9 @@ void MainWindow::receiveNewMarketData(int dataType) {
       qDebug() << "new Depth Data received";
       break;
     case 2:
+      break;
+    case 3:
+      updateBalances();
       break;
     default:
       qDebug() << "UI received unknown data";

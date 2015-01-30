@@ -35,9 +35,20 @@ void ExchangeBot::marketUpdateTick() {
 //
 void ExchangeBot::privateUpdateTick() {
 
+  pApiQueue++;
 
-  // getInfo();
-  updateTradeHistory();
+  switch(pApiQueue) {
+
+    case 0:
+      getInfo();
+      break;
+    case 1:
+      updateTradeHistory();
+      break;
+    default:
+      pApiQueue = -1;
+      break;
+  }
 }
 
 // Starts the Exchange Bot
@@ -47,6 +58,9 @@ void ExchangeBot::startBot() {
   // Check last trade timestamp to fill in the gap between last run and now
   // Also check the oldest trade timestamp to get full data set
   m.getOldestTrade();
+
+  // Set the private API queue
+  pApiQueue = -1;
 
   // Start the interval timer
   timer->start(c->getCoolDownTime()*1000);
@@ -346,6 +360,17 @@ bool ExchangeBot::getObjectFromDocument(QNetworkReply *reply, QJsonObject *objec
 }
 
 //----------------------------------//
+//            Parsers               //
+//----------------------------------//
+
+//
+void ExchangeBot::parseInfoData(QJsonObject *object) {
+
+  USDBalance = object->value("usd").toDouble();
+  BTCBalance = object->value("btc").toDouble();
+}
+
+//----------------------------------//
 //              Slots               //
 //----------------------------------//
 
@@ -355,6 +380,7 @@ void ExchangeBot::infoDataReply(QNetworkReply *reply) {
 
     QJsonObject jsonObj;
     QJsonObject infoData;
+    QJsonObject fundsData;
 
     // Extract JSON object from network reply
     getObjectFromDocument(reply, &jsonObj);
@@ -363,12 +389,14 @@ void ExchangeBot::infoDataReply(QNetworkReply *reply) {
     if(checkSuccess(&jsonObj)) {
 
       // Extract the info data we want
-      infoData = jsonObj.value("result").toObject();
+      infoData = jsonObj.value("return").toObject();
+      fundsData = infoData.value("funds").toObject();
 
       // Parse new data
+      parseInfoData(&fundsData);
 
       // Send signal to GUI to update
-
+      sendNewMarketData(3);
     }
     else {
 
@@ -396,7 +424,7 @@ void ExchangeBot::createTradeDataReply(QNetworkReply *reply) {
     if(checkSuccess(&jsonObj)) {
 
       // Extract the info data we want
-      tradeData = jsonObj.value("result").toObject();
+      tradeData = jsonObj.value("return").toObject();
 
       // Parse new data
 
@@ -429,7 +457,7 @@ void ExchangeBot::activeOrdersDataReply(QNetworkReply *reply) {
     if(checkSuccess(&jsonObj)) {
 
       // Extract the info data we want
-      activeOrdersData = jsonObj.value("result").toObject();
+      activeOrdersData = jsonObj.value("return").toObject();
 
       // Parse new data
 
@@ -462,7 +490,7 @@ void ExchangeBot::orderInfoDataReply(QNetworkReply *reply) {
     if(checkSuccess(&jsonObj)) {
 
       // Extract the info data we want
-      orderInfoData = jsonObj.value("result").toObject();
+      orderInfoData = jsonObj.value("return").toObject();
 
       // Parse new data
 
@@ -495,7 +523,7 @@ void ExchangeBot::cancelOrderDataReply(QNetworkReply *reply) {
     if(checkSuccess(&jsonObj)) {
 
       // Extract the info data we want
-      cancelOrderData = jsonObj.value("result").toObject();
+      cancelOrderData = jsonObj.value("return").toObject();
 
       // Parse new data
 
@@ -530,7 +558,7 @@ void ExchangeBot::tradeHistoryDataReply(QNetworkReply *reply) {
     if(checkSuccess(&jsonObj)) {
 
       // Extract the info data we want
-      tradeHistoryData = jsonObj.value("result").toObject();
+      tradeHistoryData = jsonObj.value("return").toObject();
 
       // Parse new data
 
@@ -563,7 +591,7 @@ void ExchangeBot::transHistoryDataReply(QNetworkReply *reply) {
     if(checkSuccess(&jsonObj)) {
 
       // Extract the info data we want
-      transHistoryData = jsonObj.value("result").toObject();
+      transHistoryData = jsonObj.value("return").toObject();
 
       // Parse new data
 
@@ -676,4 +704,11 @@ void ExchangeBot::tradeDataReply(QNetworkReply *reply) {
 MarketData* ExchangeBot::getMarketData() {
 
   return &m;
+}
+
+double ExchangeBot::getUSDBalance() {
+  return USDBalance;
+}
+double ExchangeBot::getBTCBalance() {
+  return BTCBalance;
 }

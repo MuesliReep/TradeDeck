@@ -29,6 +29,9 @@ public:
   void startBot();
   void setConfig(Config *C);
 
+  double getUSDBalance(); // TODO: Balances should be stored dynamically to allow more than 2
+  double getBTCBalance();
+
   MarketData* getMarketData();
 
 private:
@@ -37,6 +40,10 @@ private:
   MarketData  m;
   QTimer *timer;
   QTimer *timer2;
+
+  int pApiQueue;
+  double USDBalance;
+  double BTCBalance;
 
   QNetworkAccessManager* infoDownloadManager;
   QNetworkAccessManager* createTradeDownloadManager;
@@ -61,6 +68,8 @@ private:
   void updateTransactionHistory();
   bool checkSuccess(QJsonObject *object);
   QString getRequestErrorMessage(QJsonObject *object);
+
+  void parseInfoData(QJsonObject *object);
 
   // Public API:
 

@@ -13,12 +13,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QColor headerColour(47, 61, 69);
     QColor bodyColour(30, 43, 52);
     QColor backgroundColour(21, 35, 44);
-    QColor textColour(255, 255, 255);
+    QColor textColour(183,190,195);
 
     QString widgetStyle("QWidget {background-color:rgb(47, 61, 69);} QListWidget::item { color: rgb(183,190,195); background-color:transparent; }");
     QString headerStyle("QWidget {background-color:rgb(47, 61, 69);} QLabel {color:rgb(255, 255, 255);}");
     QString tableStyle("QTableWidget {gridline-color: rgb(52, 64, 73); background-color: rgb(30, 43, 52); color: rgb(183,190,195)} QHeaderView {background-color:rgb(30, 43, 52);} QHeaderView::section {background-color:rgb(30, 43, 52);}");
-    QString tabStyle("QTabWidet {background-color: rgb(30, 43, 52);}");
+    QString tabStyle("QWidget {background-color: rgb(47, 61, 69); color: rgb(183,190,195);} QLineEdit{border:1px solid gray; padding: 0 5px; font:12px} QPushButton{background-color: rgb(137,145,152); border-style: none; font: 16px} QPushButton:pressed{ background-color: rgb(30, 43, 52);}  QTabWidget::tab{background-color: rgb(47, 61, 69);} QTabWidget::pane{border:0px;} QTabBar::tab {min-width: 125px; min-height: 40px; font: 16px} QTabBar::tab:selected {background-color: rgb(47, 61, 69);} QTabBar::tab:!selected {background-color: rgb(30, 43, 52);} QTabWidget::tab-bar {color: rgb(183,190,195);}");
 
     // ui->labelExchangeMarket->setFont();
 
@@ -65,7 +65,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->balancesWidgetHeader->setStyleSheet(headerStyle);
     ui->ordersWidgetHeader->setStyleSheet(headerStyle);
     ui->priceChartWidgetHeader->setStyleSheet(headerStyle);
-    ui->buySellWidgetHeader->setStyleSheet(headerStyle);
 
     // Set table styles
     ui->tableWidgetBalances->setStyleSheet(tableStyle);
@@ -77,6 +76,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Set tab styles
     ui->tabWidget->setStyleSheet(tabStyle);
+    ui->tabWidget->widget(0)->setStyleSheet(tabStyle);
+    ui->tabWidget->widget(1)->setStyleSheet(tabStyle);
+
+    // TODO: set QTabBar style
+    //geometry
+
+  //  ui->tabWidget->tabBar()->
 }
 
 MainWindow::~MainWindow() {

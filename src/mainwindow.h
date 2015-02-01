@@ -5,6 +5,7 @@
 #include <QList>
 #include <QLocale>
 #include <QString>
+#include <QTableWidgetItem>
 
 #include "exchangeBot.h"
 #include "marketData.h"
@@ -46,6 +47,7 @@ private:
     void setupPlot();
     void setupOrdersTable();
     void setupBalancesTable();
+    void setupTradesTable();
 
 public slots:
   void receiveNewMarketData(int dataType);

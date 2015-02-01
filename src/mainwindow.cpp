@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setupPlot();
     setupOrdersTable();
+    setupTradesTable();
 
     // Set colours
     QColor headerColour(47, 61, 69);
@@ -17,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QString widgetStyle("QWidget {background-color:rgb(47, 61, 69);} QListWidget::item { color: rgb(183,190,195); background-color:transparent; }");
     QString headerStyle("QWidget {background-color:rgb(47, 61, 69);} QLabel {color:rgb(255, 255, 255);}");
-    QString tableStyle("QTableWidget {gridline-color: rgb(52, 64, 73); background-color: rgb(30, 43, 52); color: rgb(183,190,195)} QHeaderView {background-color:rgb(30, 43, 52);} QHeaderView::section {background-color:rgb(30, 43, 52);}");
+    QString tableStyle("QTableWidget {gridline-color: rgb(52, 64, 73); background-color: rgb(30, 43, 52); color: rgb(183,190,195);} QHeaderView {background-color:rgb(30, 43, 52); color: rgb(183,190,195);} QHeaderView::section {background-color:rgb(30, 43, 52);}");
     QString tabStyle("QWidget {background-color: rgb(47, 61, 69); color: rgb(183,190,195);} QLineEdit{border:1px solid gray; padding: 0 5px; font:12px} QPushButton{background-color: rgb(137,145,152); border-style: none; font: 16px} QPushButton:pressed{ background-color: rgb(30, 43, 52);}  QTabWidget::tab{background-color: rgb(47, 61, 69);} QTabWidget::pane{border:0px;} QTabBar::tab {min-width: 125px; min-height: 40px; font: 16px} QTabBar::tab:selected {background-color: rgb(47, 61, 69);} QTabBar::tab:!selected {background-color: rgb(30, 43, 52);} QTabWidget::tab-bar {color: rgb(183,190,195);}");
 
     // ui->labelExchangeMarket->setFont();
@@ -69,10 +70,12 @@ MainWindow::MainWindow(QWidget *parent) :
     // Set table styles
     ui->tableWidgetBalances->setStyleSheet(tableStyle);
     ui->tableWidgetOrders->setStyleSheet(tableStyle);
+    ui->tableWidgetTrades->setStyleSheet(tableStyle);
 
     // ui->tableWidgetBalances->horizontalHeader()->resizeSections(QHeaderView::Stretch);
     ui->tableWidgetBalances->horizontalHeader()->setStretchLastSection(true);
     ui->tableWidgetOrders->horizontalHeader()->setStretchLastSection(true);
+    ui->tableWidgetTrades->horizontalHeader()->setStretchLastSection(true);
 
     // Set tab styles
     ui->tabWidget->setStyleSheet(tabStyle);
@@ -97,50 +100,6 @@ void MainWindow::setExchangeBots(ExchangeBot *E) {
 
   // Connect bot signals to gui
   connect(e,SIGNAL(sendNewMarketData(int)),this,SLOT(receiveNewMarketData(int)));
-}
-
-//
-void MainWindow::updateTradeList() {
-
-  ui->listWidgetTrades->clear();
-
-  QList<Trade> trades = e->getMarketData()->getTrades();
-
-  if(trades.size()>0) {
-
-    for(int i=0;i<trades.size()&&i<50;i++) {
-
-      QString time;
-      QString value;
-      QString amount;
-
-      // Convert timestamp to date time
-      QDateTime dateTime;
-      dateTime.setTime_t(trades[i].getTimeStamp());
-      time = dateTime.toString("hh:mm:ss");
-
-      // Convert value & amount to strings
-      value.setNum(trades[i].getPrice());
-      amount.setNum(trades[i].getAmount());
-
-      new QListWidgetItem(time+" \t "+value+" \t "+amount, ui->listWidgetTrades);
-    }
-
-    // Update the current price and set the correct colour
-    QString oldPrice = ui->labelLastTradeValue->text();
-    QString price;
-
-    price.setNum(trades[0].getPrice());
-    ui->labelLastTradeValue->setText(price);
-
-    QPalette palette = ui->labelLastTradeValue->palette();
-    if(oldPrice.toDouble() > price.toDouble())
-        palette.setColor(ui->labelLastTradeValue->foregroundRole(), QColor(244, 67, 54));
-    else
-        palette.setColor(ui->labelLastTradeValue->foregroundRole(), QColor(76, 175, 80));
-
-    ui->labelLastTradeValue->setPalette(palette);
-  }
 }
 
 //
@@ -241,6 +200,20 @@ void MainWindow::setupBalancesTable() {
 }
 
 //
+void MainWindow::setupTradesTable() {
+
+  // tableWidgetTrades
+
+  // Set column header titels
+  QStringList labels;
+  labels  << "Time" << "Price" << "Amount";
+
+  ui->tableWidgetTrades->setHorizontalHeaderLabels(labels);
+
+  // Set colum widths
+}
+
+//
 void MainWindow::scaleTradePlot() {
 
   QList<DataPoint> dataPoints = e->getMarketData()->getPriceList();
@@ -257,6 +230,67 @@ void MainWindow::scaleTradePlot() {
   }
 
   ui->tradePlot->yAxis->setRange((int)high+3, (int)low-3);
+}
+
+//
+void MainWindow::updateTradeList() {
+
+  // Clear the current trades
+  ui->tableWidgetTrades->clear();
+
+  // Get the latest trade list
+  QList<Trade> trades = e->getMarketData()->getTrades();
+
+  // Update the trade table
+  if(trades.size()>0) {
+
+    // Set the number of rows
+    if(trades.size()<50)
+      ui->tableWidgetTrades->setRowCount(trades.size());
+    else
+      ui->tableWidgetTrades->setRowCount(50);
+
+    // Iterate through the trade list and add them to the table
+    for(int i=0;i<trades.size()&&i<50;i++) {
+
+      QString time;
+      QString value;
+      QString amount;
+
+      // Convert timestamp to date time
+      QDateTime dateTime;
+      dateTime.setTime_t(trades[i].getTimeStamp());
+      time = dateTime.toString("hh:mm:ss");
+
+      // Convert value & amount to strings
+      value.setNum(trades[i].getPrice());
+      amount.setNum(trades[i].getAmount()); //TODO: pad with zeros
+
+      ui->tableWidgetTrades->setItem(i, 0, new QTableWidgetItem(time));
+      ui->tableWidgetTrades->setItem(i, 1, new QTableWidgetItem(value));
+      ui->tableWidgetTrades->setItem(i, 2, new QTableWidgetItem(amount));
+    }
+
+    // Update the current price and set the correct colour
+    QString oldPrice = ui->labelLastTradeValue->text();
+    QString price;
+
+    price.setNum(trades[0].getPrice());
+    ui->labelLastTradeValue->setText(price);
+
+    QPalette palette = ui->labelLastTradeValue->palette();
+    if(oldPrice.toDouble() > price.toDouble())
+      palette.setColor(ui->labelLastTradeValue->foregroundRole(), QColor(244, 67, 54));
+    else
+      palette.setColor(ui->labelLastTradeValue->foregroundRole(), QColor(76, 175, 80));
+
+      ui->labelLastTradeValue->setPalette(palette);
+    }
+
+    QStringList labels;
+    labels  << "Time" << "Price" << "Amount";
+
+    ui->tableWidgetTrades->setHorizontalHeaderLabels(labels);
 }
 
 //
@@ -359,9 +393,6 @@ void MainWindow::updateBalances() {
 
   ui->tableWidgetBalances->item(0,1)->setText(usd);
   ui->tableWidgetBalances->item(1,1)->setText(btc);
-
-  qDebug() << "Num rows" << ui->tableWidgetBalances->columnCount();
-  qDebug() << "Num cols" << ui->tableWidgetBalances->rowCount();
 }
 
 // Slots

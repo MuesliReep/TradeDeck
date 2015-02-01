@@ -1,887 +1,927 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-  <class>MainWindow</class>
-  <widget class="QMainWindow" name="MainWindow">
-    <property name="geometry">
-      <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>1000</width>
-        <height>577</height>
-      </rect>
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1000</width>
+    <height>577</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>850</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>TradeDeck</string>
+  </property>
+  <property name="autoFillBackground">
+   <bool>true</bool>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayoutTopLevel">
+    <property name="leftMargin">
+     <number>0</number>
     </property>
-    <property name="minimumSize">
-      <size>
-        <width>850</width>
-        <height>0</height>
-      </size>
+    <property name="topMargin">
+     <number>0</number>
     </property>
-    <property name="windowTitle">
-      <string>TradeDeck</string>
+    <property name="rightMargin">
+     <number>0</number>
     </property>
-    <property name="autoFillBackground">
-      <bool>true</bool>
-    </property>
-    <widget class="QWidget" name="centralWidget">
-      <layout class="QVBoxLayout" name="verticalLayoutTopLevel">
-        <property name="leftMargin">
-          <number>0</number>
-        </property>
-        <property name="topMargin">
-          <number>0</number>
-        </property>
-        <property name="rightMargin">
-          <number>0</number>
-        </property>
+    <item>
+     <widget class="QWidget" name="headerWidget" native="true">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-          <widget class="QWidget" name="headerWidget" native="true">
-            <property name="minimumSize">
+         <widget class="QWidget" name="tradeDepthWidget" native="true">
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="autoFillBackground">
+           <bool>true</bool>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <property name="spacing">
+            <number>3</number>
+           </property>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QWidget" name="tradeDepthWidgetHeader" native="true">
+             <property name="minimumSize">
               <size>
-                <width>0</width>
-                <height>50</height>
+               <width>0</width>
+               <height>40</height>
               </size>
-            </property>
-            <property name="maximumSize">
+             </property>
+             <property name="maximumSize">
               <size>
-                <width>16777215</width>
-                <height>50</height>
+               <width>16777215</width>
+               <height>40</height>
               </size>
-            </property>
-            <property name="autoFillBackground">
+             </property>
+             <property name="autoFillBackground">
               <bool>true</bool>
-            </property>
-          </widget>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout">
+              <item>
+               <widget class="QLabel" name="labelExchangeMarket">
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                  <weight>50</weight>
+                  <bold>false</bold>
+                 </font>
+                </property>
+                <property name="autoFillBackground">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>BTC-e USD/BTC</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QListWidget" name="listWidgetAsks">
+             <property name="maximumSize">
+              <size>
+               <width>250</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Sunken</enum>
+             </property>
+             <property name="sizeAdjustPolicy">
+              <enum>QAbstractScrollArea::AdjustIgnored</enum>
+             </property>
+             <property name="editTriggers">
+              <set>QAbstractItemView::NoEditTriggers</set>
+             </property>
+             <property name="showDropIndicator" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="selectionMode">
+              <enum>QAbstractItemView::NoSelection</enum>
+             </property>
+             <property name="movement">
+              <enum>QListView::Snap</enum>
+             </property>
+             <property name="modelColumn">
+              <number>0</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="labelLastTradeValue">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>0.0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QListWidget" name="listWidgetBids">
+             <property name="maximumSize">
+              <size>
+               <width>250</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="editTriggers">
+              <set>QAbstractItemView::NoEditTriggers</set>
+             </property>
+             <property name="showDropIndicator" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="selectionMode">
+              <enum>QAbstractItemView::NoSelection</enum>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </item>
         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-              <layout class="QVBoxLayout" name="verticalLayout">
-                <item>
-                  <widget class="QWidget" name="tradeDepthWidget" native="true">
-                    <property name="maximumSize">
-                      <size>
-                        <width>250</width>
-                        <height>16777215</height>
-                      </size>
-                    </property>
-                    <property name="autoFillBackground">
-                      <bool>true</bool>
-                    </property>
-                    <layout class="QVBoxLayout" name="verticalLayout">
-                      <property name="spacing">
-                        <number>3</number>
-                      </property>
-                      <property name="leftMargin">
-                        <number>0</number>
-                      </property>
-                      <property name="topMargin">
-                        <number>0</number>
-                      </property>
-                      <property name="rightMargin">
-                        <number>0</number>
-                      </property>
-                      <property name="bottomMargin">
-                        <number>0</number>
-                      </property>
-                      <item>
-                        <widget class="QWidget" name="tradeDepthWidgetHeader" native="true">
-                          <property name="minimumSize">
-                            <size>
-                              <width>0</width>
-                              <height>40</height>
-                            </size>
-                          </property>
-                          <property name="maximumSize">
-                            <size>
-                              <width>16777215</width>
-                              <height>40</height>
-                            </size>
-                          </property>
-                          <property name="autoFillBackground">
-                            <bool>true</bool>
-                          </property>
-                          <layout class="QVBoxLayout" name="verticalLayout">
-                            <item>
-                              <widget class="QLabel" name="labelExchangeMarket">
-                                <property name="font">
-                                  <font>
-                                    <pointsize>12</pointsize>
-                                    <weight>50</weight>
-                                    <bold>false</bold>
-                                  </font>
-                                </property>
-                                <property name="autoFillBackground">
-                                  <bool>false</bool>
-                                </property>
-                                <property name="text">
-                                  <string>BTC-e USD/BTC</string>
-                                </property>
-                                <property name="alignment">
-                                  <set>Qt::AlignCenter</set>
-                                </property>
-                              </widget>
-                            </item>
-                          </layout>
-                        </widget>
-                      </item>
-                      <item>
-                        <widget class="QListWidget" name="listWidgetAsks">
-                          <property name="maximumSize">
-                            <size>
-                              <width>250</width>
-                              <height>16777215</height>
-                            </size>
-                          </property>
-                          <property name="frameShape">
-                            <enum>QFrame::NoFrame</enum>
-                          </property>
-                          <property name="frameShadow">
-                            <enum>QFrame::Sunken</enum>
-                          </property>
-                          <property name="sizeAdjustPolicy">
-                            <enum>QAbstractScrollArea::AdjustIgnored</enum>
-                          </property>
-                          <property name="editTriggers">
-                            <set>QAbstractItemView::NoEditTriggers</set>
-                          </property>
-                          <property name="showDropIndicator" stdset="0">
-                            <bool>false</bool>
-                          </property>
-                          <property name="selectionMode">
-                            <enum>QAbstractItemView::NoSelection</enum>
-                          </property>
-                          <property name="movement">
-                            <enum>QListView::Snap</enum>
-                          </property>
-                          <property name="modelColumn">
-                            <number>0</number>
-                          </property>
-                        </widget>
-                      </item>
-                      <item>
-                        <widget class="QLabel" name="labelLastTradeValue">
-                          <property name="font">
-                            <font>
-                              <pointsize>12</pointsize>
-                              <weight>50</weight>
-                              <bold>false</bold>
-                            </font>
-                          </property>
-                          <property name="text">
-                            <string>0.0</string>
-                          </property>
-                          <property name="alignment">
-                            <set>Qt::AlignCenter</set>
-                          </property>
-                        </widget>
-                      </item>
-                      <item>
-                        <widget class="QListWidget" name="listWidgetBids">
-                          <property name="maximumSize">
-                            <size>
-                              <width>250</width>
-                              <height>16777215</height>
-                            </size>
-                          </property>
-                          <property name="frameShape">
-                            <enum>QFrame::NoFrame</enum>
-                          </property>
-                          <property name="editTriggers">
-                            <set>QAbstractItemView::NoEditTriggers</set>
-                          </property>
-                          <property name="showDropIndicator" stdset="0">
-                            <bool>false</bool>
-                          </property>
-                          <property name="selectionMode">
-                            <enum>QAbstractItemView::NoSelection</enum>
-                          </property>
-                        </widget>
-                      </item>
-                    </layout>
-                  </widget>
-                </item>
-                <item>
-                  <widget class="QWidget" name="tradesWidget" native="true">
-                    <property name="maximumSize">
-                      <size>
-                        <width>250</width>
-                        <height>16777215</height>
-                      </size>
-                    </property>
-                    <property name="autoFillBackground">
-                      <bool>true</bool>
-                    </property>
-                    <layout class="QVBoxLayout" name="verticalLayout">
-                      <property name="leftMargin">
-                        <number>0</number>
-                      </property>
-                      <property name="topMargin">
-                        <number>0</number>
-                      </property>
-                      <property name="rightMargin">
-                        <number>0</number>
-                      </property>
-                      <property name="bottomMargin">
-                        <number>0</number>
-                      </property>
-                      <item>
-                        <widget class="QWidget" name="tradesWidgetHeader" native="true">
-                          <property name="minimumSize">
-                            <size>
-                              <width>0</width>
-                              <height>40</height>
-                            </size>
-                          </property>
-                          <property name="maximumSize">
-                            <size>
-                              <width>16777215</width>
-                              <height>40</height>
-                            </size>
-                          </property>
-                          <property name="autoFillBackground">
-                            <bool>true</bool>
-                          </property>
-                          <layout class="QVBoxLayout" name="verticalLayout">
-                            <item>
-                              <widget class="QLabel" name="labelTradeList">
-                                <property name="font">
-                                  <font>
-                                    <pointsize>12</pointsize>
-                                    <weight>50</weight>
-                                    <bold>false</bold>
-                                  </font>
-                                </property>
-                                <property name="text">
-                                  <string>Trade List</string>
-                                </property>
-                                <property name="alignment">
-                                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                                </property>
-                              </widget>
-                            </item>
-                          </layout>
-                        </widget>
-                      </item>
-                      <item>
-                        <widget class="QListWidget" name="listWidgetTrades">
-                          <property name="maximumSize">
-                            <size>
-                              <width>250</width>
-                              <height>16777215</height>
-                            </size>
-                          </property>
-                          <property name="frameShape">
-                            <enum>QFrame::NoFrame</enum>
-                          </property>
-                          <property name="editTriggers">
-                            <set>QAbstractItemView::NoEditTriggers</set>
-                          </property>
-                          <property name="showDropIndicator" stdset="0">
-                            <bool>false</bool>
-                          </property>
-                        </widget>
-                      </item>
-                    </layout>
-                  </widget>
-                </item>
-              </layout>
-            </item>
-            <item>
-              <layout class="QVBoxLayout" name="verticalLayoutCenter">
-                <item>
-                  <widget class="QWidget" name="priceChartWidget" native="true">
-                    <property name="autoFillBackground">
-                      <bool>true</bool>
-                    </property>
-                    <layout class="QVBoxLayout" name="verticalLayoutPriceChart">
-                      <property name="leftMargin">
-                        <number>0</number>
-                      </property>
-                      <property name="topMargin">
-                        <number>0</number>
-                      </property>
-                      <property name="rightMargin">
-                        <number>0</number>
-                      </property>
-                      <property name="bottomMargin">
-                        <number>0</number>
-                      </property>
-                      <item>
-                        <widget class="QWidget" name="priceChartWidgetHeader" native="true">
-                          <property name="minimumSize">
-                            <size>
-                              <width>0</width>
-                              <height>40</height>
-                            </size>
-                          </property>
-                          <property name="maximumSize">
-                            <size>
-                              <width>16777215</width>
-                              <height>40</height>
-                            </size>
-                          </property>
-                          <property name="autoFillBackground">
-                            <bool>true</bool>
-                          </property>
-                          <layout class="QVBoxLayout" name="verticalLayoutPriceChartHeader">
-                            <item>
-                              <widget class="QLabel" name="labelPriceChartHeader">
-                                <property name="font">
-                                  <font>
-                                    <pointsize>12</pointsize>
-                                    <weight>50</weight>
-                                    <bold>false</bold>
-                                  </font>
-                                </property>
-                                <property name="text">
-                                  <string>Price</string>
-                                </property>
-                                <property name="alignment">
-                                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                                </property>
-                              </widget>
-                            </item>
-                          </layout>
-                        </widget>
-                      </item>
-                      <item>
-                        <widget class="QCustomPlot" name="tradePlot" native="true"/>
-                      </item>
-                    </layout>
-                  </widget>
-                </item>
-                <item>
-                  <widget class="QWidget" name="ordersWidget" native="true">
-                    <property name="maximumSize">
-                      <size>
-                        <width>16777215</width>
-                        <height>200</height>
-                      </size>
-                    </property>
-                    <property name="autoFillBackground">
-                      <bool>true</bool>
-                    </property>
-                    <layout class="QVBoxLayout" name="verticalLayoutBalances">
-                      <property name="leftMargin">
-                        <number>0</number>
-                      </property>
-                      <property name="topMargin">
-                        <number>0</number>
-                      </property>
-                      <property name="rightMargin">
-                        <number>0</number>
-                      </property>
-                      <property name="bottomMargin">
-                        <number>0</number>
-                      </property>
-                      <item>
-                        <widget class="QWidget" name="ordersWidgetHeader" native="true">
-                          <property name="minimumSize">
-                            <size>
-                              <width>0</width>
-                              <height>40</height>
-                            </size>
-                          </property>
-                          <property name="maximumSize">
-                            <size>
-                              <width>16777215</width>
-                              <height>40</height>
-                            </size>
-                          </property>
-                          <property name="autoFillBackground">
-                            <bool>true</bool>
-                          </property>
-                          <layout class="QVBoxLayout" name="verticalLayoutOrdersHeader">
-                            <item>
-                              <widget class="QLabel" name="labelLastOrdersHeader">
-                                <property name="font">
-                                  <font>
-                                    <pointsize>12</pointsize>
-                                    <weight>50</weight>
-                                    <bold>false</bold>
-                                  </font>
-                                </property>
-                                <property name="text">
-                                  <string>My Orders</string>
-                                </property>
-                                <property name="alignment">
-                                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                                </property>
-                              </widget>
-                            </item>
-                          </layout>
-                        </widget>
-                      </item>
-                      <item>
-                        <widget class="QTableWidget" name="tableWidgetOrders">
-                          <property name="frameShape">
-                            <enum>QFrame::NoFrame</enum>
-                          </property>
-                          <property name="editTriggers">
-                            <set>QAbstractItemView::NoEditTriggers</set>
-                          </property>
-                          <property name="showDropIndicator" stdset="0">
-                            <bool>false</bool>
-                          </property>
-                          <property name="selectionMode">
-                            <enum>QAbstractItemView::NoSelection</enum>
-                          </property>
-                          <property name="selectionBehavior">
-                            <enum>QAbstractItemView::SelectRows</enum>
-                          </property>
-                          <property name="showGrid">
-                            <bool>true</bool>
-                          </property>
-                          <property name="gridStyle">
-                            <enum>Qt::SolidLine</enum>
-                          </property>
-                          <property name="cornerButtonEnabled">
-                            <bool>true</bool>
-                          </property>
-                          <property name="rowCount">
-                            <number>1</number>
-                          </property>
-                          <property name="columnCount">
-                            <number>6</number>
-                          </property>
-                          <attribute name="verticalHeaderVisible">
-                            <bool>false</bool>
-                          </attribute>
-                          <row/>
-                          <column/>
-                          <column/>
-                          <column/>
-                          <column/>
-                          <column/>
-                          <column/>
-                        </widget>
-                      </item>
-                    </layout>
-                  </widget>
-                </item>
-              </layout>
-            </item>
-            <item>
-              <layout class="QVBoxLayout" name="verticalLayoutRight">
-                <item>
-                  <widget class="QWidget" name="balancesWidget" native="true">
-                    <property name="minimumSize">
-                      <size>
-                        <width>250</width>
-                        <height>0</height>
-                      </size>
-                    </property>
-                    <property name="maximumSize">
-                      <size>
-                        <width>250</width>
-                        <height>120</height>
-                      </size>
-                    </property>
-                    <property name="autoFillBackground">
-                      <bool>true</bool>
-                    </property>
-                    <layout class="QVBoxLayout" name="verticalLayoutBalances">
-                      <property name="leftMargin">
-                        <number>0</number>
-                      </property>
-                      <property name="topMargin">
-                        <number>0</number>
-                      </property>
-                      <property name="rightMargin">
-                        <number>0</number>
-                      </property>
-                      <property name="bottomMargin">
-                        <number>0</number>
-                      </property>
-                      <item>
-                        <widget class="QWidget" name="balancesWidgetHeader" native="true">
-                          <property name="minimumSize">
-                            <size>
-                              <width>0</width>
-                              <height>40</height>
-                            </size>
-                          </property>
-                          <property name="maximumSize">
-                            <size>
-                              <width>16777215</width>
-                              <height>40</height>
-                            </size>
-                          </property>
-                          <property name="autoFillBackground">
-                            <bool>true</bool>
-                          </property>
-                          <layout class="QVBoxLayout" name="verticalLayoutBalancesHeader">
-                            <item>
-                              <widget class="QLabel" name="labelLastBalancesHeader">
-                                <property name="font">
-                                  <font>
-                                    <pointsize>12</pointsize>
-                                    <weight>50</weight>
-                                    <bold>false</bold>
-                                  </font>
-                                </property>
-                                <property name="text">
-                                  <string>Balances</string>
-                                </property>
-                                <property name="alignment">
-                                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                                </property>
-                              </widget>
-                            </item>
-                          </layout>
-                        </widget>
-                      </item>
-                      <item>
-                        <widget class="QTableWidget" name="tableWidgetBalances">
-                          <property name="minimumSize">
-                            <size>
-                              <width>0</width>
-                              <height>100</height>
-                            </size>
-                          </property>
-                          <property name="maximumSize">
-                            <size>
-                              <width>16777215</width>
-                              <height>100</height>
-                            </size>
-                          </property>
-                          <property name="frameShape">
-                            <enum>QFrame::NoFrame</enum>
-                          </property>
-                          <property name="autoScroll">
-                            <bool>false</bool>
-                          </property>
-                          <property name="editTriggers">
-                            <set>QAbstractItemView::NoEditTriggers</set>
-                          </property>
-                          <property name="tabKeyNavigation">
-                            <bool>false</bool>
-                          </property>
-                          <property name="showDropIndicator" stdset="0">
-                            <bool>false</bool>
-                          </property>
-                          <property name="dragDropOverwriteMode">
-                            <bool>false</bool>
-                          </property>
-                          <property name="selectionMode">
-                            <enum>QAbstractItemView::NoSelection</enum>
-                          </property>
-                          <property name="showGrid">
-                            <bool>false</bool>
-                          </property>
-                          <property name="rowCount">
-                            <number>2</number>
-                          </property>
-                          <property name="columnCount">
-                            <number>2</number>
-                          </property>
-                          <attribute name="horizontalHeaderVisible">
-                            <bool>false</bool>
-                          </attribute>
-                          <attribute name="verticalHeaderVisible">
-                            <bool>false</bool>
-                          </attribute>
-                          <row/>
-                          <row/>
-                          <column/>
-                          <column/>
-                          <item row="0" column="0">
-                            <property name="text">
-                              <string>USD</string>
-                            </property>
-                            <property name="font">
-                              <font>
-                                <pointsize>9</pointsize>
-                              </font>
-                            </property>
-                            <property name="background">
-                              <brush brushstyle="NoBrush">
-                                <color alpha="255">
-                                  <red>170</red>
-                                  <green>178</green>
-                                  <blue>183</blue>
-                                </color>
-                              </brush>
-                            </property>
-                          </item>
-                          <item row="0" column="1">
-                            <property name="text">
-                              <string>N/A</string>
-                            </property>
-                            <property name="font">
-                              <font>
-                                <pointsize>9</pointsize>
-                                <weight>75</weight>
-                                <bold>true</bold>
-                              </font>
-                            </property>
-                            <property name="textAlignment">
-                              <set>AlignRight|AlignVCenter</set>
-                            </property>
-                            <property name="background">
-                              <brush brushstyle="NoBrush">
-                                <color alpha="255">
-                                  <red>183</red>
-                                  <green>190</green>
-                                  <blue>195</blue>
-                                </color>
-                              </brush>
-                            </property>
-                          </item>
-                          <item row="1" column="0">
-                            <property name="text">
-                              <string>BTC</string>
-                            </property>
-                            <property name="font">
-                              <font>
-                                <pointsize>9</pointsize>
-                              </font>
-                            </property>
-                            <property name="background">
-                              <brush brushstyle="NoBrush">
-                                <color alpha="255">
-                                  <red>170</red>
-                                  <green>178</green>
-                                  <blue>183</blue>
-                                </color>
-                              </brush>
-                            </property>
-                          </item>
-                          <item row="1" column="1">
-                            <property name="text">
-                              <string>N/A</string>
-                            </property>
-                            <property name="font">
-                              <font>
-                                <pointsize>9</pointsize>
-                                <weight>75</weight>
-                                <bold>true</bold>
-                              </font>
-                            </property>
-                            <property name="textAlignment">
-                              <set>AlignRight|AlignVCenter</set>
-                            </property>
-                            <property name="background">
-                              <brush brushstyle="NoBrush">
-                                <color alpha="255">
-                                  <red>183</red>
-                                  <green>190</green>
-                                  <blue>195</blue>
-                                </color>
-                              </brush>
-                            </property>
-                          </item>
-                        </widget>
-                      </item>
-                    </layout>
-                  </widget>
-                </item>
-                <item>
-                  <widget class="QWidget" name="buySellWidget" native="true">
-                    <property name="minimumSize">
-                      <size>
-                        <width>250</width>
-                        <height>0</height>
-                      </size>
-                    </property>
-                    <property name="maximumSize">
-                      <size>
-                        <width>250</width>
-                        <height>250</height>
-                      </size>
-                    </property>
-                    <property name="autoFillBackground">
-                      <bool>true</bool>
-                    </property>
-                    <layout class="QVBoxLayout" name="verticalLayoutBuySell">
-                      <property name="leftMargin">
-                        <number>0</number>
-                      </property>
-                      <property name="topMargin">
-                        <number>0</number>
-                      </property>
-                      <property name="rightMargin">
-                        <number>0</number>
-                      </property>
-                      <property name="bottomMargin">
-                        <number>0</number>
-                      </property>
-                      <item>
-                        <widget class="QTabWidget" name="tabWidget">
-                          <property name="tabPosition">
-                            <enum>QTabWidget::North</enum>
-                          </property>
-                          <property name="tabShape">
-                            <enum>QTabWidget::Rounded</enum>
-                          </property>
-                          <property name="currentIndex">
-                            <number>0</number>
-                          </property>
-                          <property name="elideMode">
-                            <enum>Qt::ElideNone</enum>
-                          </property>
-                          <property name="usesScrollButtons">
-                            <bool>false</bool>
-                          </property>
-                          <widget class="QWidget" name="tabBuy">
-                            <attribute name="title">
-                              <string>Buy</string>
-                            </attribute>
-                            <layout class="QVBoxLayout" name="verticalLayoutBuyTab">
-                              <item>
-                                <layout class="QHBoxLayout" name="HorizontalLayoutBuyTab1">
-                                  <item>
-                                    <widget class="QLabel" name="labelBuyAmount">
-                                      <property name="text">
-                                        <string>Amount</string>
-                                      </property>
-                                      <property name="alignment">
-                                        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                                      </property>
-                                    </widget>
-                                  </item>
-                                  <item>
-                                    <widget class="QLineEdit" name="lineEditBuyAmount">
-                                      <property name="minimumSize">
-                                        <size>
-                                          <width>0</width>
-                                          <height>30</height>
-                                        </size>
-                                      </property>
-                                      <property name="maximumSize">
-                                        <size>
-                                          <width>16777215</width>
-                                          <height>30</height>
-                                        </size>
-                                      </property>
-                                      <property name="font">
-                                        <font>
-                                          <pointsize>9</pointsize>
-                                        </font>
-                                      </property>
-                                      <property name="text">
-                                        <string>0</string>
-                                      </property>
-                                      <property name="frame">
-                                        <bool>false</bool>
-                                      </property>
-                                    </widget>
-                                  </item>
-                                </layout>
-                              </item>
-                              <item>
-                                <layout class="QHBoxLayout" name="HorizontalLayoutBuyTab2">
-                                  <item>
-                                    <widget class="QLabel" name="labelBuyPrice">
-                                      <property name="text">
-                                        <string>Price</string>
-                                      </property>
-                                      <property name="alignment">
-                                        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                                      </property>
-                                    </widget>
-                                  </item>
-                                  <item>
-                                    <widget class="QLineEdit" name="lineEditBuyPrice">
-                                      <property name="minimumSize">
-                                        <size>
-                                          <width>0</width>
-                                          <height>30</height>
-                                        </size>
-                                      </property>
-                                      <property name="maximumSize">
-                                        <size>
-                                          <width>16777215</width>
-                                          <height>30</height>
-                                        </size>
-                                      </property>
-                                      <property name="font">
-                                        <font>
-                                          <pointsize>9</pointsize>
-                                        </font>
-                                      </property>
-                                      <property name="frame">
-                                        <bool>false</bool>
-                                      </property>
-                                    </widget>
-                                  </item>
-                                </layout>
-                              </item>
-                              <item>
-                                <layout class="QHBoxLayout" name="HorizontalLayoutBuyTab3">
-                                  <item>
-                                    <widget class="QLabel" name="labelBuyTotal">
-                                      <property name="text">
-                                        <string>Total</string>
-                                      </property>
-                                      <property name="alignment">
-                                        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                                      </property>
-                                    </widget>
-                                  </item>
-                                  <item>
-                                    <widget class="QLabel" name="labelBuyTotalAmount">
-                                      <property name="text">
-                                        <string>0.0</string>
-                                      </property>
-                                      <property name="alignment">
-                                        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                                      </property>
-                                    </widget>
-                                  </item>
-                                </layout>
-                              </item>
-                              <item>
-                                <widget class="QPushButton" name="pushButtonBuy">
-                                  <property name="minimumSize">
-                                    <size>
-                                      <width>0</width>
-                                      <height>40</height>
-                                    </size>
-                                  </property>
-                                  <property name="maximumSize">
-                                    <size>
-                                      <width>16777215</width>
-                                      <height>40</height>
-                                    </size>
-                                  </property>
-                                  <property name="text">
-                                    <string>BUY</string>
-                                  </property>
-                                </widget>
-                              </item>
-                            </layout>
-                          </widget>
-                          <widget class="QWidget" name="tabSell">
-                            <attribute name="title">
-                              <string>Sell</string>
-                            </attribute>
-                            <layout class="QVBoxLayout" name="verticalLayoutSellTab"/>
-                          </widget>
-                        </widget>
-                      </item>
-                    </layout>
-                  </widget>
-                </item>
-                <item>
-                  <widget class="QWidget" name="widgetFiller"/>
-                </item>
-              </layout>
-            </item>
+         <widget class="QWidget" name="tradesWidget" native="true">
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="autoFillBackground">
+           <bool>true</bool>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QWidget" name="tradesWidgetHeader" native="true">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>40</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>40</height>
+              </size>
+             </property>
+             <property name="autoFillBackground">
+              <bool>true</bool>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout">
+              <item>
+               <widget class="QLabel" name="labelTradeList">
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                  <weight>50</weight>
+                  <bold>false</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Trade List</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QTableWidget" name="tableWidgetTrades">
+             <property name="maximumSize">
+              <size>
+               <width>250</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="verticalScrollBarPolicy">
+              <enum>Qt::ScrollBarAlwaysOff</enum>
+             </property>
+             <property name="horizontalScrollBarPolicy">
+              <enum>Qt::ScrollBarAlwaysOff</enum>
+             </property>
+             <property name="editTriggers">
+              <set>QAbstractItemView::NoEditTriggers</set>
+             </property>
+             <property name="showDropIndicator" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="selectionMode">
+              <enum>QAbstractItemView::NoSelection</enum>
+             </property>
+             <property name="selectionBehavior">
+              <enum>QAbstractItemView::SelectRows</enum>
+             </property>
+             <property name="showGrid">
+              <bool>true</bool>
+             </property>
+             <property name="gridStyle">
+              <enum>Qt::SolidLine</enum>
+             </property>
+             <property name="rowCount">
+              <number>1</number>
+             </property>
+             <property name="columnCount">
+              <number>3</number>
+             </property>
+             <attribute name="horizontalHeaderDefaultSectionSize">
+              <number>83</number>
+             </attribute>
+             <attribute name="verticalHeaderVisible">
+              <bool>false</bool>
+             </attribute>
+             <attribute name="verticalHeaderDefaultSectionSize">
+              <number>22</number>
+             </attribute>
+             <row/>
+             <column/>
+             <column/>
+             <column/>
+            </widget>
+           </item>
           </layout>
+         </widget>
         </item>
-      </layout>
-    </widget>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayoutCenter">
+        <item>
+         <widget class="QWidget" name="priceChartWidget" native="true">
+          <property name="autoFillBackground">
+           <bool>true</bool>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayoutPriceChart">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QWidget" name="priceChartWidgetHeader" native="true">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>40</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>40</height>
+              </size>
+             </property>
+             <property name="autoFillBackground">
+              <bool>true</bool>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayoutPriceChartHeader">
+              <item>
+               <widget class="QLabel" name="labelPriceChartHeader">
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                  <weight>50</weight>
+                  <bold>false</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Price</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCustomPlot" name="tradePlot" native="true"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QWidget" name="ordersWidget" native="true">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>200</height>
+           </size>
+          </property>
+          <property name="autoFillBackground">
+           <bool>true</bool>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayoutBalances">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QWidget" name="ordersWidgetHeader" native="true">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>40</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>40</height>
+              </size>
+             </property>
+             <property name="autoFillBackground">
+              <bool>true</bool>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayoutOrdersHeader">
+              <item>
+               <widget class="QLabel" name="labelLastOrdersHeader">
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                  <weight>50</weight>
+                  <bold>false</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>My Orders</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QTableWidget" name="tableWidgetOrders">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="editTriggers">
+              <set>QAbstractItemView::NoEditTriggers</set>
+             </property>
+             <property name="showDropIndicator" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="selectionMode">
+              <enum>QAbstractItemView::NoSelection</enum>
+             </property>
+             <property name="selectionBehavior">
+              <enum>QAbstractItemView::SelectRows</enum>
+             </property>
+             <property name="showGrid">
+              <bool>true</bool>
+             </property>
+             <property name="gridStyle">
+              <enum>Qt::SolidLine</enum>
+             </property>
+             <property name="cornerButtonEnabled">
+              <bool>true</bool>
+             </property>
+             <property name="rowCount">
+              <number>1</number>
+             </property>
+             <property name="columnCount">
+              <number>6</number>
+             </property>
+             <attribute name="verticalHeaderVisible">
+              <bool>false</bool>
+             </attribute>
+             <row/>
+             <column/>
+             <column/>
+             <column/>
+             <column/>
+             <column/>
+             <column/>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayoutRight">
+        <item>
+         <widget class="QWidget" name="balancesWidget" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>250</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>120</height>
+           </size>
+          </property>
+          <property name="autoFillBackground">
+           <bool>true</bool>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayoutBalances">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QWidget" name="balancesWidgetHeader" native="true">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>40</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>40</height>
+              </size>
+             </property>
+             <property name="autoFillBackground">
+              <bool>true</bool>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayoutBalancesHeader">
+              <item>
+               <widget class="QLabel" name="labelLastBalancesHeader">
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                  <weight>50</weight>
+                  <bold>false</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Balances</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QTableWidget" name="tableWidgetBalances">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>100</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>100</height>
+              </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="autoScroll">
+              <bool>false</bool>
+             </property>
+             <property name="editTriggers">
+              <set>QAbstractItemView::NoEditTriggers</set>
+             </property>
+             <property name="tabKeyNavigation">
+              <bool>false</bool>
+             </property>
+             <property name="showDropIndicator" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="dragDropOverwriteMode">
+              <bool>false</bool>
+             </property>
+             <property name="selectionMode">
+              <enum>QAbstractItemView::NoSelection</enum>
+             </property>
+             <property name="showGrid">
+              <bool>false</bool>
+             </property>
+             <property name="rowCount">
+              <number>2</number>
+             </property>
+             <property name="columnCount">
+              <number>2</number>
+             </property>
+             <attribute name="horizontalHeaderVisible">
+              <bool>false</bool>
+             </attribute>
+             <attribute name="verticalHeaderVisible">
+              <bool>false</bool>
+             </attribute>
+             <row/>
+             <row/>
+             <column/>
+             <column/>
+             <item row="0" column="0">
+              <property name="text">
+               <string>USD</string>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>9</pointsize>
+               </font>
+              </property>
+              <property name="background">
+               <brush brushstyle="NoBrush">
+                <color alpha="255">
+                 <red>170</red>
+                 <green>178</green>
+                 <blue>183</blue>
+                </color>
+               </brush>
+              </property>
+             </item>
+             <item row="0" column="1">
+              <property name="text">
+               <string>N/A</string>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>9</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="textAlignment">
+               <set>AlignRight|AlignVCenter</set>
+              </property>
+              <property name="background">
+               <brush brushstyle="NoBrush">
+                <color alpha="255">
+                 <red>183</red>
+                 <green>190</green>
+                 <blue>195</blue>
+                </color>
+               </brush>
+              </property>
+             </item>
+             <item row="1" column="0">
+              <property name="text">
+               <string>BTC</string>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>9</pointsize>
+               </font>
+              </property>
+              <property name="background">
+               <brush brushstyle="NoBrush">
+                <color alpha="255">
+                 <red>170</red>
+                 <green>178</green>
+                 <blue>183</blue>
+                </color>
+               </brush>
+              </property>
+             </item>
+             <item row="1" column="1">
+              <property name="text">
+               <string>N/A</string>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>9</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="textAlignment">
+               <set>AlignRight|AlignVCenter</set>
+              </property>
+              <property name="background">
+               <brush brushstyle="NoBrush">
+                <color alpha="255">
+                 <red>183</red>
+                 <green>190</green>
+                 <blue>195</blue>
+                </color>
+               </brush>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QWidget" name="buySellWidget" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>250</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>250</height>
+           </size>
+          </property>
+          <property name="autoFillBackground">
+           <bool>true</bool>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayoutBuySell">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QTabWidget" name="tabWidget">
+             <property name="tabPosition">
+              <enum>QTabWidget::North</enum>
+             </property>
+             <property name="tabShape">
+              <enum>QTabWidget::Rounded</enum>
+             </property>
+             <property name="currentIndex">
+              <number>0</number>
+             </property>
+             <property name="elideMode">
+              <enum>Qt::ElideNone</enum>
+             </property>
+             <property name="usesScrollButtons">
+              <bool>false</bool>
+             </property>
+             <widget class="QWidget" name="tabBuy">
+              <attribute name="title">
+               <string>Buy</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayoutBuyTab">
+               <item>
+                <layout class="QHBoxLayout" name="HorizontalLayoutBuyTab1">
+                 <item>
+                  <widget class="QLabel" name="labelBuyAmount">
+                   <property name="text">
+                    <string>Amount</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="lineEditBuyAmount">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>125</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>10</pointsize>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>0</string>
+                   </property>
+                   <property name="frame">
+                    <bool>false</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="HorizontalLayoutBuyTab2">
+                 <item>
+                  <widget class="QLabel" name="labelBuyPrice">
+                   <property name="text">
+                    <string>Price</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="lineEditBuyPrice">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>125</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>10</pointsize>
+                    </font>
+                   </property>
+                   <property name="frame">
+                    <bool>false</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="HorizontalLayoutBuyTab3">
+                 <item>
+                  <widget class="QLabel" name="labelBuyTotal">
+                   <property name="text">
+                    <string>Total</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="labelBuyTotalAmount">
+                   <property name="text">
+                    <string>0.0</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButtonBuy">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>BUY</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tabSell">
+              <attribute name="title">
+               <string>Sell</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayoutSellTab"/>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QWidget" name="widgetFiller" native="true"/>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
-  <layoutdefault spacing="6" margin="11"/>
-  <customwidgets>
-    <customwidget>
-      <class>QCustomPlot</class>
-      <extends>QWidget</extends>
-      <header>qcustomplot.h</header>
-      <container>1</container>
-    </customwidget>
-  </customwidgets>
-  <resources/>
-  <connections/>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header>qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
 </ui>

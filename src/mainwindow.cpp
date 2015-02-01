@@ -251,6 +251,11 @@ void MainWindow::updateTradeList() {
       ui->tableWidgetTrades->setItem(i, 0, new QTableWidgetItem(time));
       ui->tableWidgetTrades->setItem(i, 1, new QTableWidgetItem(value));
       ui->tableWidgetTrades->setItem(i, 2, new QTableWidgetItem(amount));
+
+      ui->tableWidgetTrades->item(i,1)->setTextColor(QColor(76, 175, 80));
+
+      if(trades[i].getPrice() < trades[i+1].getPrice() && (i+1) < trades.size())
+        ui->tableWidgetTrades->item(i,1)->setTextColor(QColor(244, 67, 54));
     }
 
     // Update the current price and set the correct colour

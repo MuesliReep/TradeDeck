@@ -45,6 +45,9 @@ void ExchangeBot::privateUpdateTick() {
     case 1:
       updateTradeHistory();
       break;
+    case 2:
+      getActiveOrders(QString("btc_usd"));
+      break;
     default:
       pApiQueue = -1;
       break;
@@ -64,7 +67,7 @@ void ExchangeBot::startBot() {
 
   // Start the interval timer
   timer->start(c->getCoolDownTime()*1000);
-  timer2->start(5*1000); // TODO: determine correct amount
+  timer2->start(2*1000); // TODO: determine correct amount
 }
 
 // Sets the configuration for this Exchange Bot
@@ -136,7 +139,9 @@ void ExchangeBot::getActiveOrders(QString pair) {
   QByteArray nonce;
   nonce.setNum(QDateTime::currentDateTime().toTime_t()); //TODO: better nonce creation
   nonce.prepend("nonce=");
-  QByteArray data(method +"&"+ nonce);
+  QByteArray pairByte(pair.toUtf8());
+  pairByte.prepend("pair=");
+  QByteArray data(method +"&"+ nonce +"&"+ pairByte);
 
   // Sign the data
   QByteArray sign = QMessageAuthenticationCode::hash(data, c->getApiSecret().toUtf8(), QCryptographicHash::Sha512).toHex();
@@ -277,6 +282,9 @@ bool ExchangeBot::checkSuccess(QJsonObject *object) {
 
   bool result = false;
 
+  if(!object->contains("success"))
+    return result;
+
   if(object->value("success").toInt() == 1)
     result = true;
 
@@ -370,6 +378,42 @@ void ExchangeBot::parseInfoData(QJsonObject *object) {
   BTCBalance = object->value("btc").toDouble();
 }
 
+bool ExchangeBot::parseActiveOrdersData(QJsonObject *object) {
+
+  // Clear the current list
+  activeOrders.clear();
+
+  QStringList orderIDs = object->keys();
+
+  // If there aren't any active orders return
+  if(orderIDs.size() == 0)
+    return false;
+
+  for(int i = 0; i < orderIDs.size(); i++) {
+
+    QJsonObject orderObject = object->value(orderIDs[i]).toObject();
+
+    uint orderID    = (uint)orderIDs[i].toInt();
+    QString pair    = orderObject.value("pair").toString(); // TODO: split pair
+    QString typeS   = orderObject.value("type").toString();
+    double amount   = orderObject.value("amount").toDouble();
+    double price    = orderObject.value("rate").toDouble();
+    uint timeStamp  = (uint)orderObject.value("rate").toInt();
+
+    uint type = 0;
+
+    if(typeS.contains("sell"))
+      type = 1;
+
+
+    Order order(pair, amount, price, orderID, type, timeStamp);
+
+    activeOrders.append(order);
+  }
+
+  return true;
+}
+
 //----------------------------------//
 //              Slots               //
 //----------------------------------//
@@ -460,9 +504,10 @@ void ExchangeBot::activeOrdersDataReply(QNetworkReply *reply) {
       activeOrdersData = jsonObj.value("return").toObject();
 
       // Parse new data
+      parseActiveOrdersData(&activeOrdersData);
 
       // Send signal to GUI to update
-
+      sendNewMarketData(5);
     }
     else {
 
@@ -543,8 +588,6 @@ void ExchangeBot::cancelOrderDataReply(QNetworkReply *reply) {
 }
 
 void ExchangeBot::tradeHistoryDataReply(QNetworkReply *reply) {
-
-  qDebug() << "New tradeHistory Packet " << QDateTime::currentDateTime().toTime_t();
 
   if(!reply->error()) {
 
@@ -711,4 +754,8 @@ double ExchangeBot::getUSDBalance() {
 }
 double ExchangeBot::getBTCBalance() {
   return BTCBalance;
+}
+
+QList<Order> ExchangeBot::getActiveOrders() {
+  return activeOrders;
 }

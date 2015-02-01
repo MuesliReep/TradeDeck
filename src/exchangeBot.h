@@ -33,6 +33,7 @@ public:
   double getBTCBalance();
 
   MarketData* getMarketData();
+  QList<Order> getActiveOrders();
 
 private:
   Downloader  d;
@@ -44,6 +45,7 @@ private:
   int pApiQueue;
   double USDBalance;
   double BTCBalance;
+  QList<Order> activeOrders;
 
   QNetworkAccessManager* infoDownloadManager;
   QNetworkAccessManager* createTradeDownloadManager;
@@ -70,6 +72,7 @@ private:
   QString getRequestErrorMessage(QJsonObject *object);
 
   void parseInfoData(QJsonObject *object);
+  bool parseActiveOrdersData(QJsonObject *object);
 
   // Public API:
 

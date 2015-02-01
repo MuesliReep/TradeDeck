@@ -7,6 +7,16 @@ Order::Order(QString Name, double Pair1, double Pair2) {
   pair2 = Pair2;
 }
 
+Order::Order(QString Name, double Amount, double Price, uint OrderID , uint Type , uint TimeStamp) {
+
+  name      = Name;
+  pair1     = Amount;
+  pair2     = Price;
+  orderID   = OrderID;
+  type      = Type;     // Buy = 0, Sell = 1;
+  timeStamp = TimeStamp;
+}
+
 Order::~Order() {
 }
 
@@ -26,4 +36,19 @@ double Order::getPair1() {
 double Order::getPair2() {
 
   return pair2;
+}
+
+uint Order::getOrderID() {
+
+  return orderID;
+}
+
+uint Order::getType() {
+
+  return type;
+}
+
+uint Order::getTimeStamp() {
+
+  return timeStamp;
 }

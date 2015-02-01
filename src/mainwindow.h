@@ -43,6 +43,7 @@ private:
     void scaleTradePlot();
 
     void updateBalances();
+    void updateOrders();
 
     void setupPlot();
     void setupOrdersTable();

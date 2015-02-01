@@ -161,28 +161,10 @@ void MainWindow::setupPlot() {
 //
 void MainWindow::setupOrdersTable() {
 
-  QColor bodyColour(30, 43, 52);
-
-  // QPalette palette = ui->tableWidgetOrders->palette();
-  // palette.setColor(QPalette::Background, bodyColour);
-  // ui->tableWidgetOrders->setPalette(palette);
-
-
-
-//  background-color: QMainWindow
-
   QStringList labels;
   labels  << "Time" << "Type" << "Amount" << "Price" << "Remaining" << "Status" ;
 
   ui->tableWidgetOrders->setHorizontalHeaderLabels(labels);
-
-  for(int i=0;i<6;i++) {
-
-    QTableWidgetItem item;
-    item.setText("Test");
-
-    ui->tableWidgetOrders->setItem(1,i,&item);
-  }
 }
 
 //
@@ -395,6 +377,44 @@ void MainWindow::updateBalances() {
   ui->tableWidgetBalances->item(1,1)->setText(btc);
 }
 
+//
+void MainWindow::updateOrders() {
+
+  // Clear old data
+  ui->tableWidgetOrders->clear();
+
+  QList<Order> orders = e->getActiveOrders();
+
+  ui->tableWidgetOrders->setRowCount(orders.size());
+
+  // For each order add it to the table
+  for(int i = 0; i < orders.size(); i++) {
+
+    QString time; QDateTime dateTime;
+    dateTime.setTime_t(orders[i].getTimeStamp());
+    time = dateTime.toString("hh:mm:ss");
+    QString type;       type.setNum(orders[i].getType());
+    QString amount;     amount.setNum(orders[i].getPair1());
+    QString price;      price.setNum(orders[i].getPair2());
+    QString remaining;  remaining.setNum(-1);
+    QString status;     status.setNum(-1);
+
+    ui->tableWidgetOrders->setItem(i, 0, new QTableWidgetItem(time));
+    ui->tableWidgetOrders->setItem(i, 1, new QTableWidgetItem(type));
+    ui->tableWidgetOrders->setItem(i, 2, new QTableWidgetItem(amount));
+    ui->tableWidgetOrders->setItem(i, 3, new QTableWidgetItem(price));
+    ui->tableWidgetOrders->setItem(i, 4, new QTableWidgetItem(remaining));
+    ui->tableWidgetOrders->setItem(i, 5, new QTableWidgetItem(status));
+    ui->tableWidgetOrders->setItem(i+1, 0, new QTableWidgetItem("FUU"));
+  }
+
+  // TODO: Check why header is deleted on clear
+  QStringList labels;
+  labels  << "Time" << "Type" << "Amount" << "Price" << "Remaining" << "Status" ;
+
+  ui->tableWidgetOrders->setHorizontalHeaderLabels(labels);
+}
+
 // Slots
 
 void MainWindow::receiveNewMarketData(int dataType) {
@@ -426,8 +446,12 @@ void MainWindow::receiveNewMarketData(int dataType) {
     case 3:
       updateBalances();
       break;
+    case 5:
+      updateOrders();
+      qDebug() << "new active order Data received";
+      break;
     default:
-      qDebug() << "UI received unknown data";
+      qDebug() << "UI received unknown data: " << dataType;
       break;
   }
 }

@@ -49,6 +49,8 @@ private:
     void setupOrdersTable();
     void setupBalancesTable();
     void setupTradesTable();
+    void setupAsksTable();
+    void setupBidsTable();
 
 public slots:
   void receiveNewMarketData(int dataType);

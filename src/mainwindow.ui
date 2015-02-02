@@ -125,7 +125,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QListWidget" name="listWidgetAsks">
+            <widget class="QTableWidget" name="tableWidgetAsks">
              <property name="maximumSize">
               <size>
                <width>250</width>
@@ -135,11 +135,11 @@
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
-             <property name="frameShadow">
-              <enum>QFrame::Sunken</enum>
+             <property name="verticalScrollBarPolicy">
+              <enum>Qt::ScrollBarAlwaysOff</enum>
              </property>
-             <property name="sizeAdjustPolicy">
-              <enum>QAbstractScrollArea::AdjustIgnored</enum>
+             <property name="horizontalScrollBarPolicy">
+              <enum>Qt::ScrollBarAlwaysOff</enum>
              </property>
              <property name="editTriggers">
               <set>QAbstractItemView::NoEditTriggers</set>
@@ -150,12 +150,39 @@
              <property name="selectionMode">
               <enum>QAbstractItemView::NoSelection</enum>
              </property>
-             <property name="movement">
-              <enum>QListView::Snap</enum>
+             <property name="selectionBehavior">
+              <enum>QAbstractItemView::SelectRows</enum>
              </property>
-             <property name="modelColumn">
-              <number>0</number>
+             <property name="showGrid">
+              <bool>false</bool>
              </property>
+             <property name="gridStyle">
+              <enum>Qt::SolidLine</enum>
+             </property>
+             <property name="rowCount">
+              <number>1</number>
+             </property>
+             <property name="columnCount">
+              <number>2</number>
+             </property>
+             <attribute name="horizontalHeaderDefaultSectionSize">
+              <number>100</number>
+             </attribute>
+             <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+              <bool>true</bool>
+             </attribute>
+             <attribute name="horizontalHeaderStretchLastSection">
+              <bool>false</bool>
+             </attribute>
+             <attribute name="verticalHeaderVisible">
+              <bool>false</bool>
+             </attribute>
+             <attribute name="verticalHeaderDefaultSectionSize">
+              <number>15</number>
+             </attribute>
+             <row/>
+             <column/>
+             <column/>
             </widget>
            </item>
            <item>
@@ -176,7 +203,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QListWidget" name="listWidgetBids">
+            <widget class="QTableWidget" name="tableWidgetBids">
              <property name="maximumSize">
               <size>
                <width>250</width>
@@ -185,6 +212,12 @@
              </property>
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="verticalScrollBarPolicy">
+              <enum>Qt::ScrollBarAlwaysOff</enum>
+             </property>
+             <property name="horizontalScrollBarPolicy">
+              <enum>Qt::ScrollBarAlwaysOff</enum>
              </property>
              <property name="editTriggers">
               <set>QAbstractItemView::NoEditTriggers</set>
@@ -195,6 +228,43 @@
              <property name="selectionMode">
               <enum>QAbstractItemView::NoSelection</enum>
              </property>
+             <property name="selectionBehavior">
+              <enum>QAbstractItemView::SelectRows</enum>
+             </property>
+             <property name="showGrid">
+              <bool>false</bool>
+             </property>
+             <property name="gridStyle">
+              <enum>Qt::SolidLine</enum>
+             </property>
+             <property name="rowCount">
+              <number>1</number>
+             </property>
+             <property name="columnCount">
+              <number>3</number>
+             </property>
+             <attribute name="horizontalHeaderVisible">
+              <bool>false</bool>
+             </attribute>
+             <attribute name="horizontalHeaderDefaultSectionSize">
+              <number>100</number>
+             </attribute>
+             <attribute name="horizontalHeaderMinimumSectionSize">
+              <number>27</number>
+             </attribute>
+             <attribute name="horizontalHeaderStretchLastSection">
+              <bool>true</bool>
+             </attribute>
+             <attribute name="verticalHeaderVisible">
+              <bool>false</bool>
+             </attribute>
+             <attribute name="verticalHeaderDefaultSectionSize">
+              <number>15</number>
+             </attribute>
+             <row/>
+             <column/>
+             <column/>
+             <column/>
             </widget>
            </item>
           </layout>

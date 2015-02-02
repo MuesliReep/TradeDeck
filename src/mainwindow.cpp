@@ -6,9 +6,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow) {
 
     ui->setupUi(this);
+
+    // Setup UI widgets
     setupPlot();
     setupOrdersTable();
     setupTradesTable();
+    setupAsksTable();
+    setupBidsTable();
 
     // Set colours
     QColor headerColour(47, 61, 69);
@@ -71,11 +75,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableWidgetBalances->setStyleSheet(tableStyle);
     ui->tableWidgetOrders->setStyleSheet(tableStyle);
     ui->tableWidgetTrades->setStyleSheet(tableStyle);
+    ui->tableWidgetAsks->setStyleSheet(tableStyle);
+    ui->tableWidgetBids->setStyleSheet(tableStyle);
 
     // ui->tableWidgetBalances->horizontalHeader()->resizeSections(QHeaderView::Stretch);
     ui->tableWidgetBalances->horizontalHeader()->setStretchLastSection(true);
     ui->tableWidgetOrders->horizontalHeader()->setStretchLastSection(true);
     ui->tableWidgetTrades->horizontalHeader()->setStretchLastSection(true);
+    ui->tableWidgetAsks->horizontalHeader()->setStretchLastSection(true);
+    ui->tableWidgetBids->horizontalHeader()->setStretchLastSection(true);
 
     // Set tab styles
     ui->tabWidget->setStyleSheet(tabStyle);
@@ -101,6 +109,10 @@ void MainWindow::setExchangeBots(ExchangeBot *E) {
   // Connect bot signals to gui
   connect(e,SIGNAL(sendNewMarketData(int)),this,SLOT(receiveNewMarketData(int)));
 }
+
+//----------------------------------//
+//         Setup functions          //
+//----------------------------------//
 
 //
 void MainWindow::setupPlot() {
@@ -184,16 +196,31 @@ void MainWindow::setupBalancesTable() {
 //
 void MainWindow::setupTradesTable() {
 
-  // tableWidgetTrades
-
   // Set column header titels
   QStringList labels;
   labels  << "Time" << "Price" << "Amount";
 
   ui->tableWidgetTrades->setHorizontalHeaderLabels(labels);
-
-  // Set colum widths
 }
+
+//
+void MainWindow::setupAsksTable() {
+
+  // Set column header titels
+  QStringList labels;
+  labels << "Price" << "Amount";
+
+  ui->tableWidgetAsks->setHorizontalHeaderLabels(labels);
+}
+
+//
+void MainWindow::setupBidsTable() {
+
+}
+
+//----------------------------------//
+//         Update functions         //
+//----------------------------------//
 
 //
 void MainWindow::scaleTradePlot() {
@@ -223,14 +250,17 @@ void MainWindow::updateTradeList() {
   // Get the latest trade list
   QList<Trade> trades = e->getMarketData()->getTrades();
 
+  // Set the max. number of trades to be shown
+  int listSize = 100;
+
   // Update the trade table
   if(trades.size()>0) {
 
     // Set the number of rows
-    if(trades.size()<50)
+    if(trades.size()<listSize)
       ui->tableWidgetTrades->setRowCount(trades.size());
     else
-      ui->tableWidgetTrades->setRowCount(50);
+      ui->tableWidgetTrades->setRowCount(listSize);
 
     // Iterate through the trade list and add them to the table
     for(int i=0;i<trades.size()&&i<50;i++) {
@@ -316,12 +346,24 @@ void MainWindow::updateTradePlot() {
 //
 void MainWindow::updateTradeDepth() {
 
-  ui->listWidgetAsks->clear();
-  ui->listWidgetBids->clear();
+  // Clear the current data
+  ui->tableWidgetAsks->clear();
+  ui->tableWidgetBids->clear();
 
+  // Set the header titels
+  QStringList labels;
+  labels << "Price" << "Amount";
+
+  ui->tableWidgetAsks->setHorizontalHeaderLabels(labels);
+
+  // Retrieve new data from the exchange bot
   QList<Order> asks = e->getMarketData()->getAsks();
   QList<Order> bids = e->getMarketData()->getBids();
 
+  // Set the number of rows for both Asks and Bids
+  int maxRowSize = 15;
+
+  // Update the asks
   if(asks.size()>0) {
 
     QString pair1;
@@ -329,44 +371,69 @@ void MainWindow::updateTradeDepth() {
 
     int j = asks.size();
 
-    if(asks.size() >= 15)
-      j = 15;
+    if(asks.size() > maxRowSize)
+      j = maxRowSize;
 
-    for(int i=j-1;i>=0;i--) {
+    ui->tableWidgetAsks->setRowCount(j);
+
+    int k = 0 ; // Counter
+
+    for(int i = j - 1; i >= 0; i--) {
 
       pair1.setNum(asks[i].getPair1());
       pair2.setNum(asks[i].getPair2());
 
-      // new QListWidgetItem(pair1+" \t "+pair2, ui->listWidgetAsks);
+      ui->tableWidgetAsks->setItem(k, 0, new QTableWidgetItem(pair1));
+      ui->tableWidgetAsks->setItem(k, 1, new QTableWidgetItem(pair2));
 
-      QListWidgetItem *newItem = new QListWidgetItem;
-      newItem->setText(pair1+" \t "+pair2);
-      ui->listWidgetAsks->addItem(newItem);
+      ui->tableWidgetAsks->item(k,1)->setTextColor(QColor(76, 175, 80));
+      k++;
     }
-  } else
-    new QListWidgetItem("No orders", ui->listWidgetAsks);
+  } else { // No ask orders available
 
+    ui->tableWidgetAsks->setRowCount(1);
+    ui->tableWidgetAsks->setItem(0, 0, new QTableWidgetItem("No orders"));
+  }
+
+  // Update the bids
   if(bids.size()>0) {
 
     QString pair1;
     QString pair2;
 
-    for(int i=0;i<asks.size()&&i<15;i++) {
+    int j = asks.size();
+
+    if(asks.size() > maxRowSize)
+      j = maxRowSize;
+
+    ui->tableWidgetBids->setRowCount(j);
+
+    for(int i = 0; i < j; i++) {
 
       pair1.setNum(bids[i].getPair1());
       pair2.setNum(bids[i].getPair2());
 
-      new QListWidgetItem(pair1+" \t "+pair2, ui->listWidgetBids);
+      ui->tableWidgetBids->setItem(i, 0, new QTableWidgetItem(pair1));
+      ui->tableWidgetBids->setItem(i, 1, new QTableWidgetItem(pair2));
+
+      ui->tableWidgetBids->item(i,1)->setTextColor(QColor(244, 67, 54));
     }
-  } else
-    new QListWidgetItem("No orders", ui->listWidgetBids);
+  } else { // No bid orders available
 
-  // listWidget sizes
-  ui->listWidgetAsks->setMinimumHeight(ui->listWidgetAsks->sizeHintForRow(0)*15+5);
-  ui->listWidgetAsks->setMaximumHeight(ui->listWidgetAsks->sizeHintForRow(0)*15+5);
+    ui->tableWidgetBids->setRowCount(1);
+    ui->tableWidgetBids->setItem(0, 0, new QTableWidgetItem("No orders"));
+  }
 
-  ui->listWidgetBids->setMinimumHeight(ui->listWidgetAsks->sizeHintForRow(0)*15+5);
-  ui->listWidgetBids->setMaximumHeight(ui->listWidgetAsks->sizeHintForRow(0)*15+5);
+  // Set tableWidget sizes
+  int rowSize     = 15; //ui->tableWidgetAsks->item(0,0)->sizeHint().rheight();
+  int headerSize  = 15; //ui->tableWidgetAsks->horizontalHeaderItem(0)->sizeHint().rheight();
+  int padding     = 5;
+
+  ui->tableWidgetAsks->setMinimumHeight(headerSize + rowSize * maxRowSize + padding);
+  ui->tableWidgetAsks->setMaximumHeight(headerSize + rowSize * maxRowSize + padding);
+
+  ui->tableWidgetBids->setMinimumHeight(rowSize * maxRowSize + padding);
+  ui->tableWidgetBids->setMaximumHeight(rowSize * maxRowSize + padding);
 }
 
 //
@@ -375,8 +442,8 @@ void MainWindow::updateBalances() {
   QString usd;
   QString btc;
 
-  usd.setNum(e->getUSDBalance());
-  btc.setNum(e->getBTCBalance());
+  usd.setNum(e->getUSDBalance(),'g',8);
+  btc.setNum(e->getBTCBalance(),'g',8);
 
   ui->tableWidgetBalances->item(0,1)->setText(usd);
   ui->tableWidgetBalances->item(1,1)->setText(btc);
@@ -410,7 +477,6 @@ void MainWindow::updateOrders() {
     ui->tableWidgetOrders->setItem(i, 3, new QTableWidgetItem(price));
     ui->tableWidgetOrders->setItem(i, 4, new QTableWidgetItem(remaining));
     ui->tableWidgetOrders->setItem(i, 5, new QTableWidgetItem(status));
-    ui->tableWidgetOrders->setItem(i+1, 0, new QTableWidgetItem("FUU"));
   }
 
   // TODO: Check why header is deleted on clear

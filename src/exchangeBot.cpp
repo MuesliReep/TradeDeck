@@ -451,7 +451,8 @@ void ExchangeBot::infoDataReply(QNetworkReply *reply) {
     qDebug() << "getInfo Packet error";
 
     reply->deleteLater();
-    infoDownloadManager->deleteLater();
+    if(infoDownloadManager != NULL)
+        infoDownloadManager->deleteLater();
 }
 
 void ExchangeBot::createTradeDataReply(QNetworkReply *reply) {
@@ -739,7 +740,8 @@ void ExchangeBot::tradeDataReply(QNetworkReply *reply) {
   // disconnect(tradeDownloadManager, 0, this, 0);
 
   reply->deleteLater();
-  tradeDownloadManager->deleteLater();
+  if(tradeDownloadManager != NULL)
+    tradeDownloadManager->deleteLater();
 }
 
 // Getters & Setters

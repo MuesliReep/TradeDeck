@@ -37,6 +37,8 @@ private:
     QCPGraph      *MA1;
     QCPGraph      *MA2;
 
+    bool checkBalance(int pair, double amount);
+
     void updateTradeDepth();
     void updateTradeList();
     void updateTradePlot();
@@ -52,8 +54,15 @@ private:
     void setupAsksTable();
     void setupBidsTable();
 
+    void setupUISignals();
+
 public slots:
   void receiveNewMarketData(int dataType);
+
+  void buyTotalChanged(const QString);
+  void buyButtonPressed();
+  void sellTotalChanged(const QString);
+  void sellButtonPressed();
 
 };
 

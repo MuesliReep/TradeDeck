@@ -14,6 +14,9 @@ MainWindow::MainWindow(QWidget *parent) :
     setupAsksTable();
     setupBidsTable();
 
+    // Setup UI signals & slots
+    setupUISignals();
+
     // Set colours
     QColor headerColour(47, 61, 69);
     QColor bodyColour(30, 43, 52);
@@ -98,7 +101,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow() {
 
-    // delete candlesticks;
     delete ui;
 }
 
@@ -108,6 +110,20 @@ void MainWindow::setExchangeBots(ExchangeBot *E) {
 
   // Connect bot signals to gui
   connect(e,SIGNAL(sendNewMarketData(int)),this,SLOT(receiveNewMarketData(int)));
+}
+
+bool MainWindow::checkBalance(int pair, double amount) {
+
+  switch(pair) {
+    case 0:
+      if(amount < e->getBTCBalance())
+        return true;
+    case 1:
+      if(amount < e->getUSDBalance())
+        return true;
+  }
+
+  return false;
 }
 
 //----------------------------------//
@@ -218,6 +234,21 @@ void MainWindow::setupBidsTable() {
 
 }
 
+//
+void MainWindow::setupUISignals() {
+
+  // Buy/Sell widget
+  connect(ui->lineEditBuyAmount,SIGNAL(textChanged(const QString)),this,SLOT(buyTotalChanged(const QString)));
+  connect(ui->lineEditBuyPrice,SIGNAL(textChanged(const QString)),this,SLOT(buyTotalChanged(const QString)));
+  connect(ui->pushButtonBuy,SIGNAL(clicked()),this,SLOT(buyButtonPressed()));
+
+  connect(ui->lineEditSellAmount,SIGNAL(textChanged(const QString)),this,SLOT(sellTotalChanged(const QString)));
+  connect(ui->lineEditSellPrice,SIGNAL(textChanged(const QString)),this,SLOT(sellTotalChanged(const QString)));
+  connect(ui->pushButtonSell,SIGNAL(clicked()),this,SLOT(sellButtonPressed()));
+
+  // textChanged(const QString & text)
+}
+
 //----------------------------------//
 //         Update functions         //
 //----------------------------------//
@@ -301,13 +332,22 @@ void MainWindow::updateTradeList() {
     else
       palette.setColor(ui->labelLastTradeValue->foregroundRole(), QColor(76, 175, 80));
 
-      ui->labelLastTradeValue->setPalette(palette);
-    }
+    ui->labelLastTradeValue->setPalette(palette);
 
-    QStringList labels;
-    labels  << "Time" << "Price" << "Amount";
+    // Update the current price in the buy sell tabs if amount is zero
+    double buyAmount  = ui->lineEditBuyAmount->text().toDouble();
+    double sellAmount = ui->lineEditSellAmount->text().toDouble();
 
-    ui->tableWidgetTrades->setHorizontalHeaderLabels(labels);
+    if(buyAmount == 0)
+      ui->lineEditBuyPrice->setText(price);
+    if(sellAmount == 0)
+      ui->lineEditSellPrice->setText(price);
+  }
+
+  QStringList labels;
+  labels  << "Time" << "Price" << "Amount";
+
+  ui->tableWidgetTrades->setHorizontalHeaderLabels(labels);
 }
 
 //
@@ -486,8 +526,77 @@ void MainWindow::updateOrders() {
   ui->tableWidgetOrders->setHorizontalHeaderLabels(labels);
 }
 
-// Slots
+//----------------------------------//
+//              Slots               //
+//----------------------------------//
 
+//
+void MainWindow::buyTotalChanged(const QString text) {
+
+  QString totalText;
+  totalText.setNum(ui->lineEditBuyAmount->text().toDouble() * ui->lineEditBuyPrice->text().toDouble());
+
+  ui->labelBuyTotalAmount->setText(totalText);
+}
+
+//
+void MainWindow::sellTotalChanged(const QString text) {
+
+  QString totalText;
+  totalText.setNum(ui->lineEditSellAmount->text().toDouble() * ui->lineEditSellPrice->text().toDouble());
+
+  ui->labelSellTotalAmount->setText(totalText);
+}
+
+//
+void MainWindow::buyButtonPressed() {
+
+  // Get values
+  double price  = ui->lineEditBuyPrice->text().toDouble();
+  double amount = ui->lineEditBuyAmount->text().toDouble();
+  double total  = price * amount;
+
+  // Check USD balance
+  if(checkBalance(1, total)) {
+
+    qDebug() << "Buy " << amount << "BTC, at " << price << "USD/BTC";
+
+    // Reset the UI input
+    ui->lineEditBuyAmount->setText("0");
+
+  } else {
+
+    qDebug() << "Insufficient funds for buy order";
+
+    //Show error dialog
+  }
+}
+
+//
+void MainWindow::sellButtonPressed() {
+
+  // Get values
+  double price  = ui->lineEditSellPrice->text().toDouble();
+  double amount = ui->lineEditSellAmount->text().toDouble();
+  double total  = price * amount;
+
+  // Check BTC balance
+  if(checkBalance(0, amount)) {
+
+    qDebug() << "Sell " << amount << "BTC, at " << price << "USD/BTC";
+
+    // Reset the UI input
+    ui->lineEditSellAmount->setText("0");
+
+  } else {
+
+    qDebug() << "Insufficient funds for sell order";
+
+    //Show error dialog
+  }
+}
+
+//
 void MainWindow::receiveNewMarketData(int dataType) {
 
   // Update the individual screen elements according to the data type

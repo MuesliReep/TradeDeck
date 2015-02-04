@@ -38,6 +38,7 @@ private:
     QCPGraph      *MA2;
 
     bool checkBalance(int pair, double amount);
+    double calculateMinimumTrade(double sellPrice, double sellAmount, double fee);
 
     void updateTradeDepth();
     void updateTradeList();

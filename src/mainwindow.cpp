@@ -65,6 +65,10 @@ MainWindow::MainWindow(QWidget *parent) :
     palette.setColor(QPalette::Background, bodyColour);
     ui->buySellWidget->setPalette(palette);
 
+    palette = ui->calcWidget->palette();
+    palette.setColor(QPalette::Background, bodyColour);
+    ui->calcWidget->setPalette(palette);
+
     // Set the header styles
 
     ui->headerWidget->setStyleSheet(headerStyle);
@@ -73,6 +77,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->balancesWidgetHeader->setStyleSheet(headerStyle);
     ui->ordersWidgetHeader->setStyleSheet(headerStyle);
     ui->priceChartWidgetHeader->setStyleSheet(headerStyle);
+    ui->calcWidgetHeader->setStyleSheet(headerStyle);
 
     // Set table styles
     ui->tableWidgetBalances->setStyleSheet(tableStyle);
@@ -104,6 +109,7 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
+//
 void MainWindow::setExchangeBots(ExchangeBot *E) {
 
   e = E;
@@ -112,6 +118,7 @@ void MainWindow::setExchangeBots(ExchangeBot *E) {
   connect(e,SIGNAL(sendNewMarketData(int)),this,SLOT(receiveNewMarketData(int)));
 }
 
+//
 bool MainWindow::checkBalance(int pair, double amount) {
 
   switch(pair) {
@@ -124,6 +131,33 @@ bool MainWindow::checkBalance(int pair, double amount) {
   }
 
   return false;
+}
+
+//
+double MainWindow::calculateMinimumTrade(double sellPrice, double sellAmount, double fee) {
+
+  double sellTotal  = sellPrice * sellAmount;
+  double sellFee    = sellTotal * (fee / 100.0);
+  double nettoSell  = sellTotal - sellFee;
+
+  double x = 0.000001;
+  int i = 1;
+  double buyPrice = 0;
+  double buyFee   = -1;
+  double nettoBuy = 0;
+
+  while(nettoBuy < nettoSell) {
+
+    buyPrice  = sellPrice - (i * x);
+    buyTotal  = nettoSell / buyPrice;
+    buyFee    = buyTotal * (fee / 100.0);
+    nettoBuy  = buyTotal - buyFee;
+    i++;
+  }
+
+  qDebug() << "Minimum buy back price: " << buyPrice << "USD";
+
+  return nettoBuy;
 }
 
 //----------------------------------//

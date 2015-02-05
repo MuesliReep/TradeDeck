@@ -1135,7 +1135,7 @@
                     <property name="maximumSize">
                       <size>
                         <width>250</width>
-                        <height>250</height>
+                        <height>350</height>
                       </size>
                     </property>
                     <property name="autoFillBackground">
@@ -1285,7 +1285,7 @@
                           <item>
                             <widget class="QLabel" name="labelCalcSellTotal">
                               <property name="text">
-                                <string>Price</string>
+                                <string>Total</string>
                               </property>
                               <property name="alignment">
                                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1324,11 +1324,21 @@
 
 
                       <item>
+                        <widget class="Line" name="lineFeeTop">
+                          <property name="orientation">
+                            <enum>Qt::Horizontal</enum>
+                          </property>
+                        </widget>
+                      </item>
+
+
+
+                      <item>
                         <layout class="QHBoxLayout" name="HorizontalLayoutCalc4">
                           <item>
                             <widget class="QLabel" name="labelCalcFee">
                               <property name="text">
-                                <string>Fee</string>
+                                <string>Fee %</string>
                               </property>
                               <property name="alignment">
                                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1369,9 +1379,9 @@
                       <item>
                         <layout class="QHBoxLayout" name="HorizontalLayoutCalc5">
                           <item>
-                            <widget class="QLabel" name="labelCalcFeeCost">
+                            <widget class="QLabel" name="labelCalcFeeSellAmount">
                               <property name="text">
-                                <string>Fee Cost</string>
+                                <string>Sell Fee</string>
                               </property>
                               <property name="alignment">
                                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1379,7 +1389,7 @@
                             </widget>
                           </item>
                           <item>
-                            <widget class="QLabel" name="labelCalcFeeCostAmount">
+                            <widget class="QLabel" name="labelCalcFeeSellAmount">
                               <property name="text">
                                 <string>0.0</string>
                               </property>
@@ -1390,6 +1400,176 @@
                           </item>
                         </layout>
                       </item>
+
+
+
+                      <item>
+                        <layout class="QHBoxLayout" name="HorizontalLayoutCalc6">
+                          <item>
+                            <widget class="QLabel" name="labelCalcFeeSellAmount">
+                              <property name="text">
+                                <string>Buy Fee</string>
+                              </property>
+                              <property name="alignment">
+                                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                              </property>
+                            </widget>
+                          </item>
+                          <item>
+                            <widget class="QLabel" name="labelCalcFeeSellAmount">
+                              <property name="text">
+                                <string>0.0</string>
+                              </property>
+                              <property name="alignment">
+                                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                              </property>
+                            </widget>
+                          </item>
+                        </layout>
+                      </item>
+
+
+
+                      <item>
+                        <widget class="Line" name="lineFeeBot">
+                          <property name="orientation">
+                            <enum>Qt::Horizontal</enum>
+                          </property>
+                        </widget>
+                      </item>
+
+
+
+                      <item>
+                        <layout class="QHBoxLayout" name="HorizontalLayoutCalc7">
+                          <item>
+                            <widget class="QLabel" name="labelCalcBuyAmount">
+                              <property name="text">
+                                <string>Amount</string>
+                              </property>
+                              <property name="alignment">
+                                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                              </property>
+                            </widget>
+                          </item>
+                          <item>
+                            <widget class="QLineEdit" name="lineEditCalcBuyAmount">
+                              <property name="minimumSize">
+                                <size>
+                                  <width>0</width>
+                                  <height>30</height>
+                                </size>
+                              </property>
+                              <property name="maximumSize">
+                                <size>
+                                  <width>125</width>
+                                  <height>30</height>
+                                </size>
+                              </property>
+                              <property name="font">
+                                <font>
+                                  <pointsize>11</pointsize>
+                                </font>
+                              </property>
+                              <property name="text">
+                                <string>0.2</string>
+                              </property>
+                              <property name="frame">
+                                <bool>false</bool>
+                              </property>
+                            </widget>
+                          </item>
+                        </layout>
+                      </item>
+
+
+
+                      <item>
+                        <layout class="QHBoxLayout" name="HorizontalLayoutCalc8">
+                          <item>
+                            <widget class="QLabel" name="labelCalcBuyPrice">
+                              <property name="text">
+                                <string>Price</string>
+                              </property>
+                              <property name="alignment">
+                                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                              </property>
+                            </widget>
+                          </item>
+                          <item>
+                            <widget class="QLineEdit" name="lineEditCalcBuyPrice">
+                              <property name="minimumSize">
+                                <size>
+                                  <width>0</width>
+                                  <height>30</height>
+                                </size>
+                              </property>
+                              <property name="maximumSize">
+                                <size>
+                                  <width>125</width>
+                                  <height>30</height>
+                                </size>
+                              </property>
+                              <property name="font">
+                                <font>
+                                  <pointsize>11</pointsize>
+                                </font>
+                              </property>
+                              <property name="text">
+                                <string>0.2</string>
+                              </property>
+                              <property name="frame">
+                                <bool>false</bool>
+                              </property>
+                            </widget>
+                          </item>
+                        </layout>
+                      </item>
+
+
+
+                      <item>
+                        <layout class="QHBoxLayout" name="HorizontalLayoutCalc9">
+                          <item>
+                            <widget class="QLabel" name="labelCalcBuyTotal">
+                              <property name="text">
+                                <string>Total</string>
+                              </property>
+                              <property name="alignment">
+                                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                              </property>
+                            </widget>
+                          </item>
+                          <item>
+                            <widget class="QLineEdit" name="lineEditCalcBuyTotal">
+                              <property name="minimumSize">
+                                <size>
+                                  <width>0</width>
+                                  <height>30</height>
+                                </size>
+                              </property>
+                              <property name="maximumSize">
+                                <size>
+                                  <width>125</width>
+                                  <height>30</height>
+                                </size>
+                              </property>
+                              <property name="font">
+                                <font>
+                                  <pointsize>11</pointsize>
+                                </font>
+                              </property>
+                              <property name="text">
+                                <string>0.2</string>
+                              </property>
+                              <property name="frame">
+                                <bool>false</bool>
+                              </property>
+                            </widget>
+                          </item>
+                        </layout>
+                      </item>
+
 
 
                     </layout>

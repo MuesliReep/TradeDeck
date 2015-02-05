@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QColor backgroundColour(21, 35, 44);
     QColor textColour(183,190,195);
 
-    QString widgetStyle("QWidget {background-color:rgb(47, 61, 69);} QListWidget::item { color: rgb(183,190,195); background-color:transparent; }");
+    QString widgetStyle("QWidget {background-color:rgb(30, 43, 52);} QLineEdit{border:1px solid gray; padding: 0 5px; font:12px} QPushButton{background-color: rgb(137,145,152); border-style: none; font: 16px} QPushButton:pressed{ background-color: rgb(30, 43, 52);}");
     QString headerStyle("QWidget {background-color:rgb(47, 61, 69);} QLabel {color:rgb(255, 255, 255);}");
     QString tableStyle("QTableWidget {gridline-color: rgb(52, 64, 73); background-color: rgb(30, 43, 52); color: rgb(183,190,195);} QHeaderView {background-color:rgb(30, 43, 52); color: rgb(183,190,195);} QHeaderView::section {background-color:rgb(30, 43, 52);}");
     QString tabStyle("QWidget {background-color: rgb(47, 61, 69); color: rgb(183,190,195);} QLineEdit{border:1px solid gray; padding: 0 5px; font:12px} QPushButton{background-color: rgb(137,145,152); border-style: none; font: 16px} QPushButton:pressed{ background-color: rgb(30, 43, 52);}  QTabWidget::tab{background-color: rgb(47, 61, 69);} QTabWidget::pane{border:0px;} QTabBar::tab {min-width: 125px; min-height: 40px; font: 16px} QTabBar::tab:selected {background-color: rgb(47, 61, 69);} QTabBar::tab:!selected {background-color: rgb(30, 43, 52);} QTabWidget::tab-bar {color: rgb(183,190,195);}");
@@ -40,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // ui->ordersWidget->setStyleSheet(widgetStyle);
     // ui->priceChartWidget->setStyleSheet(widgetStyle);
     // ui->buySellWidget->setStyleSheet(widgetStyle);
+    ui->calcWidget->setStyleSheet(widgetStyle);
 
     palette = ui->tradeDepthWidget->palette();
     palette.setColor(QPalette::Background, bodyColour);
@@ -134,7 +135,7 @@ bool MainWindow::checkBalance(int pair, double amount) {
 }
 
 //
-double MainWindow::calculateMinimumTrade(double sellPrice, double sellAmount, double fee) {
+double MainWindow::calculateMinimumBuyTrade(double sellPrice, double sellAmount, double fee) {
 
   double sellTotal  = sellPrice * sellAmount;
   double sellFee    = sellTotal * (fee / 100.0);
@@ -143,6 +144,7 @@ double MainWindow::calculateMinimumTrade(double sellPrice, double sellAmount, do
   double x = 0.000001;
   int i = 1;
   double buyPrice = 0;
+  double buyTotal = 0;
   double buyFee   = -1;
   double nettoBuy = 0;
 
@@ -158,6 +160,12 @@ double MainWindow::calculateMinimumTrade(double sellPrice, double sellAmount, do
   qDebug() << "Minimum buy back price: " << buyPrice << "USD";
 
   return nettoBuy;
+}
+
+//
+double calculateMinimumSellTrade(double buyPrice, double buyAmount, double fee) {
+
+  return 0.0;
 }
 
 //----------------------------------//
@@ -561,7 +569,7 @@ void MainWindow::updateOrders() {
 }
 
 //----------------------------------//
-//              Slots               //
+//          Private Slots           //
 //----------------------------------//
 
 //
@@ -629,6 +637,31 @@ void MainWindow::sellButtonPressed() {
     //Show error dialog
   }
 }
+
+//
+void MainWindow::calcSellUpdate() {
+
+  // Update total
+
+  // Update sell total
+
+  // Calculate minimum buy
+
+}
+
+//
+void MainWindow::calcBuyUpdate() {
+
+}
+
+//
+void MainWindow::calcUseButtonPressed() {
+
+}
+
+//----------------------------------//
+//           Public Slots           //
+//----------------------------------//
 
 //
 void MainWindow::receiveNewMarketData(int dataType) {

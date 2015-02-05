@@ -38,7 +38,8 @@ private:
     QCPGraph      *MA2;
 
     bool checkBalance(int pair, double amount);
-    double calculateMinimumTrade(double sellPrice, double sellAmount, double fee);
+    double calculateMinimumBuyTrade(double sellPrice, double sellAmount, double fee);
+    double calculateMinimumSellTrade(double sellPrice, double sellAmount, double fee);
 
     void updateTradeDepth();
     void updateTradeList();
@@ -57,13 +58,18 @@ private:
 
     void setupUISignals();
 
-public slots:
-  void receiveNewMarketData(int dataType);
-
+private slots:
   void buyTotalChanged(const QString);
   void buyButtonPressed();
   void sellTotalChanged(const QString);
   void sellButtonPressed();
+
+  void calcSellUpdate();
+  void calcBuyUpdate();
+  void calcUseButtonPressed();
+
+public slots:
+  void receiveNewMarketData(int dataType);
 
 };
 

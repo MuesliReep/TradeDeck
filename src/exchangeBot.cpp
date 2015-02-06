@@ -74,7 +74,7 @@ void ExchangeBot::startBot() {
 void ExchangeBot::setConfig(Config *C) {
 
   c = C;
-  MarketData m = MarketData(c);
+  m = MarketData(c, true);
 }
 
 //----------------------------------//

@@ -54,14 +54,14 @@ class MarketData
 
 public:
   MarketData();
-  MarketData(Config *C);
+  MarketData(Config *C, bool loadFromFile = false);
   ~MarketData();
 
   void parseRawTradeData(QJsonArray *rawData);
   void parseRawDepthData(QJsonObject *rawData);
   void parseRawTickerData(QJsonObject *rawData);
 
-  bool loadTradeDataFromFile();
+  bool loadTradeDataFromFile(uint maxAge);
   void saveTradeDataToFile();
 
   uint getOldestTrade();

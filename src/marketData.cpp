@@ -3,9 +3,15 @@
 MarketData::MarketData() {
 }
 
-MarketData::MarketData(Config *C) {
+MarketData::MarketData(Config *C, bool loadFromFile) {
   c = C;
-  // tradeDataFileName = "btce_USD-BTC.json"; // TODO: should be created by exchangeBot, according to market
+
+  if(loadFromFile) {
+
+    // tradeDataFileName = "btce_USD-BTC.json"; // TODO: should be created by exchangeBot, according to market
+
+    loadTradeDataFromFile(24*60*60); // TODO: maxAge should be defined in config
+  }
 }
 
 MarketData::~MarketData() {
@@ -60,9 +66,9 @@ void MarketData::binTradeData() {
   priceList.clear();
 
   // Determine the oldest allowed trade according to the number of data points & bin size
-  uint maxTimeStampAge   = dataPoints * binSize;
+  uint maxAge            = dataPoints * binSize;
   uint currentTimeStamp  = findClosestBin();
-  uint maxTimeStamp      = currentTimeStamp - maxTimeStampAge;
+  uint maxTimeStamp      = currentTimeStamp - maxAge;
 
   // Work through the data list
   // Go from old to new
@@ -73,8 +79,8 @@ void MarketData::binTradeData() {
 
     if(tradeData[i].getTimeStamp() < maxTimeStamp) {
 
-      i--; // -1 because current timestamp will not be used
-      break;
+      i--;    // -1 because current timestamp will not be used
+      break;  // Break out of the for loop, oldest timestamp has been found
     }
   }
 
@@ -94,22 +100,25 @@ void MarketData::binTradeData() {
     minIntervalStamp = maxTimeStamp + binSize * (counter+1);
     maxIntervalStamp = maxTimeStamp + binSize * counter;
 
-    // Create a list with all the trades that occured in this time interval
+    // Create a list with all the trades that occured in this time interval (bin)
     QList<Trade> intervalTrades;
 
     for( ; x >= 0; x--) {
 
-      // If a timestamp is found that is not part of our search area break out of the for loop
-      if(!(tradeData[x].getTimeStamp() >= maxIntervalStamp && tradeData[x].getTimeStamp() <= minIntervalStamp)) { // TODO: FIX THIS
+      if(tradeData[x].getTimeStamp() < maxIntervalStamp) // << HIERRRR zit de fout, mag niet ouder gaan dan 250 bins
+        qDebug() << "ERROR timestamp is older than max allowed: " << tradeData[x].getTimeStamp() << "\tMax: " << maxIntervalStamp;
 
-        // x++;
+      // If a timestamp is found that is not part of our search area break out of the for loop
+      if(!(tradeData[x].getTimeStamp() >= maxIntervalStamp && tradeData[x].getTimeStamp() <= minIntervalStamp)) {
+
+        //x--;
         break;
       }
 
       intervalTrades.prepend(tradeData[x]);
     }
 
-    // If no trades took place or no data is available for the time interval
+    // If no trades took place or no data is available for this time interval(bin)
     // use the previous value. If no previous value is available use zero.
     if(!intervalTrades.size()>0) {
 
@@ -119,14 +128,17 @@ void MarketData::binTradeData() {
         priceList.prepend(DataPoint(maxIntervalStamp,0,0,0,0,0,0)); // The list is empty, create a zero value datapoint
       } else { // Use the previous value
 
-        DataPoint previousPoint(maxIntervalStamp, priceList[0].getOpen(),     priceList[0].getClose(),  // TODO: is zero correct?
-                                                  priceList[0].getHigh(),     priceList[0].getLow(),
-                                                  priceList[0].getAverage(),  priceList[0].getVolume()); // TODO: should use only median values
-        priceList.prepend(previousPoint); // Zero is used because all items are prepended, so the last item will be at zero
+        // Each point uses the previous average because no trades took place
+        double average = priceList[0].getAverage(); // Zero is used because all items are prepended, so the last item will be at zero
+
+        DataPoint previousPoint(maxIntervalStamp, average,  average,
+                                                  average,  average,
+                                                  average,  0); // Volume is zero because no trades took place
+        priceList.prepend(previousPoint);
       }
     } else {
 
-      // Create a dataPoint from the intervalTrades list
+      // Initialise the dataPoint values
       double  open      = intervalTrades[intervalTrades.size()-1].getPrice();
       double  close     = intervalTrades[0].getPrice();
       uint    timeStamp = intervalTrades[0].getTimeStamp();
@@ -146,7 +158,7 @@ void MarketData::binTradeData() {
         volume += intervalTrades[k].getAmount();
       }
 
-      // Calculate average over bin set
+      // Calculate average over bin // TODO: should use median values for average
       double  average;
       double  sum = 0;
 
@@ -155,8 +167,10 @@ void MarketData::binTradeData() {
 
       average = sum / intervalTrades.size();
 
+      // Create the dataPoint from the gathered values
       DataPoint dataPoint(timeStamp, open, close, high, low, average, volume);
 
+      // Add the new dataPoint to the priceList
       priceList.prepend(dataPoint);
     }
   }
@@ -303,7 +317,7 @@ void MarketData::parseRawTickerData(QJsonObject *rawData) {
 }
 
 // Saves the current market data set to a specified file
-bool MarketData::loadTradeDataFromFile() {
+bool MarketData::loadTradeDataFromFile(uint maxAge) {
 
   bool result = false;
 
@@ -314,6 +328,8 @@ bool MarketData::loadTradeDataFromFile() {
   QJsonDocument json;
 
   if(file.open(QFile::ReadOnly)) {
+
+    qDebug() << "Loading trade data from " << tradeDataFileName;
 
     QJsonParseError error;
 
@@ -326,6 +342,15 @@ bool MarketData::loadTradeDataFromFile() {
 
       qDebug() << error.errorString();
       return result;
+    }
+
+    // Calculate oldest allowed timestamp
+    uint maxTimeStamp = 0;
+
+    if(maxAge != 0) {
+
+      uint currentTimeStamp = findClosestBin();
+      maxTimeStamp = currentTimeStamp - maxAge;
     }
 
     // Read JSON values
@@ -342,6 +367,12 @@ bool MarketData::loadTradeDataFromFile() {
       double  amount    = tradeObject.value("amount").toDouble();
       uint    tradeID   = (uint)tradeObject.value("tradeID").toInt();
       uint    timeStamp = (uint)tradeObject.value("timeStamp").toInt();
+
+      // Check if the timeStamp is younger than max allowed
+      if(timeStamp < maxTimeStamp) {
+        qDebug() << "timeStamp < maxTimeStamp " << timeStamp << " < " << maxTimeStamp;
+        continue;
+      }
 
       // Create a trade object from the converted values
       Trade trade(price, amount, tradeID, timeStamp);

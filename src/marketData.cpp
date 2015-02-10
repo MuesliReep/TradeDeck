@@ -84,6 +84,10 @@ void MarketData::binTradeData() {
     }
   }
 
+  // If last trade in tradeData was the smalest, i must be set one back
+  if(i == tradeData.size())
+    i--;
+
   uint minIntervalStamp = maxTimeStamp; // The youngest timestamp
   uint maxIntervalStamp = maxTimeStamp; // The oldest timestamp
 

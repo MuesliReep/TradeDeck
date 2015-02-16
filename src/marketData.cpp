@@ -79,37 +79,37 @@ void MarketData::binTradeData() {
 
     if(tradeData[i].getTimeStamp() < maxTimeStamp) {
 
-      i--;    // -1 because current timestamp will not be used
+      // i--;    // -1 because current timestamp will not be used
       break;  // Break out of the for loop, oldest timestamp has been found
     }
   }
 
   // If last trade in tradeData was the smalest, i must be set one back
-  if(i == tradeData.size())
-    i--;
+  // if(i == tradeData.size())
+    // i--;
 
   uint minIntervalStamp = maxTimeStamp; // The youngest timestamp
   uint maxIntervalStamp = maxTimeStamp; // The oldest timestamp
 
-  int x = i; // Keep track of where we are in the tradeData list so we dont look at the same values twice
+  int x = i-1; // Keep track of where we are in the tradeData list so we dont look at the same values twice
 
-  // For each time interval calculate the opening and closing prices.
+  // For each bin calculate the opening and closing prices.
   // Also calculate the average price
-  int counter = 0;
+  int counter = -1;
   for(int j = dataPoints-1; j >= 0; j--) {
 
-    counter++;
+    counter++; // Go to next bin
 
     // Determine the min and max timestamps for this time interval
-    minIntervalStamp = maxTimeStamp + binSize * (counter+1);
-    maxIntervalStamp = maxTimeStamp + binSize * counter;
+    minIntervalStamp = maxTimeStamp + (binSize * (counter+1));
+    maxIntervalStamp = maxTimeStamp + (binSize * counter);
 
     // Create a list with all the trades that occured in this time interval (bin)
     QList<Trade> intervalTrades;
 
     for( ; x >= 0; x--) {
 
-      if(tradeData[x].getTimeStamp() < maxIntervalStamp) // << HIERRRR zit de fout, mag niet ouder gaan dan 250 bins
+      if(tradeData[x].getTimeStamp() < maxIntervalStamp) // << HIERRRR zit de fout, mag niet ouder gaan dan 250 bins // maxIntervalStamp is groter dan maxTimeStamp wat niet mag
         qDebug() << "ERROR timestamp is older than max allowed: " << tradeData[x].getTimeStamp() << "\tMax: " << maxIntervalStamp;
 
       // If a timestamp is found that is not part of our search area break out of the for loop
@@ -180,6 +180,10 @@ void MarketData::binTradeData() {
   }
 
   // qDebug() << "price list: " << priceList.size();
+
+  qDebug() << "tradeData -1 " << tradeData[tradeData.size()-1].getTimeStamp();
+  qDebug() << "tradeData -2 " << tradeData[tradeData.size()-2].getTimeStamp();
+  qDebug() << "tradeData  " << tradeData.size();
 }
 
 // Parses a new market trade data set and merges it with the existing set(if any)

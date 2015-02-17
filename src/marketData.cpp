@@ -79,19 +79,16 @@ void MarketData::binTradeData() {
 
     if(tradeData[i].getTimeStamp() < maxTimeStamp) {
 
-      // i--;    // -1 because current timestamp will not be used
       break;  // Break out of the for loop, oldest timestamp has been found
     }
   }
 
-  // If last trade in tradeData was the smalest, i must be set one back
-  // if(i == tradeData.size())
-    // i--;
+  int x = i-1; // Keep track of where we are in the tradeData list so we dont look at the same values twice
+  // 1 is subtracted from i because either a timestamp was found older than allowed and the previous one needs to be used
+  // Or, the for loop went through all the data in which case the last timestamp needs to be used which is the list size -1
 
   uint minIntervalStamp = maxTimeStamp; // The youngest timestamp
   uint maxIntervalStamp = maxTimeStamp; // The oldest timestamp
-
-  int x = i-1; // Keep track of where we are in the tradeData list so we dont look at the same values twice
 
   // For each bin calculate the opening and closing prices.
   // Also calculate the average price
@@ -109,7 +106,7 @@ void MarketData::binTradeData() {
 
     for( ; x >= 0; x--) {
 
-      if(tradeData[x].getTimeStamp() < maxIntervalStamp) // << HIERRRR zit de fout, mag niet ouder gaan dan 250 bins // maxIntervalStamp is groter dan maxTimeStamp wat niet mag
+      if(tradeData[x].getTimeStamp() < maxIntervalStamp)
         qDebug() << "ERROR timestamp is older than max allowed: " << tradeData[x].getTimeStamp() << "\tMax: " << maxIntervalStamp;
 
       // If a timestamp is found that is not part of our search area break out of the for loop
@@ -178,12 +175,6 @@ void MarketData::binTradeData() {
       priceList.prepend(dataPoint);
     }
   }
-
-  // qDebug() << "price list: " << priceList.size();
-
-  qDebug() << "tradeData -1 " << tradeData[tradeData.size()-1].getTimeStamp();
-  qDebug() << "tradeData -2 " << tradeData[tradeData.size()-2].getTimeStamp();
-  qDebug() << "tradeData  " << tradeData.size();
 }
 
 // Parses a new market trade data set and merges it with the existing set(if any)
@@ -241,7 +232,7 @@ void MarketData::parseRawTradeData(QJsonArray *rawData) {
 
         for(int j = 0; j < x; j++) {
 
-          if(tradeID == tradeData[j].getTradeID()) { // TODO: Check if historical data, historical data will have timestamp = 0;
+          if(tradeID == tradeData[j].getTradeID()) { // TODO: Check if historical data, historical data will have tradeID = 0;
 
             duplicate = true;
             break;

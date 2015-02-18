@@ -690,6 +690,7 @@ void MainWindow::receiveNewMarketData(int dataType) {
       break;
     case 3:
       updateBalances();
+      updateOrders();
       break;
     case 5:
       updateOrders();

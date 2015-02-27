@@ -61,8 +61,10 @@ bool Config::loadConfigFromFile() {
     }
 
     // Set the current history cooldown and timestamp values
-    historyCoolDownTime         = historySources[historySourceID].getHistoryLastLoadedTimeStamp();
-    historyLastLoadedTimeStamp  = historySources[historySourceID].getHistoryCoolDownTime();
+    if(historySources.size() > 0) {
+      historyCoolDownTime         = historySources[historySourceID].getHistoryLastLoadedTimeStamp();
+      historyLastLoadedTimeStamp  = historySources[historySourceID].getHistoryCoolDownTime();
+    }
   }
 
   return result;

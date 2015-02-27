@@ -1407,7 +1407,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QLabel" name="labelCalcFeeSellAmount">
+                <widget class="QLabel" name="labelCalcFeeBuyAmount">
                  <property name="text">
                   <string>0.0</string>
                  </property>

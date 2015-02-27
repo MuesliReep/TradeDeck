@@ -64,8 +64,12 @@ private slots:
   void sellTotalChanged(const QString);
   void sellButtonPressed();
 
-  void calcSellUpdate();
-  void calcBuyUpdate();
+  void calcValueChanged(int value);
+  void calcSellValueChanged();
+  void calcSellTotalValueChanged();
+  void calcBuyValueChanged();
+  void calcBuyTotalValueChanged();
+  void calcFeeValueChanged();
   void calcUseButtonPressed();
 
 public slots:

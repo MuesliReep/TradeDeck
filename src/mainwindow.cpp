@@ -287,6 +287,15 @@ void MainWindow::setupUISignals() {
   connect(ui->pushButtonSell,SIGNAL(clicked()),this,SLOT(sellButtonPressed()));
 
   // textChanged(const QString & text)
+
+  // Trade calc widget
+  connect(ui->lineEditCalcSellAmount,SIGNAL(textChanged()),this,SLOT(calcSellValueChanged()));
+  connect(ui->lineEditCalcSellPrice,SIGNAL(textChanged()),this,SLOT(calcSellValueChanged()));
+  connect(ui->lineEditCalcSellTotal,SIGNAL(textChanged()),this,SLOT(calcSellValueChanged()));
+  connect(ui->lineEditCalcFee,SIGNAL(textChanged()),this,SLOT(calcValueChanged()));
+  connect(ui->lineEditCalcBuyAmount,SIGNAL(textChanged()),this,SLOT(calcBuyValueChanged()));
+  connect(ui->lineEditCalcBuyPrice,SIGNAL(textChanged()),this,SLOT(calcBuyValueChanged()));
+  connect(ui->lineEditCalcBuyTotal,SIGNAL(textChanged()),this,SLOT(calcBuyValueChanged()));
 }
 
 //----------------------------------//
@@ -608,7 +617,7 @@ void MainWindow::buyButtonPressed() {
 
     qDebug() << "Insufficient funds for buy order";
 
-    //Show error dialog
+    // TODO: Show error dialog
   }
 }
 
@@ -632,30 +641,73 @@ void MainWindow::sellButtonPressed() {
 
     qDebug() << "Insufficient funds for sell order";
 
-    //Show error dialog
+    // TODO: Show error dialog
   }
 }
 
 //
-void MainWindow::calcSellUpdate() {
+void MainWindow::calcValueChanged(int value) {
 
-  // Update total
+  double sellAmount = ui->lineEditCalcSellAmount->text().toDouble();
+  double sellPrice = ui->lineEditCalcSellPrice->text().toDouble();
+  double sellTotal = ui->lineEditCalcSellTotal->text().toDouble();
 
-  // Update sell total
+  double buyAmount = ui->lineEditCalcBuyAmount->text().toDouble();
+  double buyPrice = ui->lineEditCalcBuyPrice->text().toDouble();
+  double buyTotal = ui->lineEditCalcBuyTotal->text().toDouble();
 
-  // Calculate minimum buy
+  double fee = ui->lineEditCalcFee->text().toDouble();
+  double sellFee  = 0;
+  double buyFee   = 0;
+
+  switch(value) {
+
+    case 0: // sell amount or price changed
+      sellTotal = sellAmount * sellPrice;
+    break;
+    case 1: // buy amount or price changed
+      buyTotal = buyAmount * buyPrice;
+    break;
+    case 2: // sell total changed
+      sellAmount = sellTotal / sellPrice;
+    break;
+    case 3: // buy total changed
+      buyAmount = buyTotal / buyPrice;
+    break;
+    case 4: // fee percentage changed
+    break;
+  }
+
+  if(value == 0 || value == 2 || value == 4) { // Calculate minimum buy amount
+    calculateMinimumBuyTrade(sellPrice, sellAmount, fee);
+  }
+  else if (value == 1 || value == 3) { // Calculate minimum sell amount
+    calculateMinimumSellTrade(buyPrice, buyAmount, fee)
+  }
+  else{
+    qDebug() << "bad value";
+  }
+
+  QString sBuyTotal;
+
+  ui->lineEditCalcBuyTotal->setText(sBuyTotal.setNum(buyTotal));
+  ui->lineEditCalcBuyPrice->setText();
+  ui->lineEditCalcBuyAmount->setText();
+  ui->lineEditCalcFee->setText();
+  ui->lineEditCalcSellTotal->setText();
+  ui->lineEditCalcSellPrice->setText();
+  ui->lineEditCalcSellAmount->setText();
+  ui->labelCalcFeeSellAmount->setText();
+  ui->labelCalcFeeBuyAmount->setText();
 
 }
 
-//
-void MainWindow::calcBuyUpdate() {
-
-}
-
-//
-void MainWindow::calcUseButtonPressed() {
-
-}
+void MainWindow::calcSellValueChanged()       { calcValueChanged(0); }
+void MainWindow::calcBuyValueChanged()        { calcValueChanged(1); }
+void MainWindow::calcSellTotalValueChanged()  { calcValueChanged(2); }
+void MainWindow::calcBuyTotalValueChanged()   { calcValueChanged(3); }
+void MainWindow::calcFeeValueChanged()        { calcValueChanged(4); }
+void MainWindow::calcUseButtonPressed()       { }
 
 //----------------------------------//
 //           Public Slots           //

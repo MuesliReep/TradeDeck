@@ -133,35 +133,32 @@ bool MainWindow::checkBalance(int pair, double amount) {
 }
 
 //
-double MainWindow::calculateMinimumBuyTrade(double sellPrice, double sellAmount, double fee) {
+void MainWindow::calculateMinimumBuyTrade(double sellPrice, double sellAmount, double fee, double *buyPrice, double *buyAmount, double *buyTotal, double profit) {
 
-  double sellTotal  = sellPrice * sellAmount;
-  double sellFee    = sellTotal * (fee / 100.0);
-  double nettoSell  = sellTotal - sellFee;
+  double x = 0.00000001;
+  double i = 0;
 
-  double x = 0.000001;
-  int i = 1;
-  double buyPrice = 0;
-  double buyTotal = 0;
-  double buyFee   = -1;
-  double nettoBuy = 0;
+  i = profit + sellAmount;
+  i = i / (1.0-fee/100.0);
+  i = ((sellPrice * sellAmount) * (1.0-fee/100.0)) / i;
+  i = (sellPrice - i) / x;
+  i++; // +1 to go over break even point
 
-  while(nettoBuy < nettoSell) {
+  profit = ((((sellPrice * sellAmount) * (1.0-fee/100.0)) / (sellPrice - i*x)) * (1.0-fee/100.0)) - sellAmount;
 
-    buyPrice  = sellPrice - (i * x);
-    buyTotal  = nettoSell / buyPrice;
-    buyFee    = buyTotal * (fee / 100.0);
-    nettoBuy  = buyTotal - buyFee;
-    i++;
-  }
+  qDebug() << "i= " << i << "\tprofit= " << profit;
 
-  qDebug() << "Minimum buy back price: " << buyPrice << "USD";
+  *buyAmount  = (((sellPrice * sellAmount) * (1.0-fee/100.0)) / (sellPrice - i*x));
+  *buyPrice   = sellPrice - i*x;
+  *buyTotal   = *buyAmount * *buyPrice;
 
-  return buyPrice;
+  qDebug() << "\t Buy Amount: \t" << *buyAmount << "\t BTC";
+  qDebug() << "\t Buy Price: \t" << *buyPrice << "\t USD";
+  qDebug() << "\t Buy Total: \t" << *buyTotal << "\t USD";
 }
 
 //
-double calculateMinimumSellTrade(double buyPrice, double buyAmount, double fee) {
+double calculateMinimumSellTrade(double buyPrice, double buyAmount, double fee, double profit) {
 
   return 0.0;
 }
@@ -679,9 +676,7 @@ void MainWindow::calcValueChanged(int value) {
   }
 
   if(value == 0 || value == 2 || value == 4) { // Calculate minimum buy amount
-    buyPrice = calculateMinimumBuyTrade(sellPrice, sellAmount, fee);
-    buyAmount = sellTotal - sellTotal * (fee / 100.0);
-    buyTotal = buyAmount * buyPrice;
+    calculateMinimumBuyTrade(sellPrice, sellAmount, fee, &buyPrice, &buyAmount, &buyTotal);
   }
   else if (value == 1 || value == 3) { // Calculate minimum sell amount
     // calculateMinimumSellTrade(buyPrice, buyAmount, fee);
@@ -703,15 +698,15 @@ void MainWindow::calcValueChanged(int value) {
   QString sSellFee;
   QString sBuyFee;
 
-  ui->lineEditCalcBuyTotal->setText(sBuyTotal.setNum(buyTotal));
-  ui->lineEditCalcBuyPrice->setText(sBuyPrice.setNum(buyPrice));
-  ui->lineEditCalcBuyAmount->setText(sBuyAmount.setNum(buyAmount));
-  ui->lineEditCalcFee->setText(sFee.setNum(fee));
-  ui->lineEditCalcSellTotal->setText(sSellTotal.setNum(sellTotal));
-  ui->lineEditCalcSellPrice->setText(sSellPrice.setNum(sellPrice));
-  ui->lineEditCalcSellAmount->setText(sSellAmount.setNum(sellAmount));
-  ui->labelCalcFeeSellAmount->setText(sSellFee.setNum(sellFee));
-  ui->labelCalcFeeBuyAmount->setText(sBuyFee.setNum(buyFee));
+  ui->lineEditCalcBuyTotal->setText(sBuyTotal.setNum(buyTotal,'f',8));
+  ui->lineEditCalcBuyPrice->setText(sBuyPrice.setNum(buyPrice,'f',8));
+  ui->lineEditCalcBuyAmount->setText(sBuyAmount.setNum(buyAmount,'f',8));
+  ui->lineEditCalcFee->setText(sFee.setNum(fee,'f',8));
+  ui->lineEditCalcSellTotal->setText(sSellTotal.setNum(sellTotal,'f',8));
+  ui->lineEditCalcSellPrice->setText(sSellPrice.setNum(sellPrice,'f',8));
+  ui->lineEditCalcSellAmount->setText(sSellAmount.setNum(sellAmount,'f',8));
+  ui->labelCalcFeeSellAmount->setText(sSellFee.setNum(sellFee,'f',8));
+  ui->labelCalcFeeBuyAmount->setText(sBuyFee.setNum(buyFee,'f',8));
 
 }
 

@@ -75,6 +75,9 @@ private slots:
 public slots:
   void receiveNewMarketData(int dataType);
 
+signals:
+  void sendTradeRequest(int type, double price, double amount);
+
 };
 
 #endif // MAINWINDOW_H

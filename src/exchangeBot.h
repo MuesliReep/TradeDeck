@@ -97,6 +97,8 @@ public slots:
   void tickerDataReply(QNetworkReply *reply);
   void tradeDataReply(QNetworkReply *reply);
 
+  void receiveTradeRequest(int type, double price, double amount);
+
 private slots:
   void marketUpdateTick();
   void privateUpdateTick();

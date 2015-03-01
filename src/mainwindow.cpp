@@ -115,6 +115,7 @@ void MainWindow::setExchangeBots(ExchangeBot *E) {
 
   // Connect bot signals to gui
   connect(e,SIGNAL(sendNewMarketData(int)),this,SLOT(receiveNewMarketData(int)));
+  connect(this,SIGNAL(sendTradeRequest(int, double, double)),e,SLOT(receiveTradeRequest(int, double, double)));
 }
 
 //
@@ -627,12 +628,16 @@ void MainWindow::sellButtonPressed() {
   double total  = price * amount;
 
   // Check BTC balance
-  if(checkBalance(0, amount)) {
+  if(checkBalance(0, amount) && amount != 0.0) {
 
     qDebug() << "Sell " << amount << "BTC, at " << price << "USD/BTC";
 
     // Reset the UI input
     ui->lineEditSellAmount->setText("0");
+
+    //TODO: popup dialog window to confirm
+
+    sendTradeRequest(1, price, amount);
 
   } else {
 

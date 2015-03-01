@@ -43,10 +43,11 @@ void ExchangeBot::privateUpdateTick() {
       getInfo();
       break;
     case 1:
-      updateTradeHistory();
+      // updateTradeHistory();
       break;
     case 2:
-      getActiveOrders(QString("btc_usd"));
+      // if(activeOrders.size() > 0)
+        getActiveOrders(QString("btc_usd"));
       break;
     default:
       pApiQueue = -1;
@@ -107,14 +108,32 @@ void ExchangeBot::getInfo() {
 }
 
 //
-void ExchangeBot::createTrade(QString pair, int type, double price, double amount) {
+void ExchangeBot::createTrade(QString Pair, int Type, double Price, double Amount) {
 
   // Create POST data from method and nonce
   QByteArray method("method=Trade");
   QByteArray nonce;
   nonce.setNum(QDateTime::currentDateTime().toTime_t()); //TODO: better nonce creation
   nonce.prepend("nonce=");
-  QByteArray data(method +"&"+ nonce);
+
+  QByteArray pair("pair=");
+  pair.append(Pair);
+
+  QByteArray type("type=");
+  if(type == 0)
+    type.append("buy");
+  else
+    type.append("sell");
+
+  QByteArray price("rate=");
+  QString sPrice; sPrice.setNum(Price,'f',3);
+  price.append(sPrice);
+
+  QByteArray amount("amount=");
+  QString sAmount; sAmount.setNum(Amount,'f',8);
+  amount.append(sAmount);
+
+  QByteArray data(method +"&"+ nonce +"&"+ pair +"&"+ type +"&"+ price +"&"+ amount); qDebug() << "data: " << data;
 
   // Sign the data
   QByteArray sign = QMessageAuthenticationCode::hash(data, c->getApiSecret().toUtf8(), QCryptographicHash::Sha512).toHex();
@@ -425,6 +444,7 @@ void ExchangeBot::infoDataReply(QNetworkReply *reply) {
     QJsonObject jsonObj;
     QJsonObject infoData;
     QJsonObject fundsData;
+    int openOrders;
 
     // Extract JSON object from network reply
     getObjectFromDocument(reply, &jsonObj);
@@ -435,9 +455,14 @@ void ExchangeBot::infoDataReply(QNetworkReply *reply) {
       // Extract the info data we want
       infoData = jsonObj.value("return").toObject();
       fundsData = infoData.value("funds").toObject();
+      openOrders = infoData.value("open_orders").toInt();
 
       // Parse new data
       parseInfoData(&fundsData);
+
+      // // Clear activeOrders if necessary // TODO: check why this doesnt work
+      // if(!openOrders > 0)
+      //   activeOrders.clear();
 
       // Send signal to GUI to update
       sendNewMarketData(3);
@@ -472,8 +497,10 @@ void ExchangeBot::createTradeDataReply(QNetworkReply *reply) {
       tradeData = jsonObj.value("return").toObject();
 
       // Parse new data
+      // TODO: parse trade data
 
       // Send signal to GUI to update
+      qDebug() << "Trade created successfully";
 
     }
     else {
@@ -513,6 +540,12 @@ void ExchangeBot::activeOrdersDataReply(QNetworkReply *reply) {
     else {
 
       qDebug() << "ActiveOrders error: " << getRequestErrorMessage(&jsonObj);
+
+      // Parse empty data
+      parseActiveOrdersData(&activeOrdersData);
+
+      // Send signal to GUI to update
+      sendNewMarketData(5);
     }
 
   } else
@@ -744,7 +777,16 @@ void ExchangeBot::tradeDataReply(QNetworkReply *reply) {
     tradeDownloadManager->deleteLater();
 }
 
-// Getters & Setters
+void ExchangeBot::receiveTradeRequest(int type, double price, double amount) {
+
+  QString pair = "btc_usd";
+
+  createTrade(pair, type, price, amount);
+}
+
+//----------------------------------//
+//         Getters & Setters        //
+//----------------------------------//
 
 MarketData* ExchangeBot::getMarketData() {
 

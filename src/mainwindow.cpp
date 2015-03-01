@@ -157,7 +157,7 @@ double MainWindow::calculateMinimumBuyTrade(double sellPrice, double sellAmount,
 
   qDebug() << "Minimum buy back price: " << buyPrice << "USD";
 
-  return nettoBuy;
+  return buyPrice;
 }
 
 //
@@ -278,24 +278,24 @@ void MainWindow::setupBidsTable() {
 void MainWindow::setupUISignals() {
 
   // Buy/Sell widget
-  connect(ui->lineEditBuyAmount,SIGNAL(textChanged(const QString)),this,SLOT(buyTotalChanged(const QString)));
-  connect(ui->lineEditBuyPrice,SIGNAL(textChanged(const QString)),this,SLOT(buyTotalChanged(const QString)));
-  connect(ui->pushButtonBuy,SIGNAL(clicked()),this,SLOT(buyButtonPressed()));
+  connect(ui->lineEditBuyAmount,  SIGNAL(textChanged(const QString)),this,SLOT(buyTotalChanged(const QString)));
+  connect(ui->lineEditBuyPrice,   SIGNAL(textChanged(const QString)),this,SLOT(buyTotalChanged(const QString)));
+  connect(ui->pushButtonBuy,      SIGNAL(clicked()),this,SLOT(buyButtonPressed()));
 
-  connect(ui->lineEditSellAmount,SIGNAL(textChanged(const QString)),this,SLOT(sellTotalChanged(const QString)));
-  connect(ui->lineEditSellPrice,SIGNAL(textChanged(const QString)),this,SLOT(sellTotalChanged(const QString)));
-  connect(ui->pushButtonSell,SIGNAL(clicked()),this,SLOT(sellButtonPressed()));
+  connect(ui->lineEditSellAmount, SIGNAL(textChanged(const QString)),this,SLOT(sellTotalChanged(const QString)));
+  connect(ui->lineEditSellPrice,  SIGNAL(textChanged(const QString)),this,SLOT(sellTotalChanged(const QString)));
+  connect(ui->pushButtonSell,     SIGNAL(clicked()),this,SLOT(sellButtonPressed()));
 
   // textChanged(const QString & text)
 
   // Trade calc widget
-  connect(ui->lineEditCalcSellAmount,SIGNAL(textChanged()),this,SLOT(calcSellValueChanged()));
-  connect(ui->lineEditCalcSellPrice,SIGNAL(textChanged()),this,SLOT(calcSellValueChanged()));
-  connect(ui->lineEditCalcSellTotal,SIGNAL(textChanged()),this,SLOT(calcSellValueChanged()));
-  connect(ui->lineEditCalcFee,SIGNAL(textChanged()),this,SLOT(calcValueChanged()));
-  connect(ui->lineEditCalcBuyAmount,SIGNAL(textChanged()),this,SLOT(calcBuyValueChanged()));
-  connect(ui->lineEditCalcBuyPrice,SIGNAL(textChanged()),this,SLOT(calcBuyValueChanged()));
-  connect(ui->lineEditCalcBuyTotal,SIGNAL(textChanged()),this,SLOT(calcBuyValueChanged()));
+  connect(ui->lineEditCalcSellAmount, SIGNAL(textEdited(const QString)),this,SLOT(calcSellValueChanged()));
+  connect(ui->lineEditCalcSellPrice,  SIGNAL(textEdited(const QString)),this,SLOT(calcSellValueChanged()));
+  connect(ui->lineEditCalcSellTotal,  SIGNAL(textEdited(const QString)),this,SLOT(calcSellTotalValueChanged()));
+  connect(ui->lineEditCalcFee,        SIGNAL(textEdited(const QString)),this,SLOT(calcFeeValueChanged()));
+  connect(ui->lineEditCalcBuyAmount,  SIGNAL(textEdited(const QString)),this,SLOT(calcBuyValueChanged()));
+  connect(ui->lineEditCalcBuyPrice,   SIGNAL(textEdited(const QString)),this,SLOT(calcBuyValueChanged()));
+  connect(ui->lineEditCalcBuyTotal,   SIGNAL(textEdited(const QString)),this,SLOT(calcBuyTotalValueChanged()));
 }
 
 //----------------------------------//
@@ -649,16 +649,16 @@ void MainWindow::sellButtonPressed() {
 void MainWindow::calcValueChanged(int value) {
 
   double sellAmount = ui->lineEditCalcSellAmount->text().toDouble();
-  double sellPrice = ui->lineEditCalcSellPrice->text().toDouble();
-  double sellTotal = ui->lineEditCalcSellTotal->text().toDouble();
+  double sellPrice  = ui->lineEditCalcSellPrice->text().toDouble();
+  double sellTotal  = ui->lineEditCalcSellTotal->text().toDouble();
 
-  double buyAmount = ui->lineEditCalcBuyAmount->text().toDouble();
-  double buyPrice = ui->lineEditCalcBuyPrice->text().toDouble();
-  double buyTotal = ui->lineEditCalcBuyTotal->text().toDouble();
+  double buyAmount  = ui->lineEditCalcBuyAmount->text().toDouble();
+  double buyPrice   = ui->lineEditCalcBuyPrice->text().toDouble();
+  double buyTotal   = ui->lineEditCalcBuyTotal->text().toDouble();
 
   double fee = ui->lineEditCalcFee->text().toDouble();
-  double sellFee  = 0;
-  double buyFee   = 0;
+  double sellFee  = 0.0;
+  double buyFee   = 0.0;
 
   switch(value) {
 
@@ -679,26 +679,39 @@ void MainWindow::calcValueChanged(int value) {
   }
 
   if(value == 0 || value == 2 || value == 4) { // Calculate minimum buy amount
-    calculateMinimumBuyTrade(sellPrice, sellAmount, fee);
+    buyPrice = calculateMinimumBuyTrade(sellPrice, sellAmount, fee);
+    buyAmount = sellTotal - sellTotal * (fee / 100.0);
+    buyTotal = buyAmount * buyPrice;
   }
   else if (value == 1 || value == 3) { // Calculate minimum sell amount
-    calculateMinimumSellTrade(buyPrice, buyAmount, fee)
+    // calculateMinimumSellTrade(buyPrice, buyAmount, fee);
   }
   else{
     qDebug() << "bad value";
   }
 
+  sellFee = sellTotal * fee;
+  buyFee  = buyTotal * fee;
+
+  QString sSellAmount;
+  QString sSellPrice;
+  QString sSellTotal;
+  QString sBuyAmount;
+  QString sBuyPrice;
   QString sBuyTotal;
+  QString sFee;
+  QString sSellFee;
+  QString sBuyFee;
 
   ui->lineEditCalcBuyTotal->setText(sBuyTotal.setNum(buyTotal));
-  ui->lineEditCalcBuyPrice->setText();
-  ui->lineEditCalcBuyAmount->setText();
-  ui->lineEditCalcFee->setText();
-  ui->lineEditCalcSellTotal->setText();
-  ui->lineEditCalcSellPrice->setText();
-  ui->lineEditCalcSellAmount->setText();
-  ui->labelCalcFeeSellAmount->setText();
-  ui->labelCalcFeeBuyAmount->setText();
+  ui->lineEditCalcBuyPrice->setText(sBuyPrice.setNum(buyPrice));
+  ui->lineEditCalcBuyAmount->setText(sBuyAmount.setNum(buyAmount));
+  ui->lineEditCalcFee->setText(sFee.setNum(fee));
+  ui->lineEditCalcSellTotal->setText(sSellTotal.setNum(sellTotal));
+  ui->lineEditCalcSellPrice->setText(sSellPrice.setNum(sellPrice));
+  ui->lineEditCalcSellAmount->setText(sSellAmount.setNum(sellAmount));
+  ui->labelCalcFeeSellAmount->setText(sSellFee.setNum(sellFee));
+  ui->labelCalcFeeBuyAmount->setText(sBuyFee.setNum(buyFee));
 
 }
 

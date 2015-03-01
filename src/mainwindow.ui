@@ -1373,7 +1373,7 @@
              <item>
               <layout class="QHBoxLayout" name="HorizontalLayoutCalc5">
                <item>
-                <widget class="QLabel" name="labelCalcFeeSellAmount">
+                <widget class="QLabel" name="labelCalcFeeSell">
                  <property name="text">
                   <string>Sell Fee</string>
                  </property>
@@ -1397,7 +1397,7 @@
              <item>
               <layout class="QHBoxLayout" name="HorizontalLayoutCalc6">
                <item>
-                <widget class="QLabel" name="labelCalcFeeSellAmount">
+                <widget class="QLabel" name="labelCalcFeeBuy">
                  <property name="text">
                   <string>Buy Fee</string>
                  </property>

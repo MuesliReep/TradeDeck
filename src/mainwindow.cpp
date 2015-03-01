@@ -528,8 +528,8 @@ void MainWindow::updateBalances() {
   QString usd;
   QString btc;
 
-  usd.setNum(e->getUSDBalance(),'g',8);
-  btc.setNum(e->getBTCBalance(),'g',8);
+  usd.setNum(e->getUSDBalance(),'f',8);
+  btc.setNum(e->getBTCBalance(),'f',8);
 
   ui->tableWidgetBalances->item(0,1)->setText(usd);
   ui->tableWidgetBalances->item(1,1)->setText(btc);

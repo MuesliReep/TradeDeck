@@ -11,6 +11,7 @@
 #include "marketData.h"
 #include "order.h"
 #include "trade.h"
+#include "confirmDialog.h"
 
 #include "qcustomplot.h"
 

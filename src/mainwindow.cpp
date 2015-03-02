@@ -611,6 +611,9 @@ void MainWindow::buyButtonPressed() {
     // Reset the UI input
     ui->lineEditBuyAmount->setText("0");
 
+    ConfirmDialog *dialog = new ConfirmDialog(price, amount, total, 0, this);
+    dialog->exec();
+
   } else {
 
     qDebug() << "Insufficient funds for buy order";
@@ -628,7 +631,8 @@ void MainWindow::sellButtonPressed() {
   double total  = price * amount;
 
   // Check BTC balance
-  if(checkBalance(0, amount) && amount != 0.0) {
+  // if(checkBalance(0, amount) && amount != 0.0) {
+  if(true) { //TODO: remove when done with dialog
 
     qDebug() << "Sell " << amount << "BTC, at " << price << "USD/BTC";
 
@@ -636,8 +640,11 @@ void MainWindow::sellButtonPressed() {
     ui->lineEditSellAmount->setText("0");
 
     //TODO: popup dialog window to confirm
+    ConfirmDialog *dialog = new ConfirmDialog(price, amount, total, 1, this);
+    dialog->exec();
 
-    sendTradeRequest(1, price, amount);
+
+    //sendTradeRequest(1, price, amount);
 
   } else {
 

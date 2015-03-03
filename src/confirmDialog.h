@@ -15,20 +15,23 @@ class ConfirmDialog : public QDialog
   Q_OBJECT
 
 public:
-  ConfirmDialog(double Price, double Amount, double Total, int type, QWidget *parent = 0);
+  ConfirmDialog(double Price, double Amount, double Total, int Type, QWidget *parent = 0);
   ~ConfirmDialog();
 
 private:
   // QHBoxLayout *footerLayout;
   // QVBoxLayout *bodyLayout;
   // QHBoxLayout *headerLayout;
+  double price;
+  double amount;
+  int type;
 
 private slots:
   void closeDialog();
-  void tradeConfirmed();
+  void orderConfirmed();
 
 signals:
-  void confirmTradeRequest(double Price, double Amount, double Total, int type);
+  void confirmOrderRequest(double Price, double Amount, int type);
 
 };
 

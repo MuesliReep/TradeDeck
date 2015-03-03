@@ -75,6 +75,7 @@ private slots:
 
 public slots:
   void receiveNewMarketData(int dataType);
+  void receiveOrderConfirmed(double price, double amount, int type);
 
 signals:
   void sendTradeRequest(int type, double price, double amount);

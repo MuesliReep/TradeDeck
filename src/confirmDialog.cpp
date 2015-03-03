@@ -1,12 +1,15 @@
 #include "confirmDialog.h"
 
-ConfirmDialog::ConfirmDialog(double Price, double Amount, double Total, int type, QWidget *parent)
+ConfirmDialog::ConfirmDialog(double Price, double Amount, double Total, int Type, QWidget *parent)
   : QDialog(parent) {
+
+    price   = Price;
+    amount  = Amount;
+    type    = Type;
 
     int frameStyle = QFrame::Sunken | QFrame::Panel;
 
     setWindowFlags( Qt::CustomizeWindowHint );
-
 
     // Create widgets
 
@@ -75,21 +78,30 @@ ConfirmDialog::ConfirmDialog(double Price, double Amount, double Total, int type
     // bodyLayout->addWidget(botLine);
 
     // Customize widgets
-    amountLabel->setAlignment(Qt::AlignRight);
-    priceLabel->setAlignment(Qt::AlignRight);
-    totalLabel->setAlignment(Qt::AlignRight);
+    amountLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    priceLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    totalLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
-    amountLabel->setMaximumWidth(150);
-    priceLabel->setMaximumWidth(150);
-    totalLabel->setMaximumWidth(150);
+    amountLabel->setMaximumWidth(75);
+    priceLabel->setMaximumWidth(75);
+    totalLabel->setMaximumWidth(75);
 
-    amountValueLabel->setAlignment(Qt::AlignLeft);
-    priceValueLabel->setAlignment(Qt::AlignLeft);
-    totalValueLabel->setAlignment(Qt::AlignLeft);
+    amountValueLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    priceValueLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    totalValueLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     orderTypeLabel->setAlignment(Qt::AlignLeft);
 
-    orderTypeLabel->setStyleSheet("font: 20pt;");
+    QString smallFont("font: 10pt;");
+    QString largeFont("font: 14pt;");
 
+    amountLabel->setStyleSheet(smallFont);
+    priceLabel->setStyleSheet(smallFont);
+    totalLabel->setStyleSheet(smallFont);
+
+    amountValueLabel->setStyleSheet(largeFont);
+    priceValueLabel->setStyleSheet(largeFont);
+    totalValueLabel->setStyleSheet(largeFont);
+    orderTypeLabel->setStyleSheet("font: 20pt;");
 
     // Set the layout
     bodyWidget->setLayout(bodyLayout);
@@ -136,31 +148,32 @@ ConfirmDialog::ConfirmDialog(double Price, double Amount, double Total, int type
     setMinimumSize(300, 300);
 
     // Set the content
-    QString price;
-    QString amount;
-    QString total;
+    QString priceS;
+    QString amountS;
+    QString totalS;
 
-    price.setNum(Price,'f',3);
-    amount.setNum(Amount,'f',8);
-    total.setNum(Total,'f',3);
+    priceS.setNum(Price,'f',3);
+    amountS.setNum(Amount,'f',8);
+    totalS.setNum(Total,'f',3);
 
-    price.append(" USD");
-    amount.append(" BTC");
-    total.append(" USD");
+    priceS.append(" USD");
+    amountS.append(" BTC");
+    totalS.append(" USD");
 
-    priceValueLabel->setText(price);
-    amountValueLabel->setText(amount);
-    totalValueLabel->setText(total);
+    priceValueLabel->setText(priceS);
+    amountValueLabel->setText(amountS);
+    totalValueLabel->setText(totalS);
 
     // Connect button signals
     connect(cancelButton,  SIGNAL(clicked()),this,SLOT(closeDialog()));
-    connect(confirmButton, SIGNAL(clicked()),this,SLOT(tradeConfirmed()));
+    connect(confirmButton, SIGNAL(clicked()),this,SLOT(orderConfirmed()));
 
     // Connect confirmation signal
-    connect(this, SIGNAL(confirmTradeRequest(double, double, double, int)), parent, SLOT());
+    connect(this, SIGNAL(confirmOrderRequest(double, double, int)), parent, SLOT(receiveOrderConfirmed(double, double, int)));
 }
 
 ConfirmDialog::~ConfirmDialog() {
+  
   // delete headerLayout;
   // delete bodyLayout;
   // delete footerLayout;
@@ -168,10 +181,16 @@ ConfirmDialog::~ConfirmDialog() {
 
 // Closes the dialog box and cancels the trade
 void ConfirmDialog::closeDialog() {
+
   close();
 }
 
-// Confirmes the requested trade
-void ConfirmDialog::tradeConfirmed() {
+// Confirmes the requested order
+void ConfirmDialog::orderConfirmed() {
 
+  // Send confirm signal to UI
+  confirmOrderRequest(price, amount, type);
+
+  // Close this dialog
+  close();
 }

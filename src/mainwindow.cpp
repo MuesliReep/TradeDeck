@@ -604,13 +604,14 @@ void MainWindow::buyButtonPressed() {
   double total  = price * amount;
 
   // Check USD balance
-  if(checkBalance(1, total)) {
+  if(checkBalance(1, total) && amount != 0.0) {
 
     qDebug() << "Buy " << amount << "BTC, at " << price << "USD/BTC";
 
     // Reset the UI input
     ui->lineEditBuyAmount->setText("0");
 
+    // Create dialog window to confirm order
     ConfirmDialog *dialog = new ConfirmDialog(price, amount, total, 0, this);
     dialog->exec();
 
@@ -631,20 +632,16 @@ void MainWindow::sellButtonPressed() {
   double total  = price * amount;
 
   // Check BTC balance
-  // if(checkBalance(0, amount) && amount != 0.0) {
-  if(true) { //TODO: remove when done with dialog
+  if(checkBalance(0, amount) && amount != 0.0) {
 
     qDebug() << "Sell " << amount << "BTC, at " << price << "USD/BTC";
 
     // Reset the UI input
     ui->lineEditSellAmount->setText("0");
 
-    //TODO: popup dialog window to confirm
+    // Create dialog window to confirm order
     ConfirmDialog *dialog = new ConfirmDialog(price, amount, total, 1, this);
     dialog->exec();
-
-
-    //sendTradeRequest(1, price, amount);
 
   } else {
 
@@ -732,6 +729,15 @@ void MainWindow::calcUseButtonPressed()       { }
 //----------------------------------//
 //           Public Slots           //
 //----------------------------------//
+
+// Receives a signal which confirmes a user wishes to make the selected order
+// Can be called from a dialog or from any other privileged source
+void MainWindow::receiveOrderConfirmed(double price, double amount, int type) {
+
+  qDebug() << "UI Received order was confirmed by user";
+
+  sendTradeRequest(type, price, amount);
+}
 
 //
 void MainWindow::receiveNewMarketData(int dataType) {

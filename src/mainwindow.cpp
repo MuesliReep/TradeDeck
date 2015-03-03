@@ -228,7 +228,7 @@ void MainWindow::setupPlot() {
 void MainWindow::setupOrdersTable() {
 
   QStringList labels;
-  labels  << "Time" << "Type" << "Amount" << "Price" << "Remaining" << "Status" ;
+  labels  << "Time" << "Type" << "Amount" << "Price" << "Cancel";
 
   ui->tableWidgetOrders->setHorizontalHeaderLabels(labels);
 }
@@ -294,6 +294,9 @@ void MainWindow::setupUISignals() {
   connect(ui->lineEditCalcBuyAmount,  SIGNAL(textEdited(const QString)),this,SLOT(calcBuyValueChanged()));
   connect(ui->lineEditCalcBuyPrice,   SIGNAL(textEdited(const QString)),this,SLOT(calcBuyValueChanged()));
   connect(ui->lineEditCalcBuyTotal,   SIGNAL(textEdited(const QString)),this,SLOT(calcBuyTotalValueChanged()));
+
+  // Orders
+  connect(ui->pushButtonCancelOrder,  SIGNAL(clicked()),this,SLOT(cancelOrderButtonPressed()));
 }
 
 //----------------------------------//
@@ -558,17 +561,18 @@ void MainWindow::updateOrders() {
     QString remaining;  remaining.setNum(-1);
     QString status;     status.setNum(-1);
 
+    // Add items to row
     ui->tableWidgetOrders->setItem(i, 0, new QTableWidgetItem(time));
     ui->tableWidgetOrders->setItem(i, 1, new QTableWidgetItem(type));
     ui->tableWidgetOrders->setItem(i, 2, new QTableWidgetItem(amount));
     ui->tableWidgetOrders->setItem(i, 3, new QTableWidgetItem(price));
-    ui->tableWidgetOrders->setItem(i, 4, new QTableWidgetItem(remaining));
-    ui->tableWidgetOrders->setItem(i, 5, new QTableWidgetItem(status));
+    // ui->tableWidgetOrders->setItem(i, 4, new QTableWidgetItem(remaining)); // TODO: Remaining should be in popup dialog
+    // ui->tableWidgetOrders->setItem(i, 5, new QTableWidgetItem(status));
   }
 
   // TODO: Check why header is deleted on clear
   QStringList labels;
-  labels  << "Time" << "Type" << "Amount" << "Price" << "Remaining" << "Status" ;
+  labels  << "Time" << "Type" << "Amount" << "Price" << "Cancel";
 
   ui->tableWidgetOrders->setHorizontalHeaderLabels(labels);
 }
@@ -648,6 +652,33 @@ void MainWindow::sellButtonPressed() {
     qDebug() << "Insufficient funds for sell order";
 
     // TODO: Show error dialog
+  }
+}
+
+//
+void MainWindow::cancelOrderButtonPressed() {
+
+  // Get selected items
+  // QList<QTableWidgetItem *> selectedOrders = ui->tableWidgetOrders->selectedItems();
+
+  QItemSelectionModel *selection = ui->tableWidgetOrders->selectionModel();
+  QModelIndexList selectedOrders = selection->selectedIndexes();
+
+  // Process each item
+  for(int i = 0; i < selectedOrders.size(); i++) {
+
+    // Get the row ID
+    int rowID = selectedOrders[i].row();
+
+    // Get the orderID from exchangeBot
+    Order order = e->getActiveOrders().at(rowID);
+    uint orderID = order.getOrderID();
+
+    // Remove items from table
+    ui->tableWidgetOrders->removeRow(rowID);
+
+    // Send cancel to exchange
+    e->sendCancelOrder(orderID);
   }
 }
 

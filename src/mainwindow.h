@@ -6,12 +6,14 @@
 #include <QLocale>
 #include <QString>
 #include <QTableWidgetItem>
+#include <QModelIndex>
 
 #include "exchangeBot.h"
 #include "marketData.h"
 #include "order.h"
 #include "trade.h"
 #include "confirmDialog.h"
+#include "order.h"
 
 #include "qcustomplot.h"
 
@@ -64,6 +66,8 @@ private slots:
   void buyButtonPressed();
   void sellTotalChanged(const QString);
   void sellButtonPressed();
+
+  void cancelOrderButtonPressed();
 
   void calcValueChanged(int value);
   void calcSellValueChanged();

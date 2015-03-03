@@ -203,14 +203,19 @@ void ExchangeBot::getOrderInfo(uint orderID) {
 }
 
 //
-void ExchangeBot::cancelOrder(uint orderID) {
+void ExchangeBot::cancelOrder(uint OrderID) {
 
   // Create POST data from method and nonce
   QByteArray method("method=CancelOrder");
   QByteArray nonce;
   nonce.setNum(QDateTime::currentDateTime().toTime_t()); //TODO: better nonce creation
   nonce.prepend("nonce=");
-  QByteArray data(method +"&"+ nonce);
+
+  QByteArray orderID("order_id=");
+  QString orderIDS; orderIDS.setNum(OrderID);
+  orderID.append(orderID);
+
+  QByteArray data(method +"&"+ nonce +"&"+ orderID);
 
   // Sign the data
   QByteArray sign = QMessageAuthenticationCode::hash(data, c->getApiSecret().toUtf8(), QCryptographicHash::Sha512).toHex();
@@ -417,13 +422,12 @@ bool ExchangeBot::parseActiveOrdersData(QJsonObject *object) {
     QString typeS   = orderObject.value("type").toString();
     double amount   = orderObject.value("amount").toDouble();
     double price    = orderObject.value("rate").toDouble();
-    uint timeStamp  = (uint)orderObject.value("rate").toInt();
+    uint timeStamp  = (uint)orderObject.value("timestamp_created").toInt();
 
     uint type = 0;
 
     if(typeS.contains("sell"))
       type = 1;
-
 
     Order order(pair, amount, price, orderID, type, timeStamp);
 
@@ -603,10 +607,14 @@ void ExchangeBot::cancelOrderDataReply(QNetworkReply *reply) {
 
       // Extract the info data we want
       cancelOrderData = jsonObj.value("return").toObject();
+      uint orderID    = jsonObj.value("order_id").toInt();
 
       // Parse new data
+      // TODO: update new balances
 
       // Send signal to GUI to update
+
+      qDebug() << "Order: " << orderID << " was cancelled successfully";
 
     }
     else {
@@ -777,11 +785,19 @@ void ExchangeBot::tradeDataReply(QNetworkReply *reply) {
     tradeDownloadManager->deleteLater();
 }
 
+//----------------------------------//
+//           UI Commands            //
+//----------------------------------//
+
 void ExchangeBot::receiveTradeRequest(int type, double price, double amount) {
 
   QString pair = "btc_usd";
 
   createTrade(pair, type, price, amount);
+}
+
+void ExchangeBot::sendCancelOrder(uint orderID) {
+  cancelOrder(orderID);
 }
 
 //----------------------------------//

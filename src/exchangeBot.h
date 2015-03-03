@@ -34,6 +34,7 @@ public:
 
   MarketData* getMarketData();
   QList<Order> getActiveOrders();
+  void sendCancelOrder(uint orderID); // TODO: should this be a signal/slot from UI?
 
 private:
   Downloader  d;
@@ -65,7 +66,7 @@ private:
   void createTrade(QString pair, int type, double price, double amount);
   void getActiveOrders(QString pair);
   void getOrderInfo(uint orderID);
-  void cancelOrder(uint orderID);
+  void cancelOrder(uint OrderID);
   void updateTradeHistory();
   void updateTransactionHistory();
   bool checkSuccess(QJsonObject *object);

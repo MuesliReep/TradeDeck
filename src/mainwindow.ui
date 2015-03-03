@@ -515,7 +515,7 @@
              <property name="autoFillBackground">
               <bool>true</bool>
              </property>
-             <layout class="QVBoxLayout" name="verticalLayoutOrdersHeader">
+             <layout class="QHBoxLayout" name="horizontalLayoutOrdersHeader">
               <item>
                <widget class="QLabel" name="labelLastOrdersHeader">
                 <property name="font">
@@ -530,6 +530,30 @@
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButtonCancelOrder">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>40</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>40</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Cancel</string>
                 </property>
                </widget>
               </item>
@@ -548,7 +572,7 @@
               <bool>false</bool>
              </property>
              <property name="selectionMode">
-              <enum>QAbstractItemView::NoSelection</enum>
+              <enum>QAbstractItemView::MultiSelection</enum>
              </property>
              <property name="selectionBehavior">
               <enum>QAbstractItemView::SelectRows</enum>

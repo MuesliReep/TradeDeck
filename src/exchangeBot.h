@@ -60,6 +60,9 @@ private:
   QNetworkAccessManager* tickerDownloadManager;
   QNetworkAccessManager* tradeDownloadManager;
 
+  void createNonce(QByteArray *nonce);
+  void createMilliNonce(QByteArray *nonce);
+
   // Private API:
 
   void getInfo();

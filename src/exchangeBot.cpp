@@ -79,6 +79,24 @@ void ExchangeBot::setConfig(Config *C) {
 }
 
 //----------------------------------//
+//          Bot functions           //
+//----------------------------------//
+
+// TODO: These functions should be inherited
+
+// Creates a nonce from the current timestamp in secondes
+void ExchangeBot::createNonce(QByteArray *nonce) {
+
+  nonce->setNum(QDateTime::currentDateTime().toTime_t());
+}
+
+// Creates a nonce from the current timestamp in millsecondes
+void ExchangeBot::createMilliNonce(QByteArray *nonce) {
+
+  nonce->setNum(QDateTime::currentDateTime().toMSecsSinceEpoch());
+}
+
+//----------------------------------//
 //      Private API functions       //
 //----------------------------------//
 
@@ -88,7 +106,7 @@ void ExchangeBot::getInfo() {
   // Create POST data from method and nonce
   QByteArray method("method=getInfo");
   QByteArray nonce;
-  nonce.setNum(QDateTime::currentDateTime().toTime_t()); //TODO: better nonce creation
+  createNonce(&nonce);
   nonce.prepend("nonce=");
   QByteArray data(method +"&"+ nonce);
 
@@ -113,7 +131,7 @@ void ExchangeBot::createTrade(QString Pair, int Type, double Price, double Amoun
   // Create POST data from method and nonce
   QByteArray method("method=Trade");
   QByteArray nonce;
-  nonce.setNum(QDateTime::currentDateTime().toTime_t()); //TODO: better nonce creation
+  createNonce(&nonce);
   nonce.prepend("nonce=");
 
   QByteArray pair("pair=");
@@ -156,7 +174,7 @@ void ExchangeBot::getActiveOrders(QString pair) {
   // Create POST data from method and nonce
   QByteArray method("method=ActiveOrders");
   QByteArray nonce;
-  nonce.setNum(QDateTime::currentDateTime().toTime_t()); //TODO: better nonce creation
+  createNonce(&nonce);
   nonce.prepend("nonce=");
   QByteArray pairByte(pair.toUtf8());
   pairByte.prepend("pair=");
@@ -183,7 +201,7 @@ void ExchangeBot::getOrderInfo(uint orderID) {
   // Create POST data from method and nonce
   QByteArray method("method=OrderInfo");
   QByteArray nonce;
-  nonce.setNum(QDateTime::currentDateTime().toTime_t()); //TODO: better nonce creation
+  createNonce(&nonce);
   nonce.prepend("nonce=");
   QByteArray data(method +"&"+ nonce);
 
@@ -208,7 +226,7 @@ void ExchangeBot::cancelOrder(uint OrderID) {
   // Create POST data from method and nonce
   QByteArray method("method=CancelOrder");
   QByteArray nonce;
-  nonce.setNum(QDateTime::currentDateTime().toTime_t()); //TODO: better nonce creation
+  createNonce(&nonce);
   nonce.prepend("nonce=");
 
   QByteArray orderID("order_id=");
@@ -248,7 +266,7 @@ void ExchangeBot::updateTradeHistory() {
   // Create POST data from method and nonce
   QByteArray method("method=TradeHistory");
   QByteArray nonce;
-  nonce.setNum(QDateTime::currentDateTime().toTime_t()); //TODO: better nonce creation
+  createNonce(&nonce);
   nonce.prepend("nonce=");
   QByteArray data(method +"&"+ nonce);
 
@@ -282,7 +300,7 @@ void ExchangeBot::updateTransactionHistory() {
   // Create POST data from method and nonce
   QByteArray method("method=TransHistory");
   QByteArray nonce;
-  nonce.setNum(QDateTime::currentDateTime().toTime_t()); //TODO: better nonce creation
+  createNonce(&nonce);
   nonce.prepend("nonce=");
   QByteArray data(method +"&"+ nonce);
 

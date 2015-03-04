@@ -87,6 +87,7 @@ void ExchangeBot::startBot() {
   // Set the private API queue
   pApiQueue = -1;
   apiQueue  = -1;
+  lastNonce = 0;
 
   // Add initial tasks to queue
   addExchangeTask(ExchangeTask(0));       // getInfo
@@ -184,7 +185,16 @@ void ExchangeBot::updateTransactionHistoryTask(ExchangeTask *exchangeTask)  { up
 // Creates a nonce from the current timestamp in secondes
 void ExchangeBot::createNonce(QByteArray *nonce) {
 
-  nonce->setNum(QDateTime::currentDateTime().toTime_t());
+  if(lastNonce == 0) {
+
+    uint now = QDateTime::currentDateTime().toTime_t();
+    nonce->setNum(now);
+  }
+  else {
+
+    lastNonce++;
+    nonce->setNum(lastNonce);
+  }
 }
 
 // Creates a nonce from the current timestamp in millsecondes

@@ -52,13 +52,18 @@ private:
   Downloader  d;
   Config      *c;
   MarketData  m;
+
   QTimer *timer;
   QTimer *timer2;
 
   int apiQueue;
   int pApiQueue;
+
+  uint lastNonce;
+
   double USDBalance;
   double BTCBalance;
+
   QList<Order> activeOrders;
   QList<ExchangeTask> exchangeTasks;
 

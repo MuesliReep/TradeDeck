@@ -157,9 +157,9 @@ void ExchangeBot::getInfoTask(ExchangeTask *exchangeTask)         { getInfo(); a
 void ExchangeBot::createTradeTask(ExchangeTask *exchangeTask)     {
 
   QString pair    = exchangeTask->getTaskAttributes().at(0);
-  uint type       = exchangeTask->getTaskAttributes().at(0).toUInt();
-  double price    = exchangeTask->getTaskAttributes().at(0).toDouble();
-  double amount   = exchangeTask->getTaskAttributes().at(0).toDouble();
+  uint type       = exchangeTask->getTaskAttributes().at(1).toUInt();
+  double price    = exchangeTask->getTaskAttributes().at(2).toDouble();
+  double amount   = exchangeTask->getTaskAttributes().at(3).toDouble();
 
   createTrade(pair, type, price, amount);
 }
@@ -185,16 +185,16 @@ void ExchangeBot::updateTransactionHistoryTask(ExchangeTask *exchangeTask)  { up
 // Creates a nonce from the current timestamp in secondes
 void ExchangeBot::createNonce(QByteArray *nonce) {
 
-  if(lastNonce == 0) {
+  uint now = QDateTime::currentDateTime().toMSecsSinceEpoch() / 250;
 
-    uint now = QDateTime::currentDateTime().toTime_t();
-    nonce->setNum(now);
+  if(lastNonce == now) {
+    lastNonce+=2;
   }
-  else {
+  else
+    lastNonce = now;
 
-    lastNonce++;
-    nonce->setNum(lastNonce);
-  }
+  nonce->setNum(lastNonce);
+
 }
 
 // Creates a nonce from the current timestamp in millsecondes

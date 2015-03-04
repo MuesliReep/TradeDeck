@@ -570,6 +570,8 @@ void MainWindow::updateBalances() {
 //
 void MainWindow::updateOrders() {
 
+  // TODO: only clear when no orders
+
   // Clear old data
   ui->tableWidgetOrders->clear();
 
@@ -835,7 +837,8 @@ void MainWindow::receiveNewMarketData(int dataType) {
       break;
     case 3:
       updateBalances();
-      updateOrders();
+      // updateOrders();
+      qDebug() << "new info Data received";
       break;
     case 5:
       updateOrders();

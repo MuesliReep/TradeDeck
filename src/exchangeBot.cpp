@@ -26,32 +26,53 @@ void ExchangeBot::marketUpdateTick() {
   if(!checkCoolDownExpiration(true))
     return;
 
-  // Update market data
-  updateMarketDepth();
-  updateMarketTrades(1000);
+  apiQueue++;
 
+  // Update market data
+  switch(apiQueue) {
+
+    case 0:
+      updateMarketDepth();
+      break;
+    case 1:
+      updateMarketTrades(1000);
+      break;
+    default:
+      apiQueue = -1;
+      break;
+  }
 }
 
 //
 void ExchangeBot::privateUpdateTick() {
 
-  pApiQueue++;
+  // pApiQueue++;
+  //
+  // switch(pApiQueue) {
+  //
+  //   case 0:
+  //     getInfo();
+  //     break;
+  //   case 1:
+  //     // updateTradeHistory();
+  //     break;
+  //   case 2:
+  //     // if(activeOrders.size() > 0)
+  //       getActiveOrders(QString("btc_usd"));
+  //     break;
+  //   default:
+  //     pApiQueue = -1;
+  //     break;
+  // }
 
-  switch(pApiQueue) {
+  // Work through the list of tasks here
+  if(exchangeTasks.size() > 0) {
 
-    case 0:
-      getInfo();
-      break;
-    case 1:
-      // updateTradeHistory();
-      break;
-    case 2:
-      // if(activeOrders.size() > 0)
-        getActiveOrders(QString("btc_usd"));
-      break;
-    default:
-      pApiQueue = -1;
-      break;
+    // remove task from queue
+    ExchangeTask exchangeTask = exchangeTasks.takeFirst();
+
+    // Execute the first task
+    executeExchangeTask(exchangeTask);
   }
 }
 
@@ -65,10 +86,16 @@ void ExchangeBot::startBot() {
 
   // Set the private API queue
   pApiQueue = -1;
+  apiQueue  = -1;
+
+  // Add initial tasks to queue
+  addExchangeTask(ExchangeTask(0));       // getInfo
+  QList<QString> attr; attr.append(QString("btc_usd"));
+  addExchangeTask(ExchangeTask(2, attr)); // Active orders
 
   // Start the interval timer
   timer->start(c->getCoolDownTime()*1000);
-  timer2->start(2*1000); // TODO: determine correct amount
+  timer2->start(1*1100); // TODO: determine correct amount
 }
 
 // Sets the configuration for this Exchange Bot
@@ -77,6 +104,76 @@ void ExchangeBot::setConfig(Config *C) {
   c = C;
   m = MarketData(c, true);
 }
+
+//----------------------------------//
+//          Exchange Tasks          //
+//----------------------------------//
+// 0 = getInfo
+// 1 = createTrade
+// 2 = getActiveOrders
+// 3 = getOrderInfo
+// 4 = cancelOrder
+// 5 = updateTradeHistory
+// 6 = updateTransactionHistory
+
+ExchangeTask::ExchangeTask(int Task) {
+
+  task = Task;
+}
+
+ExchangeTask::ExchangeTask(int Task, QList<QString> Attributes) {
+
+  task = Task;
+  attributes = Attributes;
+}
+
+int ExchangeTask::getTask() { return task; }
+QList<QString> ExchangeTask::getTaskAttributes() { return attributes; }
+
+void ExchangeBot::executeExchangeTask(ExchangeTask exchangeTask) {
+
+  switch(exchangeTask.getTask()) {
+
+    case 0: getInfoTask(&exchangeTask);                  break;
+    case 1: createTradeTask(&exchangeTask);              break;
+    case 2: getActiveOrdersTask(&exchangeTask);          break;
+    case 3: getOrderInfoTask(&exchangeTask);             break;
+    case 4: cancelOrderTask(&exchangeTask);              break;
+    case 5: updateTradeHistoryTask(&exchangeTask);       break;
+    case 6: updateTransactionHistoryTask(&exchangeTask); break;
+  }
+}
+
+void ExchangeBot::addExchangeTask(ExchangeTask exchangeTask, bool priority) {
+
+  if(priority)
+    exchangeTasks.prepend(exchangeTask);
+  else
+    exchangeTasks.append(exchangeTask);
+}
+
+void ExchangeBot::getInfoTask(ExchangeTask *exchangeTask)         { getInfo(); addExchangeTask(ExchangeTask(0)); }
+void ExchangeBot::createTradeTask(ExchangeTask *exchangeTask)     {
+
+  QString pair    = exchangeTask->getTaskAttributes().at(0);
+  uint type       = exchangeTask->getTaskAttributes().at(0).toUInt();
+  double price    = exchangeTask->getTaskAttributes().at(0).toDouble();
+  double amount   = exchangeTask->getTaskAttributes().at(0).toDouble();
+
+  createTrade(pair, type, price, amount);
+}
+void ExchangeBot::getActiveOrdersTask(ExchangeTask *exchangeTask) {
+
+  getActiveOrders(exchangeTask->getTaskAttributes().at(0));
+
+  // Add self to queue again
+  QList<QString> attr; attr.append(QString("btc_usd"));
+  addExchangeTask(ExchangeTask(2, attr));
+}
+void ExchangeBot::getOrderInfoTask(ExchangeTask *exchangeTask)              { getOrderInfo(exchangeTask->getTaskAttributes().at(0).toUInt()); }
+void ExchangeBot::cancelOrderTask(ExchangeTask *exchangeTask)               { cancelOrder(exchangeTask->getTaskAttributes().at(0).toUInt()); }
+void ExchangeBot::updateTradeHistoryTask(ExchangeTask *exchangeTask)        { updateTradeHistory(); }
+void ExchangeBot::updateTransactionHistoryTask(ExchangeTask *exchangeTask)  { updateTransactionHistory(); }
 
 //----------------------------------//
 //          Bot functions           //
@@ -810,12 +907,24 @@ void ExchangeBot::tradeDataReply(QNetworkReply *reply) {
 void ExchangeBot::receiveTradeRequest(int type, double price, double amount) {
 
   QString pair = "btc_usd";
+  QString typeS, priceS, amountS;
+  typeS.setNum(type);
+  priceS.setNum(price);
+  amountS.setNum(amount);
 
-  createTrade(pair, type, price, amount);
+  QList<QString> attr;
+  attr.append(pair);
+  attr.append(typeS);
+  attr.append(priceS);
+  attr.append(amountS);
+  addExchangeTask(ExchangeTask(1, attr), true);
 }
 
 void ExchangeBot::sendCancelOrder(uint orderID) {
-  cancelOrder(orderID);
+
+  QString orderIDS; orderIDS.setNum(orderID);
+  QList<QString> attr; attr.append(orderIDS);
+  addExchangeTask(ExchangeTask(4, attr), true);
 }
 
 //----------------------------------//

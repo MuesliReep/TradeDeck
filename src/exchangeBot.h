@@ -18,6 +18,18 @@
 #include "marketData.h"
 #include "marketHistory.h"
 
+class ExchangeTask {
+
+public:
+  ExchangeTask(int Task);
+  ExchangeTask(int Task, QList<QString> Attributes);
+  int getTask();
+  QList<QString> getTaskAttributes();
+
+private:
+  int task;
+  QList<QString> attributes;
+};
 
 class ExchangeBot : public QObject
 {
@@ -43,10 +55,12 @@ private:
   QTimer *timer;
   QTimer *timer2;
 
+  int apiQueue;
   int pApiQueue;
   double USDBalance;
   double BTCBalance;
   QList<Order> activeOrders;
+  QList<ExchangeTask> exchangeTasks;
 
   QNetworkAccessManager* infoDownloadManager;
   QNetworkAccessManager* createTradeDownloadManager;
@@ -62,6 +76,16 @@ private:
 
   void createNonce(QByteArray *nonce);
   void createMilliNonce(QByteArray *nonce);
+
+  void executeExchangeTask(ExchangeTask exchangeTask);
+  void addExchangeTask(ExchangeTask exchangeTask, bool priority = false);
+  void getInfoTask(ExchangeTask *exchangeTask);
+  void createTradeTask(ExchangeTask *exchangeTask);
+  void getActiveOrdersTask(ExchangeTask *exchangeTask);
+  void getOrderInfoTask(ExchangeTask *exchangeTask);
+  void cancelOrderTask(ExchangeTask *exchangeTask);
+  void updateTradeHistoryTask(ExchangeTask *exchangeTask);
+  void updateTransactionHistoryTask(ExchangeTask *exchangeTask);
 
   // Private API:
 

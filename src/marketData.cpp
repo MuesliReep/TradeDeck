@@ -24,7 +24,12 @@ MarketData::~MarketData() {
 uint MarketData::findClosestBin() {
 
   uint currentTime = QDateTime::currentDateTime().toTime_t();
-  return currentTime - (currentTime % binSize) + binSize;
+  return findClosestBin(currentTime);
+}
+
+uint MarketData::findClosestBin(uint desiredTime) {
+
+  return desiredTime - (desiredTime % binSize) + binSize;
 }
 
 // Calculates the Exponential Moving Average over a data set

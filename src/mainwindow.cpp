@@ -150,7 +150,7 @@ void MainWindow::calculateMinimumBuyTrade(double sellPrice, double sellAmount, d
   qDebug() << "i= " << i << "\tprofit= " << profit;
 
   *buyAmount  = (((sellPrice * sellAmount) * (1.0-fee/100.0)) / (sellPrice - i*x));
-  *buyPrice   = sellPrice - i*x;
+  *buyPrice   = sellPrice - i * x;
   *buyTotal   = *buyAmount * *buyPrice;
 
   qDebug() << "\t Buy Amount: \t" << *buyAmount << "\t BTC";
@@ -182,7 +182,7 @@ void MainWindow::setupPlot() {
   // Turn on the legend
   // ui->tradePlot->legend->setVisible(true);
 
-  candlesticks = new QCPFinancial(ui->tradePlot->xAxis, ui->tradePlot->yAxis);
+  candlesticks = new QCPFinancial(ui->tradePlot->xAxis, ui->tradePlot->yAxis2);
   ui->tradePlot->addPlottable(candlesticks);
 
   candlesticks->setName("Candlestick");
@@ -194,26 +194,40 @@ void MainWindow::setupPlot() {
   candlesticks->setPenPositive(QPen(QColor(76, 175, 80)));
   candlesticks->setPenNegative(QPen(QColor(244, 67, 54)));
 
+  // Set initial ranges, these are updated when new data arrives
   ui->tradePlot->xAxis->setRange(0, 250);
   ui->tradePlot->yAxis->setRange(0, 500);
+  ui->tradePlot->yAxis2->setRange(0, 500);
 
   ui->tradePlot->setBackground(bodyColour);
 
   ui->tradePlot->xAxis->setBasePen(QPen(lineColour, 1));
   ui->tradePlot->yAxis->setBasePen(QPen(lineColour, 1));
+  ui->tradePlot->yAxis2->setBasePen(QPen(lineColour, 1));
   ui->tradePlot->xAxis->setTickPen(QPen(lineColour, 1));
   ui->tradePlot->yAxis->setTickPen(QPen(lineColour, 1));
+  ui->tradePlot->yAxis2->setTickPen(QPen(lineColour, 1));
   ui->tradePlot->xAxis->setSubTickPen(QPen(lineColour, 1));
   ui->tradePlot->yAxis->setSubTickPen(QPen(lineColour, 1));
+  ui->tradePlot->yAxis2->setSubTickPen(QPen(lineColour, 1));
   ui->tradePlot->xAxis->setTickLabelColor(textMediumColour);
   ui->tradePlot->yAxis->setTickLabelColor(textMediumColour);
+  ui->tradePlot->yAxis2->setTickLabelColor(textMediumColour);
   ui->tradePlot->xAxis->grid()->setPen(QPen(gridColour, 1, Qt::DotLine));
   ui->tradePlot->yAxis->grid()->setPen(QPen(gridColour, 1, Qt::DotLine));
+  ui->tradePlot->yAxis2->grid()->setPen(QPen(gridColour, 1, Qt::DotLine));
+
+
+  ui->tradePlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
+  ui->tradePlot->xAxis->setDateTimeFormat("hh:mm");
+
+  ui->tradePlot->yAxis2->setVisible(true);
+  ui->tradePlot->yAxis->setVisible(false); // TODO: set visible for volume plot
 
   // Setup moving averages
 
-  MA1 =  ui->tradePlot->addGraph();
-  MA2 =  ui->tradePlot->addGraph();
+  MA1 =  ui->tradePlot->addGraph(ui->tradePlot->xAxis, ui->tradePlot->yAxis2);
+  MA2 =  ui->tradePlot->addGraph(ui->tradePlot->xAxis, ui->tradePlot->yAxis2);
 
   MA1->setPen(QPen(textLightColour, 1));
   MA2->setPen(QPen(textMediumColour, 1));
@@ -221,6 +235,11 @@ void MainWindow::setupPlot() {
   ui->tradePlot->replot();
 
   // Setup volume graph
+
+  // <<<<<<<<<<<<<<<<<<<< Sub ticks moeten binsize worden???
+  ui->tradePlot->xAxis->setAutoTickStep(false);
+  ui->tradePlot->xAxis->setTickStep(60*30); // One hour
+  ui->tradePlot->xAxis->setSubTickCount(2);
 
 }
 
@@ -319,7 +338,14 @@ void MainWindow::scaleTradePlot() {
       low   = dataPoints[i].getLow();
   }
 
-  ui->tradePlot->yAxis->setRange((int)high+3, (int)low-3);
+  // ui->tradePlot->yAxis->setRange((int)high+2, (int)low-2);
+  ui->tradePlot->yAxis2->setRange((int)high+2, (int)low-2);
+
+  // Next update the yAxis
+
+  uint now  = e->getMarketData()->findClosestBin((uint)QDateTime::currentDateTime().toTime_t());
+  uint then = e->getMarketData()->findClosestBin(now-250*60);
+  ui->tradePlot->xAxis->setRange(then, now); // TODO: num bins needs to be defined in settings
 }
 
 //
@@ -416,6 +442,8 @@ void MainWindow::updateTradePlot() {
   double key = 1;
   for(int i = dataPoints.size()-1; i >= 0; i--) {
 
+    key = dataPoints[i].getTimeStamp();
+
     // Update candlesticks
     candlesticks->addData(key, dataPoints[i].getOpen(), dataPoints[i].getHigh(), dataPoints[i].getLow(), dataPoints[i].getClose());
 
@@ -425,7 +453,7 @@ void MainWindow::updateTradePlot() {
     MA1->addData(key, MA1List[i]);
     MA2->addData(key, MA2List[i]);
 
-    key++;
+    // key++;
   }
 
   scaleTradePlot();

@@ -66,6 +66,9 @@ public:
 
   uint getOldestTrade();
 
+  uint findClosestBin();
+  uint findClosestBin(uint desiredTime);
+
   QList<Order>      getAsks();
   QList<Order>      getBids();
   QList<Trade>      getTrades();
@@ -89,7 +92,6 @@ private:
   int binSize     = 1*60;
 
   void binTradeData();
-  uint findClosestBin();
   QList<double> runEMA(int weight);
   QList<double> runSMA(int size);
 

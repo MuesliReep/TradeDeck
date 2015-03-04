@@ -516,6 +516,15 @@
               <bool>true</bool>
              </property>
              <layout class="QHBoxLayout" name="horizontalLayoutOrdersHeader">
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
               <item>
                <widget class="QLabel" name="labelLastOrdersHeader">
                 <property name="font">
@@ -537,13 +546,13 @@
                <widget class="QPushButton" name="pushButtonCancelOrder">
                 <property name="minimumSize">
                  <size>
-                  <width>0</width>
+                  <width>80</width>
                   <height>40</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>16777215</width>
+                  <width>80</width>
                   <height>40</height>
                  </size>
                 </property>

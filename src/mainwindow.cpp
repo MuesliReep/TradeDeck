@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QColor textColour(183,190,195);
 
     QString widgetStyle("QWidget {background-color:rgb(30, 43, 52);  color: rgb(183,190,195);} QLineEdit{border:1px solid gray; padding: 0 5px; font:12px} QPushButton{background-color: rgb(137,145,152); border-style: none; font: 16px} QPushButton:pressed{ background-color: rgb(30, 43, 52);}");
-    QString headerStyle("QWidget {background-color:rgb(47, 61, 69);} QLabel {color:rgb(183,190,195);}");
+    QString headerStyle("QWidget {background-color:rgb(47, 61, 69);} QLabel {color:rgb(183,190,195);} QPushButton{background-color: rgb(244, 67, 54); border-style: none; color: rgb(255,255,255); font: 16px;} QPushButton:pressed{ background-color: rgb(47, 61, 69);}");
     QString tableStyle("QTableWidget {gridline-color: rgb(52, 64, 73); background-color: rgb(30, 43, 52); color: rgb(183,190,195);} QHeaderView {background-color:rgb(30, 43, 52); color: rgb(183,190,195);} QHeaderView::section {background-color:rgb(30, 43, 52);}");
     QString tabStyle("QWidget {background-color: rgb(47, 61, 69); color: rgb(183,190,195);} QLineEdit{border:1px solid gray; padding: 0 5px; font:12px} QPushButton{background-color: rgb(137,145,152); border-style: none; font: 16px} QPushButton:pressed{ background-color: rgb(30, 43, 52);}  QTabWidget::tab{background-color: rgb(47, 61, 69);} QTabWidget::pane{border:0px;} QTabBar::tab {min-width: 125px; min-height: 40px; font: 16px} QTabBar::tab:selected {background-color: rgb(47, 61, 69);} QTabBar::tab:!selected {background-color: rgb(30, 43, 52);} QTabWidget::tab-bar {color: rgb(183,190,195);}");
 
@@ -583,10 +583,12 @@ void MainWindow::updateOrders() {
     QString time; QDateTime dateTime;
     dateTime.setTime_t(orders[i].getTimeStamp());
     time = dateTime.toString("hh:mm:ss");
-    QString type;       type.setNum(orders[i].getType());
-    QString amount;     amount.setNum(orders[i].getPair1());
-    QString price;      price.setNum(orders[i].getPair2());
-    QString remaining;  remaining.setNum(-1);
+    QString type("Buy");
+    if(orders[i].getType() == 1)
+      type = "Sell";
+    QString amount;     amount.setNum(orders[i].getPair1()); amount.append(" BTC");
+    QString price;      price.setNum(orders[i].getPair2()); price.append(" USD");
+    QString remaining;  remaining.setNum(-1); remaining.append(" BTC");
     QString status;     status.setNum(-1);
 
     // Add items to row
@@ -603,6 +605,12 @@ void MainWindow::updateOrders() {
   labels  << "Time" << "Type" << "Amount" << "Price" << "Cancel";
 
   ui->tableWidgetOrders->setHorizontalHeaderLabels(labels);
+
+  // Remove cancel button when no orders are present & return it when there are
+  if(orders.size() == 0 && ui->pushButtonCancelOrder->isVisible())
+    ui->pushButtonCancelOrder->setVisible(false);
+  else if(orders.size() > 0 && !ui->pushButtonCancelOrder->isVisible())
+    ui->pushButtonCancelOrder->setVisible(true);
 }
 
 //----------------------------------//

@@ -182,12 +182,15 @@ void MainWindow::setupPlot() {
   // Turn on the legend
   // ui->tradePlot->legend->setVisible(true);
 
+  ui->tradePlot->yAxis2->setVisible(true);
+  ui->tradePlot->yAxis->setVisible(false); // TODO: set visible for volume plot
+
   candlesticks = new QCPFinancial(ui->tradePlot->xAxis, ui->tradePlot->yAxis2);
   ui->tradePlot->addPlottable(candlesticks);
 
   candlesticks->setName("Candlestick");
   candlesticks->setChartStyle(QCPFinancial::csCandlestick);
-  candlesticks->setWidth(0.5);
+  candlesticks->setWidth(32); // 0.5
   candlesticks->setTwoColored(true);
   candlesticks->setBrushPositive(QColor(76, 175, 80));
   candlesticks->setBrushNegative(QColor(244, 67, 54));
@@ -221,8 +224,7 @@ void MainWindow::setupPlot() {
   ui->tradePlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
   ui->tradePlot->xAxis->setDateTimeFormat("hh:mm");
 
-  ui->tradePlot->yAxis2->setVisible(true);
-  ui->tradePlot->yAxis->setVisible(false); // TODO: set visible for volume plot
+
 
   // Setup moving averages
 
@@ -306,12 +308,12 @@ void MainWindow::setupUISignals() {
   // textChanged(const QString & text)
 
   // Trade calc widget
-  connect(ui->lineEditCalcSellAmount, SIGNAL(textEdited(const QString)),this,SLOT(calcSellValueChanged()));
-  connect(ui->lineEditCalcSellPrice,  SIGNAL(textEdited(const QString)),this,SLOT(calcSellValueChanged()));
+  connect(ui->lineEditCalcSellAmount, SIGNAL(textEdited(const QString)),this,SLOT(calcSellAmountChanged()));
+  connect(ui->lineEditCalcSellPrice,  SIGNAL(textEdited(const QString)),this,SLOT(calcSellPriceChanged()));
   connect(ui->lineEditCalcSellTotal,  SIGNAL(textEdited(const QString)),this,SLOT(calcSellTotalValueChanged()));
   connect(ui->lineEditCalcFee,        SIGNAL(textEdited(const QString)),this,SLOT(calcFeeValueChanged()));
-  connect(ui->lineEditCalcBuyAmount,  SIGNAL(textEdited(const QString)),this,SLOT(calcBuyValueChanged()));
-  connect(ui->lineEditCalcBuyPrice,   SIGNAL(textEdited(const QString)),this,SLOT(calcBuyValueChanged()));
+  connect(ui->lineEditCalcBuyAmount,  SIGNAL(textEdited(const QString)),this,SLOT(calcBuyAmountChanged()));
+  connect(ui->lineEditCalcBuyPrice,   SIGNAL(textEdited(const QString)),this,SLOT(calcBuyPriceChanged()));
   connect(ui->lineEditCalcBuyTotal,   SIGNAL(textEdited(const QString)),this,SLOT(calcBuyTotalValueChanged()));
   connect(ui->lineEditCalcProfit,     SIGNAL(textEdited(const QString)),this,SLOT(calcProfitValueChanged()));
 
@@ -792,13 +794,13 @@ void MainWindow::calcValueChanged(int value) {
     break;
   }
 
-  if(value == 0 || value == 2 || value == 4) { // Calculate minimum buy amount
+  if(value == 0 || value == 2 || value == 4 || value == 6) { // Calculate minimum buy amount
     calculateMinimumBuyTrade(sellPrice, sellAmount, fee, &buyPrice, &buyAmount, &buyTotal);
   }
-  else if (value == 1 || value == 3) { // Calculate minimum sell amount
+  else if (value == 1 || value == 5 || value == 3) { // Calculate minimum sell amount
     // calculateMinimumSellTrade(buyPrice, buyAmount, fee);
   }
-  else if (value == 5) {
+  else if (value == 7) {
     calculateMinimumBuyTrade(sellPrice, sellAmount, fee, &buyPrice, &buyAmount, &buyTotal, profit);
   }
   else{
@@ -818,24 +820,34 @@ void MainWindow::calcValueChanged(int value) {
   QString sSellFee;
   QString sBuyFee;
 
-  ui->lineEditCalcBuyTotal->setText(sBuyTotal.setNum(buyTotal,'f',8));
-  ui->lineEditCalcBuyPrice->setText(sBuyPrice.setNum(buyPrice,'f',8));
-  ui->lineEditCalcBuyAmount->setText(sBuyAmount.setNum(buyAmount,'f',8));
-  ui->lineEditCalcFee->setText(sFee.setNum(fee,'f',8));
-  ui->lineEditCalcSellTotal->setText(sSellTotal.setNum(sellTotal,'f',8));
-  ui->lineEditCalcSellPrice->setText(sSellPrice.setNum(sellPrice,'f',8));
-  ui->lineEditCalcSellAmount->setText(sSellAmount.setNum(sellAmount,'f',8));
+  // Only update fields that were not changed by the user:
+  if(value != 5)
+    ui->lineEditCalcBuyTotal->setText(sBuyTotal.setNum(buyTotal,'f',3));
+  if(value != 3)
+    ui->lineEditCalcBuyPrice->setText(sBuyPrice.setNum(buyPrice,'f',3));
+  if(value != 1)
+    ui->lineEditCalcBuyAmount->setText(sBuyAmount.setNum(buyAmount,'f',8));
+  if(value != 6)
+    ui->lineEditCalcFee->setText(sFee.setNum(fee,'f',8));
+  if(value != 4)
+    ui->lineEditCalcSellTotal->setText(sSellTotal.setNum(sellTotal,'f',3));
+  if(value != 2)
+    ui->lineEditCalcSellPrice->setText(sSellPrice.setNum(sellPrice,'f',3));
+  if(value != 0)
+    ui->lineEditCalcSellAmount->setText(sSellAmount.setNum(sellAmount,'f',8));
   ui->labelCalcFeeSellAmount->setText(sSellFee.setNum(sellFee,'f',8));
   ui->labelCalcFeeBuyAmount->setText(sBuyFee.setNum(buyFee,'f',8));
 
 }
 
-void MainWindow::calcSellValueChanged()       { calcValueChanged(0); }
-void MainWindow::calcBuyValueChanged()        { calcValueChanged(1); }
-void MainWindow::calcSellTotalValueChanged()  { calcValueChanged(2); }
-void MainWindow::calcBuyTotalValueChanged()   { calcValueChanged(3); }
-void MainWindow::calcFeeValueChanged()        { calcValueChanged(4); }
-void MainWindow::calcProfitValueChanged()     { calcValueChanged(5); }
+void MainWindow::calcSellAmountChanged()      { calcValueChanged(0); }
+void MainWindow::calcBuyAmountChanged()       { calcValueChanged(1); }
+void MainWindow::calcSellPriceChanged()       { calcValueChanged(2); }
+void MainWindow::calcBuyPriceChanged()        { calcValueChanged(3); }
+void MainWindow::calcSellTotalValueChanged()  { calcValueChanged(4); }
+void MainWindow::calcBuyTotalValueChanged()   { calcValueChanged(5); }
+void MainWindow::calcFeeValueChanged()        { calcValueChanged(6); }
+void MainWindow::calcProfitValueChanged()     { calcValueChanged(7); }
 void MainWindow::calcUseButtonPressed()       { }
 
 //----------------------------------//

@@ -70,9 +70,11 @@ private slots:
   void cancelOrderButtonPressed();
 
   void calcValueChanged(int value);
-  void calcSellValueChanged();
+  void calcSellAmountChanged();
+  void calcSellPriceChanged();
   void calcSellTotalValueChanged();
-  void calcBuyValueChanged();
+  void calcBuyAmountChanged();
+  void calcBuyPriceChanged();
   void calcBuyTotalValueChanged();
   void calcFeeValueChanged();
   void calcProfitValueChanged();

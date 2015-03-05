@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1000</width>
-    <height>745</height>
+    <height>770</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -1619,7 +1619,7 @@
                   </font>
                  </property>
                  <property name="text">
-                  <string>0.0</string>
+                  <string>0.00000001</string>
                  </property>
                  <property name="frame">
                   <bool>false</bool>

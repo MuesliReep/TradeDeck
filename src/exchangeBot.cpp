@@ -338,7 +338,7 @@ void ExchangeBot::cancelOrder(uint OrderID) {
 
   QByteArray orderID("order_id=");
   QString orderIDS; orderIDS.setNum(OrderID);
-  orderID.append(orderID);
+  orderID.append(orderIDS);
 
   QByteArray data(method +"&"+ nonce +"&"+ orderID);
 

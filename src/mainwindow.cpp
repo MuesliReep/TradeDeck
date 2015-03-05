@@ -571,20 +571,57 @@ void MainWindow::updateBalances() {
 void MainWindow::updateOrders() {
 
   // TODO: only clear when no orders
-
   // Clear old data
-  ui->tableWidgetOrders->clear();
+  if(ui->tableWidgetOrders->rowCount() == 0 && e->getActiveOrders().isEmpty()) {
+
+    ui->tableWidgetOrders->clear();
+
+    // TODO: Check why header is deleted on clear
+    QStringList labels;
+    labels  << "Time" << "Type" << "Amount" << "Price" << "OrderID";
+
+    ui->tableWidgetOrders->setHorizontalHeaderLabels(labels);
+  }
 
   QList<Order> orders = e->getActiveOrders();
 
+  // First check if the already present orders are still present in the new list
+  for(int i = 0; i < ui->tableWidgetOrders->rowCount(); i++) {
+
+    bool alive = false;
+
+    for(int j = 0; j < orders.size(); j++) {
+
+      if(ui->tableWidgetOrders->item(i, 4)->text().toUInt() == orders[j].getOrderID()) {
+
+        alive = true;
+        break;
+      }
+    }
+
+    // Remove from table
+    if(!alive)
+      ui->tableWidgetOrders->removeRow(i);
+  }
+
+  // TODO: remove orders already present from orders for efficiency
   ui->tableWidgetOrders->setRowCount(orders.size());
 
   // For each order add it to the table
   for(int i = 0; i < orders.size(); i++) {
 
+    // Check if this order already exists, otherwise add it
+    if(ui->tableWidgetOrders->rowCount() == 0) {
+      for(int j = 0; j < orders.size(); j++) {
+
+        if(ui->tableWidgetOrders->item(j, 4)->text().toUInt() == orders[i].getOrderID())
+          continue;
+      }
+    }
+
     QString time; QDateTime dateTime;
     dateTime.setTime_t(orders[i].getTimeStamp());
-    time = dateTime.toString("hh:mm:ss");
+    time = dateTime.toString("dd/MM hh:mm:ss");
     QString type("Buy");
     if(orders[i].getType() == 1)
       type = "Sell";
@@ -592,21 +629,18 @@ void MainWindow::updateOrders() {
     QString price;      price.setNum(orders[i].getPair2()); price.append(" USD");
     QString remaining;  remaining.setNum(-1); remaining.append(" BTC");
     QString status;     status.setNum(-1);
+    QString orderID;    orderID.setNum(orders[i].getOrderID());
 
     // Add items to row
     ui->tableWidgetOrders->setItem(i, 0, new QTableWidgetItem(time));
     ui->tableWidgetOrders->setItem(i, 1, new QTableWidgetItem(type));
     ui->tableWidgetOrders->setItem(i, 2, new QTableWidgetItem(amount));
     ui->tableWidgetOrders->setItem(i, 3, new QTableWidgetItem(price));
+    ui->tableWidgetOrders->setItem(i, 4, new QTableWidgetItem(orderID));
+
     // ui->tableWidgetOrders->setItem(i, 4, new QTableWidgetItem(remaining)); // TODO: Remaining should be in popup dialog
     // ui->tableWidgetOrders->setItem(i, 5, new QTableWidgetItem(status));
   }
-
-  // TODO: Check why header is deleted on clear
-  QStringList labels;
-  labels  << "Time" << "Type" << "Amount" << "Price" << "Cancel";
-
-  ui->tableWidgetOrders->setHorizontalHeaderLabels(labels);
 
   // Remove cancel button when no orders are present & return it when there are
   if(orders.size() == 0 && ui->pushButtonCancelOrder->isVisible())
@@ -716,7 +750,7 @@ void MainWindow::cancelOrderButtonPressed() {
     ui->tableWidgetOrders->removeRow(rowID);
 
     // Send cancel to exchange
-    e->sendCancelOrder(orderID);
+    e->sendCancelOrder(orderID); //TODO: emitted 4 times?
   }
 }
 

@@ -75,6 +75,7 @@ private slots:
   void calcBuyValueChanged();
   void calcBuyTotalValueChanged();
   void calcFeeValueChanged();
+  void calcProfitValueChanged();
   void calcUseButtonPressed();
 
 public slots:

@@ -313,6 +313,7 @@ void MainWindow::setupUISignals() {
   connect(ui->lineEditCalcBuyAmount,  SIGNAL(textEdited(const QString)),this,SLOT(calcBuyValueChanged()));
   connect(ui->lineEditCalcBuyPrice,   SIGNAL(textEdited(const QString)),this,SLOT(calcBuyValueChanged()));
   connect(ui->lineEditCalcBuyTotal,   SIGNAL(textEdited(const QString)),this,SLOT(calcBuyTotalValueChanged()));
+  connect(ui->lineEditCalcProfit,     SIGNAL(textEdited(const QString)),this,SLOT(calcProfitValueChanged()));
 
   // Orders
   connect(ui->pushButtonCancelOrder,  SIGNAL(clicked()),this,SLOT(cancelOrderButtonPressed()));
@@ -769,6 +770,8 @@ void MainWindow::calcValueChanged(int value) {
   double sellFee  = 0.0;
   double buyFee   = 0.0;
 
+  double profit = ui->lineEditCalcProfit->text().toDouble();
+
   switch(value) {
 
     case 0: // sell amount or price changed
@@ -785,6 +788,8 @@ void MainWindow::calcValueChanged(int value) {
     break;
     case 4: // fee percentage changed
     break;
+    case 5: // profit changed
+    break;
   }
 
   if(value == 0 || value == 2 || value == 4) { // Calculate minimum buy amount
@@ -793,12 +798,15 @@ void MainWindow::calcValueChanged(int value) {
   else if (value == 1 || value == 3) { // Calculate minimum sell amount
     // calculateMinimumSellTrade(buyPrice, buyAmount, fee);
   }
+  else if (value == 5) {
+    calculateMinimumBuyTrade(sellPrice, sellAmount, fee, &buyPrice, &buyAmount, &buyTotal, profit);
+  }
   else{
     qDebug() << "bad value";
   }
 
-  sellFee = sellTotal * fee;
-  buyFee  = buyTotal * fee;
+  sellFee = sellTotal * (fee / 100);
+  buyFee  = buyTotal  * (fee / 100);
 
   QString sSellAmount;
   QString sSellPrice;
@@ -827,6 +835,7 @@ void MainWindow::calcBuyValueChanged()        { calcValueChanged(1); }
 void MainWindow::calcSellTotalValueChanged()  { calcValueChanged(2); }
 void MainWindow::calcBuyTotalValueChanged()   { calcValueChanged(3); }
 void MainWindow::calcFeeValueChanged()        { calcValueChanged(4); }
+void MainWindow::calcProfitValueChanged()     { calcValueChanged(5); }
 void MainWindow::calcUseButtonPressed()       { }
 
 //----------------------------------//

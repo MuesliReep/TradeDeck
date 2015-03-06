@@ -113,9 +113,18 @@ void MainWindow::setExchangeBots(ExchangeBot *E) {
 
   e = E;
 
-  // Connect bot signals to gui
-  connect(e,SIGNAL(sendNewMarketData(int)),this,SLOT(receiveNewMarketData(int)));
-  connect(this,SIGNAL(sendTradeRequest(int, double, double)),e,SLOT(receiveTradeRequest(int, double, double)));
+  // Connect bot signals to UI
+  connect(e,SIGNAL(sendActiveOrders(QList<Order>)), this,SLOT(receiveActiveOrders(QList<Order>)));
+  connect(e,SIGNAL(sendOrderHistory(QList<Order>)), this,SLOT(receiveOrderHistory(QList<Order>)));
+  connect(e,SIGNAL(sendBalances(QList<Balance>)),   this,SLOT(receiveBalances(QList<Balance>)));
+  connect(e,SIGNAL(sendTicker(Ticker)),             this,SLOT(receiveTicker(Ticker)));
+  connect(e,SIGNAL(sendTradeDepth(xx)),             this,SLOT(receiveTradeDepth(xx)));
+  connect(e,SIGNAL(sendTransactionHistory(xx)),     this,SLOT(receiveTransactionHistory(xx)));
+  connect(e,SIGNAL(sendMessage(int, QString)),      this,SLOT(receiveMessage(int, QString)));
+
+  // Connect UI signals to bot
+  connect(this,SIGNAL(sendCancelOrder(uint)),                e,SLOT(receiveCancelOrder(uint)));
+  connect(this,SIGNAL(sendCreateOrder(int, double, double)), e,SLOT(receiveCreateOrder(int, double, double)));
 }
 
 //
@@ -875,43 +884,52 @@ void MainWindow::receiveOrderConfirmed(double price, double amount, int type) {
 }
 
 //
-void MainWindow::receiveNewMarketData(int dataType) {
+// void MainWindow::receiveNewMarketData(int dataType) {
+//
+//   // Update the individual screen elements according to the data type
+//   // 0 = Trade data
+//   // 1 = Depth data
+//   // 2 = Ticker data
+//   // 3 = info data
+//   // 4 = new trade
+//   // 5 = active orders
+//   // 6 = order info
+//   // 7 = cancel order
+//   // 8 = trade history
+//   // 9 = trans history
+//   switch(dataType) {
+//
+//     case 0:
+//       updateTradeList();
+//       updateTradePlot();
+//       qDebug() << "new Trade Data received";
+//       break;
+//     case 1:
+//       updateTradeDepth();
+//       qDebug() << "new Depth Data received";
+//       break;
+//     case 2:
+//       break;
+//     case 3:
+//       updateBalances();
+//       // updateOrders();
+//       qDebug() << "new info Data received";
+//       break;
+//     case 5:
+//       updateOrders();
+//       qDebug() << "new active order Data received";
+//       break;
+//     default:
+//       qDebug() << "UI received unknown data: " << dataType;
+//       break;
+//   }
+// }
 
-  // Update the individual screen elements according to the data type
-  // 0 = Trade data
-  // 1 = Depth data
-  // 2 = Ticker data
-  // 3 = info data
-  // 4 = new trade
-  // 5 = active orders
-  // 6 = order info
-  // 7 = cancel order
-  // 8 = trade history
-  // 9 = trans history
-  switch(dataType) {
-
-    case 0:
-      updateTradeList();
-      updateTradePlot();
-      qDebug() << "new Trade Data received";
-      break;
-    case 1:
-      updateTradeDepth();
-      qDebug() << "new Depth Data received";
-      break;
-    case 2:
-      break;
-    case 3:
-      updateBalances();
-      // updateOrders();
-      qDebug() << "new info Data received";
-      break;
-    case 5:
-      updateOrders();
-      qDebug() << "new active order Data received";
-      break;
-    default:
-      qDebug() << "UI received unknown data: " << dataType;
-      break;
-  }
-}
+void MainWindow::receiveActiveOrders(QList<Order> activeOrders) { }
+void MainWindow::receiveOrderHistory(QList<Order> orderHistory) { }
+void MainWindow::receiveBalances(QList<Balance> balances) { }
+void MainWindow::receiveTicker(Ticker ticker) { }
+void MainWindow::receiveTradeDepth() { }
+void MainWindow::receiveTradeHistory() { }
+void MainWindow::receiveTransactionHistory() { }
+void MainWindow::receiveMessage(int type, QString message); { }

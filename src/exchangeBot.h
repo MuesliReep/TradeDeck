@@ -37,7 +37,6 @@ public:
   ~ExchangeBot();
 
 public:
-
   virtual void startBot() = 0;
   void setConfig(Config *C);
 
@@ -66,13 +65,11 @@ public slots:
   virtual void receiveCreateOrder(int type, double price, double amount) = 0;
 
 signals:
-  void sendMarketData(int dataType);
   void sendActiveOrders(QList<Order> activeOrders);
   void sendOrderHistory(QList<Order> orderHistory);
   void sendBalances(QList<Balance> balances);
   void sendTicker(Ticker ticker);
   void sendTradeDepth();
-  void sendTradeHistory();
   void sendTransactionHistory();
   void sendMessage(int type, QString message);
 

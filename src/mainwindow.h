@@ -27,40 +27,41 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+  explicit MainWindow(QWidget *parent = 0);
+  ~MainWindow();
 
-    void setExchangeBots(ExchangeBot *E);
+  void setExchangeBots(ExchangeBot *E);
 
 private:
-    Ui::MainWindow *ui;
+  Ui::MainWindow *ui;
 
-    ExchangeBot *e;
+  ExchangeBot *e;
 
-    QCPFinancial  *candlesticks;
-    QCPGraph      *MA1;
-    QCPGraph      *MA2;
+  QCPFinancial  *candlesticks;
+  QCPGraph      *MA1;
+  QCPGraph      *MA2;
 
-    bool checkBalance(int pair, double amount);
-    void calculateMinimumBuyTrade(double sellPrice, double sellAmount, double fee, double *buyPrice, double *buyAmount, double *buyTotal, double profit = 0.00000001);
-    double calculateMinimumSellTrade(double sellPrice, double sellAmount, double fee, double profit = 0.00000001);
+  bool checkBalance(int pair, double amount);
+  void calculateMinimumBuyTrade(double sellPrice, double sellAmount, double fee, double *buyPrice, double *buyAmount, double *buyTotal, double profit = 0.00000001);
+  double calculateMinimumSellTrade(double sellPrice, double sellAmount, double fee, double profit = 0.00000001);
 
-    void updateTradeDepth();
-    void updateTradeList();
-    void updateTradePlot();
-    void scaleTradePlot();
+  void updateTradeDepth();
+  void updateTradeList();
+  void updateTradePlot();
+  void scaleTradePlot();
 
-    void updateBalances();
-    void updateOrders();
+  void updateBalances();
+  void updateOrders();
+  void updateTransactionHistory();
 
-    void setupPlot();
-    void setupOrdersTable();
-    void setupBalancesTable();
-    void setupTradesTable();
-    void setupAsksTable();
-    void setupBidsTable();
+  void setupPlot();
+  void setupOrdersTable();
+  void setupBalancesTable();
+  void setupTradesTable();
+  void setupAsksTable();
+  void setupBidsTable();
 
-    void setupUISignals();
+  void setupUISignals();
 
 private slots:
   void buyTotalChanged(const QString);
@@ -83,11 +84,21 @@ private slots:
   void calcUseButtonPressed();
 
 public slots:
-  void receiveNewMarketData(int dataType);
+  // ConfirmDialog
   void receiveOrderConfirmed(double price, double amount, int type);
 
+  // ExchangeBot
+  void receiveActiveOrders(QList<Order> activeOrders);
+  void receiveOrderHistory(QList<Order> orderHistory);
+  void receiveBalances(QList<Balance> balances);
+  void receiveTicker(Ticker ticker);
+  void receiveTradeDepth();
+  void receiveTransactionHistory();
+  void receiveMessage(int type, QString message);;
+
 signals:
-  void sendTradeRequest(int type, double price, double amount);
+  void sendCancelOrder(uint orderID);
+  void sendCreateOrder(int type, double price, double amount);
 
 };
 

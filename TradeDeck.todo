@@ -1,6 +1,6 @@
 Step 1:
   ☐
-  ☐ Split ExchangeBot into sepperate files to allow inheritance for multiple exchanges
+  ✔ Split ExchangeBot into sepperate files to allow inheritance for multiple exchanges @done(2015-03-07 00:39) @project(Step 1)
   ☐ Fill Readme with info
   ☐ Restructure and possibly rename downloader class to REST and WebSocket classes
   ✔ Fix cancel operation @done(2015-03-06 00:10) @project(Step 1)
@@ -15,6 +15,7 @@ Step 1:
   ☐ Improve confirm dialog to use UI form
 
 Step 2:
+  ☐ UI widgets should be in seperate classes
   ☐ Add support for new exchange, start with OKCoin/BitFinex
   ☐ Add support for multiple markets
   ☐ Ability to minimize widgets

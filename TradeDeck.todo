@@ -1,29 +1,33 @@
 Step 1:
   ☐
-  ☐ Split ExchangeBot into sepperate files to allow inheritance etc.
+  ☐ Split ExchangeBot into sepperate files to allow inheritance for multiple exchanges
   ☐ Fill Readme with info
-  ☐ Restructure and possibly rename downloader class to REST and Socket classes
-  ☐ Fix cancel operation
-  ☐ Create REST queue to avoid nonce conflicts, use qlist maybe?
+  ☐ Restructure and possibly rename downloader class to REST and WebSocket classes
+  ✔ Fix cancel operation @done(2015-03-06 00:10) @project(Step 1)
+  ✔ Create REST queue to avoid nonce conflicts, use qlist maybe? @done(2015-03-06 00:10) @project(Step 1)
   ☐ Settings dialog
   ☐ When first time opening show dialog with options
   ☐ When first time opening create history sources
   ☐ Add volume graph
   ☐ Add trade depth graph
   ✔ Right side axis @done(2015-03-04 21:59) @project(Step 1)
-  ☐ Dates on bottom axis
-  ☐ Widget to watch wallet balances
+  ✔ Dates on bottom axis @done(2015-03-06 00:10) @project(Step 1)
+  ☐ Improve confirm dialog to use UI form
 
 Step 2:
-  ☐ Add support for new exchange, start with OKCoin
+  ☐ Add support for new exchange, start with OKCoin/BitFinex
   ☐ Add support for multiple markets
-  ☐ Hash and password secure settings file
+  ☐ Ability to minimize widgets
+  ☐ Cursor on graph shows value
+  ☐ Universal stylesheet
+  ☐ Hash and password protect settings file
   ☐ Implement history sources
   ☐ Options to configure SMA values
   ☐ Options to configure Bin interval eg: 1/5/15/30 min or custom even?
+  ☐ Widget to watch wallet balances
 
 Step 3:
-  ☐ Widgets should be movable
+  ☐ Widgets should be movable/dockable
   ☐ Multiple exchanges open at one time
   ☐ Audio alerts
   ☐ Set custom alerts

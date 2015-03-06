@@ -21,6 +21,7 @@ SOURCES += main.cpp\
     config.cpp \
     marketData.cpp \
     exchangeBot.cpp \
+    exchangeBot_btce.cpp \
     order.cpp \
     trade.cpp \
     marketHistory.cpp \
@@ -33,6 +34,7 @@ HEADERS  += qcustomplot.h \
     config.h \
     marketData.h \
     exchangeBot.h \
+    exchangeBot_btce.h \
     order.h \
     trade.h \
     marketHistory.h \

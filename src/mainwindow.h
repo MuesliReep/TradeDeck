@@ -9,6 +9,7 @@
 #include <QModelIndex>
 
 #include "exchangeBot.h"
+#include "exchangeBot_btce.h"
 #include "marketData.h"
 #include "order.h"
 #include "trade.h"

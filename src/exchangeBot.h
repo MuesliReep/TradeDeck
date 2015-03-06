@@ -18,127 +18,63 @@
 #include "marketData.h"
 #include "marketHistory.h"
 
-class ExchangeTask {
+class Balance {
 
 public:
-  ExchangeTask(int Task);
-  ExchangeTask(int Task, QList<QString> Attributes);
-  int getTask();
-  QList<QString> getTaskAttributes();
-
+  Balance(QString Currency, double Amount) { currency = Currency; amount = Amount; }
+  QString getCurrency() { return currency; }
+  double getAmount() { return amount; }
 private:
-  int task;
-  QList<QString> attributes;
+  QString currency;
+  double amount;
 };
 
 class ExchangeBot : public QObject
 {
   Q_OBJECT
 public:
-  explicit ExchangeBot(QObject *parent = 0);
+  ExchangeBot(QObject *parent = 0);
   ~ExchangeBot();
 
-  void startBot();
+public:
+
+  virtual void startBot() = 0;
   void setConfig(Config *C);
 
-  double getUSDBalance(); // TODO: Balances should be stored dynamically to allow more than 2
-  double getBTCBalance();
-
-  MarketData* getMarketData();
-  QList<Order> getActiveOrders();
-  void sendCancelOrder(uint orderID); // TODO: should this be a signal/slot from UI?
-
-private:
-  Downloader  d;
-  Config      *c;
+protected:
+  Config     *c;
   MarketData  m;
 
   QTimer *timer;
   QTimer *timer2;
 
-  int apiQueue;
-  int pApiQueue;
-
   uint lastNonce;
 
-  double USDBalance;
-  double BTCBalance;
-
-  QList<Order> activeOrders;
-  QList<ExchangeTask> exchangeTasks;
-
-  QNetworkAccessManager* infoDownloadManager;
-  QNetworkAccessManager* createTradeDownloadManager;
-  QNetworkAccessManager* activeOrdersDownloadManager;
-  QNetworkAccessManager* orderInfoDownloadManager;
-  QNetworkAccessManager* cancelOrderDownloadManager;
-  QNetworkAccessManager* tradeHistoryDownloadManager;
-  QNetworkAccessManager* transHistoryDownloadManager;
-
-  QNetworkAccessManager* depthDownloadManager;
-  QNetworkAccessManager* tickerDownloadManager;
-  QNetworkAccessManager* tradeDownloadManager;
+  QList<Order>    activeOrders;
+  QList<Order>    orderHistory;
+  QList<Balance>  balances;
 
   void createNonce(QByteArray *nonce);
   void createMilliNonce(QByteArray *nonce);
-
-  void executeExchangeTask(ExchangeTask exchangeTask);
-  void addExchangeTask(ExchangeTask exchangeTask, bool priority = false);
-  void getInfoTask(ExchangeTask *exchangeTask);
-  void createTradeTask(ExchangeTask *exchangeTask);
-  void getActiveOrdersTask(ExchangeTask *exchangeTask);
-  void getOrderInfoTask(ExchangeTask *exchangeTask);
-  void cancelOrderTask(ExchangeTask *exchangeTask);
-  void updateTradeHistoryTask(ExchangeTask *exchangeTask);
-  void updateTransactionHistoryTask(ExchangeTask *exchangeTask);
-
-  // Private API:
-
-  void getInfo();
-  void createTrade(QString pair, int type, double price, double amount);
-  void getActiveOrders(QString pair);
-  void getOrderInfo(uint orderID);
-  void cancelOrder(uint OrderID);
-  void updateTradeHistory();
-  void updateTransactionHistory();
-  bool checkSuccess(QJsonObject *object);
-  QString getRequestErrorMessage(QJsonObject *object);
-
-  void parseInfoData(QJsonObject *object);
-  bool parseActiveOrdersData(QJsonObject *object);
-
-  // Public API:
-
-  void updateMarketTrades(uint limit);
-  void updateMarketDepth();
-  void updateMarketTicker();
 
   bool getObjectFromDocument(QNetworkReply *reply, QJsonObject *object);
   bool checkCoolDownExpiration(bool reset);
 
 public slots:
-
-  void infoDataReply(QNetworkReply *reply);
-  void createTradeDataReply(QNetworkReply *reply);
-  void activeOrdersDataReply(QNetworkReply *reply);
-  void orderInfoDataReply(QNetworkReply *reply);
-  void cancelOrderDataReply(QNetworkReply *reply);
-  void tradeHistoryDataReply(QNetworkReply *reply);
-  void transHistoryDataReply(QNetworkReply *reply);
-
-  void depthDataReply(QNetworkReply *reply);
-  void tickerDataReply(QNetworkReply *reply);
-  void tradeDataReply(QNetworkReply *reply);
-
-  void receiveTradeRequest(int type, double price, double amount);
-
-private slots:
-  void marketUpdateTick();
-  void privateUpdateTick();
+  // UI signals
+  virtual void receiveCancelOrder(uint orderID) = 0;
+  virtual void receiveCreateOrder(int type, double price, double amount) = 0;
 
 signals:
-  void sendNewMarketData(int dataType);
+  void sendMarketData(int dataType);
+  void sendActiveOrders(QList<Order> activeOrders);
+  void sendOrderHistory(QList<Order> orderHistory);
+  void sendBalances(QList<Balance> balances);
+  void sendTicker(Ticker ticker);
+  void sendTradeDepth();
+  void sendTradeHistory();
+  void sendTransactionHistory();
+  void sendMessage(int type, QString message);
 
 };
-
 #endif // EXCHANGEBOT_H

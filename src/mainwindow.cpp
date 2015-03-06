@@ -296,6 +296,10 @@ void MainWindow::setupBidsTable() {
 //
 void MainWindow::setupUISignals() {
 
+  // Main header
+  connect(ui->pushButtonExchangeSettings, SIGNAL(clicked()),this,SLOT(settingsButtonPressed()));
+
+
   // Buy/Sell widget
   connect(ui->lineEditBuyAmount,  SIGNAL(textChanged(const QString)),this,SLOT(buyTotalChanged(const QString)));
   connect(ui->lineEditBuyPrice,   SIGNAL(textChanged(const QString)),this,SLOT(buyTotalChanged(const QString)));
@@ -755,6 +759,13 @@ void MainWindow::cancelOrderButtonPressed() {
     // Send cancel to exchange
     e->sendCancelOrder(orderID); //TODO: emitted 4 times?
   }
+}
+
+//
+void MainWindow::settingsButtonPressed() {
+
+  SettingsDialog *dialog = new SettingsDialog();
+  dialog->exec();
 }
 
 //

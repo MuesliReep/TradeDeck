@@ -5,5 +5,6 @@
         <file>fonts/Roboto-Thin.ttf</file>
         <file>fonts/Arimo-Bold.ttf</file>
         <file>fonts/Arimo-Regular.ttf</file>
+        <file>icons/icon_exchange_settings_24px.png</file>
     </qresource>
 </RCC>

@@ -13,7 +13,7 @@
 #include "order.h"
 #include "trade.h"
 #include "confirmDialog.h"
-#include "order.h"
+#include "settingsDialog.h"
 
 #include "qcustomplot.h"
 
@@ -68,6 +68,7 @@ private slots:
   void sellButtonPressed();
 
   void cancelOrderButtonPressed();
+  void settingsButtonPressed();
 
   void calcValueChanged(int value);
   void calcSellAmountChanged();

@@ -63,13 +63,14 @@ public slots:
   // UI signals
   virtual void receiveCancelOrder(uint orderID) = 0;
   virtual void receiveCreateOrder(int type, double price, double amount) = 0;
+  void checkBalance(int currency, double amount, bool *result);
 
 signals:
   void sendActiveOrders(QList<Order> activeOrders);
   void sendOrderHistory(QList<Order> orderHistory);
   void sendBalances(QList<Balance> balances);
   void sendTicker(Ticker ticker);
-  void sendTradeDepth();
+  void sendTradeDepth(TradeDepth tradeDepth);
   void sendTransactionHistory();
   void sendMessage(int type, QString message);
 

@@ -83,3 +83,11 @@ bool ExchangeBot::getObjectFromDocument(QNetworkReply *reply, QJsonObject *objec
 //----------------------------------//
 //         UI Signal Slots          //
 //----------------------------------//
+
+void checkBalance(int currency, double amount, bool *result) {
+
+  *result = false;
+
+  if(amount <= balances[currency].getAmount())
+    *result = true;
+}

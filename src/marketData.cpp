@@ -443,6 +443,10 @@ QList<Order> MarketData::getBids() {
   return bids;
 }
 
+TradeDepth getTradeDepth() {
+  return tradeDepth;
+}
+
 QList<Trade> MarketData::getTrades() {
   return tradeData;
 }

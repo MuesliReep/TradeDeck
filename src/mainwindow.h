@@ -41,7 +41,7 @@ private:
   QCPGraph      *MA1;
   QCPGraph      *MA2;
 
-  bool checkBalance(int pair, double amount);
+  // bool checkBalance(int pair, double amount);
   void calculateMinimumBuyTrade(double sellPrice, double sellAmount, double fee, double *buyPrice, double *buyAmount, double *buyTotal, double profit = 0.00000001);
   double calculateMinimumSellTrade(double sellPrice, double sellAmount, double fee, double profit = 0.00000001);
 
@@ -92,13 +92,14 @@ public slots:
   void receiveOrderHistory(QList<Order> orderHistory);
   void receiveBalances(QList<Balance> balances);
   void receiveTicker(Ticker ticker);
-  void receiveTradeDepth();
+  void receiveTradeDepth(TradeDepth tradeDepth);
   void receiveTransactionHistory();
   void receiveMessage(int type, QString message);;
 
 signals:
   void sendCancelOrder(uint orderID);
   void sendCreateOrder(int type, double price, double amount);
+  void checkBalance(int currency, double amount, bool *result);
 
 };
 

@@ -15,6 +15,7 @@
 #include "trade.h"
 
 class Ticker;
+class TradeDepth;
 
 class DataPoint {
 
@@ -69,19 +70,19 @@ public:
   uint findClosestBin();
   uint findClosestBin(uint desiredTime);
 
-  QList<Order>      getAsks();
-  QList<Order>      getBids();
-  QList<Trade>      getTrades();
-  QList<DataPoint>  getPriceList();
-  QList<QList<double> >     getMAList();
+  TradeDepth              getTradeDepth();
+  QList<Trade>            getTrades();
+  QList<DataPoint>        getPriceList();
+  QList<QList<double> >   getMAList();
 
 private:
   Config *c;
   // Ticker t;
   QString tradeDataFileName = "btce_USD-BTC.json";
 
-  QList<Order> asks;
-  QList<Order> bids;
+  QList<Order>  asks;
+  QList<Order>  bids;
+  TradeDepth    tradeDepth;
 
   QList<Trade> tradeData;
   QList<DataPoint> priceList;
@@ -95,6 +96,19 @@ private:
   QList<double> runEMA(int weight);
   QList<double> runSMA(int size);
 
+};
+
+class TradeDepth {
+
+public:
+  TradeDepth(QList<Order> Asks, QList<Order> Bids) {
+    asks = Asks; bids = Bids;
+  }
+  QList<Order> getAsks() { return asks; }
+  QList<Order> getBids() { return bids; }
+private:
+  QList<Order> asks;
+  QList<Order> bids;
 };
 
 class Ticker {

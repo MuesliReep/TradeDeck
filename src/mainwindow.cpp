@@ -118,28 +118,14 @@ void MainWindow::setExchangeBots(ExchangeBot *E) {
   connect(e,SIGNAL(sendOrderHistory(QList<Order>)), this,SLOT(receiveOrderHistory(QList<Order>)));
   connect(e,SIGNAL(sendBalances(QList<Balance>)),   this,SLOT(receiveBalances(QList<Balance>)));
   connect(e,SIGNAL(sendTicker(Ticker)),             this,SLOT(receiveTicker(Ticker)));
-  connect(e,SIGNAL(sendTradeDepth(xx)),             this,SLOT(receiveTradeDepth(xx)));
-  connect(e,SIGNAL(sendTransactionHistory(xx)),     this,SLOT(receiveTransactionHistory(xx)));
+  connect(e,SIGNAL(sendTradeDepth(TradeDepth)),     this,SLOT(receiveTradeDepth(TradeDepth)));
+  connect(e,SIGNAL(sendTransactionHistory()),       this,SLOT(receiveTransactionHistory()));
   connect(e,SIGNAL(sendMessage(int, QString)),      this,SLOT(receiveMessage(int, QString)));
 
   // Connect UI signals to bot
   connect(this,SIGNAL(sendCancelOrder(uint)),                e,SLOT(receiveCancelOrder(uint)));
   connect(this,SIGNAL(sendCreateOrder(int, double, double)), e,SLOT(receiveCreateOrder(int, double, double)));
-}
-
-//
-bool MainWindow::checkBalance(int pair, double amount) {
-
-  switch(pair) {
-    case 0:
-      if(amount < e->getBTCBalance())
-        return true;
-    case 1:
-      if(amount < e->getUSDBalance())
-        return true;
-  }
-
-  return false;
+  connect(this,SIGNAL(checkBalance(int, double, *bool)),     e,SLOT(checkBalance(int, double, *bool)));
 }
 
 //
@@ -339,19 +325,19 @@ void MainWindow::setupUISignals() {
 //----------------------------------//
 
 //
-void MainWindow::scaleTradePlot() {
+void MainWindow::scaleTradePlot(QList<DataPoint> *priceList) {
 
-  QList<DataPoint> dataPoints = e->getMarketData()->getPriceList();
+  // QList<DataPoint> dataPoints = e->getMarketData()->getPriceList();
 
-  double high = dataPoints[0].getHigh();
-  double low  = dataPoints[0].getLow();
+  double high = dataPoints->at(0).getHigh();
+  double low  = dataPoints->at(0).getLow();
 
-  for(int i = 0; i < dataPoints.size(); i++) {
+  for(int i = 0; i < priceList->size(); i++) {
 
-    if(dataPoints[i].getHigh() > high)
-      high  = dataPoints[i].getHigh();
-    if(dataPoints[i].getLow() < low && dataPoints[i].getLow() != 0)
-      low   = dataPoints[i].getLow();
+    if(dataPoints->at(i)->getHigh() > high)
+      high  = dataPoints->(i)->getHigh();
+    if(dataPoints->(i)->getLow() < low && dataPoints[i].getLow() != 0)
+      low   = dataPoints->(i)->getLow();
   }
 
   // ui->tradePlot->yAxis->setRange((int)high+2, (int)low-2);
@@ -478,7 +464,7 @@ void MainWindow::updateTradePlot() {
 }
 
 //
-void MainWindow::updateTradeDepth() {
+void MainWindow::updateTradeDepth(TradeDepth *t) {
 
   // Clear the current data
   ui->tableWidgetAsks->clear();
@@ -491,8 +477,8 @@ void MainWindow::updateTradeDepth() {
   ui->tableWidgetAsks->setHorizontalHeaderLabels(labels);
 
   // Retrieve new data from the exchange bot
-  QList<Order> asks = e->getMarketData()->getAsks();
-  QList<Order> bids = e->getMarketData()->getBids();
+  QList<Order> asks = t->getAsks();
+  QList<Order> bids = t->getBids();
 
   // Set the number of rows for both Asks and Bids
   int maxRowSize = 15;
@@ -696,7 +682,10 @@ void MainWindow::buyButtonPressed() {
   double total  = price * amount;
 
   // Check USD balance
-  if(checkBalance(1, total) && amount != 0.0) {
+  bool result;
+  checkBalance(currency, amount, &result);
+
+  if(result && amount != 0.0) {
 
     qDebug() << "Buy " << amount << "BTC, at " << price << "USD/BTC";
 
@@ -724,7 +713,10 @@ void MainWindow::sellButtonPressed() {
   double total  = price * amount;
 
   // Check BTC balance
-  if(checkBalance(0, amount) && amount != 0.0) {
+  bool result;
+  checkBalance(currency, amount, &result);
+
+  if(result && amount != 0.0) {
 
     qDebug() << "Sell " << amount << "BTC, at " << price << "USD/BTC";
 
@@ -929,7 +921,7 @@ void MainWindow::receiveActiveOrders(QList<Order> activeOrders) { }
 void MainWindow::receiveOrderHistory(QList<Order> orderHistory) { }
 void MainWindow::receiveBalances(QList<Balance> balances) { }
 void MainWindow::receiveTicker(Ticker ticker) { }
-void MainWindow::receiveTradeDepth() { }
+void MainWindow::receiveTradeDepth(TradeDepth tradeDepth) { }
 void MainWindow::receiveTradeHistory() { }
 void MainWindow::receiveTransactionHistory() { }
 void MainWindow::receiveMessage(int type, QString message); { }

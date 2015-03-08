@@ -114,18 +114,19 @@ void MainWindow::setExchangeBots(ExchangeBot *E) {
   e = E;
 
   // Connect bot signals to UI
-  connect(e,SIGNAL(sendActiveOrders(QList<Order>)), this,SLOT(receiveActiveOrders(QList<Order>)));
-  connect(e,SIGNAL(sendOrderHistory(QList<Order>)), this,SLOT(receiveOrderHistory(QList<Order>)));
-  connect(e,SIGNAL(sendBalances(QList<Balance>)),   this,SLOT(receiveBalances(QList<Balance>)));
-  connect(e,SIGNAL(sendTicker(Ticker)),             this,SLOT(receiveTicker(Ticker)));
-  connect(e,SIGNAL(sendTradeDepth(TradeDepth)),     this,SLOT(receiveTradeDepth(TradeDepth)));
-  connect(e,SIGNAL(sendTransactionHistory()),       this,SLOT(receiveTransactionHistory()));
-  connect(e,SIGNAL(sendMessage(int, QString)),      this,SLOT(receiveMessage(int, QString)));
+  connect(e,SIGNAL(sendActiveOrders(QList<Order>)),   this,SLOT(receiveActiveOrders(QList<Order>)));
+  connect(e,SIGNAL(sendOrderHistory(QList<Order>)),   this,SLOT(receiveOrderHistory(QList<Order>)));
+  connect(e,SIGNAL(sendBalances(QList<Balance>)),     this,SLOT(receiveBalances(QList<Balance>)));
+  connect(e,SIGNAL(sendTicker(Ticker)),               this,SLOT(receiveTicker(Ticker)));
+  connect(e,SIGNAL(sendTradeDepth(TradeDepth)),       this,SLOT(receiveTradeDepth(TradeDepth)));
+  connect(e,SIGNAL(sendTradeHistory(QList<Trade>,QList<DataPoint>,QList<QList<double> >)),  this,SLOT(receiveTradeHistory(QList<Trade>,QList<DataPoint>,QList<QList<double> >)));
+  connect(e,SIGNAL(sendTransactionHistory()),         this,SLOT(receiveTransactionHistory()));
+  connect(e,SIGNAL(sendMessage(int, QString)),        this,SLOT(receiveMessage(int, QString)));
 
   // Connect UI signals to bot
   connect(this,SIGNAL(sendCancelOrder(uint)),                e,SLOT(receiveCancelOrder(uint)));
   connect(this,SIGNAL(sendCreateOrder(int, double, double)), e,SLOT(receiveCreateOrder(int, double, double)));
-  connect(this,SIGNAL(checkBalance(int, double, *bool)),     e,SLOT(checkBalance(int, double, *bool)));
+  connect(this,SIGNAL(checkBalance(int, double, bool*)),     e,SLOT(checkBalance(int, double, bool*)));
 }
 
 //
@@ -324,55 +325,62 @@ void MainWindow::setupUISignals() {
 //         Update functions         //
 //----------------------------------//
 
+// TODO: this function should be in a shared class
+uint MainWindow::findClosestBin(uint desiredTime, uint binSize) {
+
+  return desiredTime - (desiredTime % binSize) + binSize;
+}
+
 //
-void MainWindow::scaleTradePlot(QList<DataPoint> *priceList) {
+void MainWindow::scaleTradePlot(QList<DataPoint> *binnedTradeData) {
 
   // QList<DataPoint> dataPoints = e->getMarketData()->getPriceList();
 
-  double high = dataPoints->at(0).getHigh();
-  double low  = dataPoints->at(0).getLow();
+  double high = (*binnedTradeData)[0].getHigh();
+  double low  = (*binnedTradeData)[0].getLow();
 
-  for(int i = 0; i < priceList->size(); i++) {
+  for(int i = 0; i < binnedTradeData->size(); i++) {
 
-    if(dataPoints->at(i)->getHigh() > high)
-      high  = dataPoints->(i)->getHigh();
-    if(dataPoints->(i)->getLow() < low && dataPoints[i].getLow() != 0)
-      low   = dataPoints->(i)->getLow();
+    if((*binnedTradeData)[i].getHigh() > high)
+      high  = (*binnedTradeData)[i].getHigh();
+    if((*binnedTradeData)[i].getLow() < low && (*binnedTradeData)[i].getLow() != 0)
+      low   = (*binnedTradeData)[i].getLow();
   }
 
   // ui->tradePlot->yAxis->setRange((int)high+2, (int)low-2);
   ui->tradePlot->yAxis2->setRange((int)high+2, (int)low-2);
 
   // Next update the yAxis
+  uint binSize = 60;
 
-  uint now  = e->getMarketData()->findClosestBin((uint)QDateTime::currentDateTime().toTime_t());
-  uint then = e->getMarketData()->findClosestBin(now-250*60);
+  uint now  = findClosestBin((uint)QDateTime::currentDateTime().toTime_t(), binSize);
+  uint then = findClosestBin(now-250*60, binSize);
   ui->tradePlot->xAxis->setRange(then, now); // TODO: num bins needs to be defined in settings
 }
 
 //
-void MainWindow::updateTradeList() {
+void MainWindow::updateTradeList(QList<Trade> *tradeData) {
 
   // Clear the current trades
   ui->tableWidgetTrades->clear();
 
   // Get the latest trade list
-  QList<Trade> trades = e->getMarketData()->getTrades();
+  // QList<Trade> trades = e->getMarketData()->getTrades();
 
   // Set the max. number of trades to be shown
   int listSize = 100;
 
   // Update the trade table
-  if(trades.size()>0) {
+  if(tradeData->size()>0) {
 
     // Set the number of rows
-    if(trades.size()<listSize)
-      ui->tableWidgetTrades->setRowCount(trades.size());
+    if(tradeData->size()<listSize)
+      ui->tableWidgetTrades->setRowCount(tradeData->size());
     else
       ui->tableWidgetTrades->setRowCount(listSize);
 
     // Iterate through the trade list and add them to the table
-    for(int i=0;i<trades.size()&&i<50;i++) {
+    for(int i=0;i<tradeData->size()&&i<50;i++) {
 
       QString time;
       QString value;
@@ -380,12 +388,12 @@ void MainWindow::updateTradeList() {
 
       // Convert timestamp to date time
       QDateTime dateTime;
-      dateTime.setTime_t(trades[i].getTimeStamp());
+      dateTime.setTime_t((*tradeData)[i].getTimeStamp());
       time = dateTime.toString("hh:mm:ss");
 
       // Convert value & amount to strings
-      value.setNum(trades[i].getPrice());
-      amount.setNum(trades[i].getAmount()); //TODO: pad with zeros
+      value.setNum((*tradeData)[i].getPrice());
+      amount.setNum((*tradeData)[i].getAmount()); //TODO: pad with zeros
 
       ui->tableWidgetTrades->setItem(i, 0, new QTableWidgetItem(time));
       ui->tableWidgetTrades->setItem(i, 1, new QTableWidgetItem(value));
@@ -393,7 +401,7 @@ void MainWindow::updateTradeList() {
 
       ui->tableWidgetTrades->item(i,1)->setTextColor(QColor(76, 175, 80));
 
-      if(trades[i].getPrice() < trades[i+1].getPrice() && (i+1) < trades.size())
+      if((*tradeData)[i].getPrice() < (*tradeData)[i+1].getPrice() && (i+1) < (*tradeData).size())
         ui->tableWidgetTrades->item(i,1)->setTextColor(QColor(244, 67, 54));
     }
 
@@ -401,7 +409,7 @@ void MainWindow::updateTradeList() {
     QString oldPrice = ui->labelLastTradeValue->text();
     QString price;
 
-    price.setNum(trades[0].getPrice());
+    price.setNum((*tradeData)[0].getPrice());
     ui->labelLastTradeValue->setText(price);
 
     QPalette palette = ui->labelLastTradeValue->palette();
@@ -429,25 +437,25 @@ void MainWindow::updateTradeList() {
 }
 
 //
-void MainWindow::updateTradePlot() {
+void MainWindow::updateTradePlot(QList<DataPoint> *binnedTradeData, QList<QList<double> > *MAList) {
 
   // Retrieve the latest data
-  QList<DataPoint> dataPoints = e->getMarketData()->getPriceList();
+  // QList<DataPoint> dataPoints = e->getMarketData()->getPriceList();
 
   candlesticks->clearData();
   MA1->clearData();
   MA2->clearData();
 
-  QList<double> MA1List = e->getMarketData()->getMAList()[0];
-  QList<double> MA2List = e->getMarketData()->getMAList()[1];
+  QList<double> MA1List = (*MAList)[0];
+  QList<double> MA2List = (*MAList)[1];
 
   double key = 1;
-  for(int i = dataPoints.size()-1; i >= 0; i--) {
+  for(int i = binnedTradeData->size()-1; i >= 0; i--) {
 
-    key = dataPoints[i].getTimeStamp();
+    key = (*binnedTradeData)[i].getTimeStamp();
 
     // Update candlesticks
-    candlesticks->addData(key, dataPoints[i].getOpen(), dataPoints[i].getHigh(), dataPoints[i].getLow(), dataPoints[i].getClose());
+    candlesticks->addData(key, (*binnedTradeData)[i].getOpen(), (*binnedTradeData)[i].getHigh(), (*binnedTradeData)[i].getLow(), (*binnedTradeData)[i].getClose());
 
     // TODO: Add volume information
 
@@ -458,7 +466,7 @@ void MainWindow::updateTradePlot() {
     // key++;
   }
 
-  scaleTradePlot();
+  scaleTradePlot(binnedTradeData);
 
   ui->tradePlot->replot();
 }
@@ -557,24 +565,24 @@ void MainWindow::updateTradeDepth(TradeDepth *t) {
 }
 
 //
-void MainWindow::updateBalances() {
+void MainWindow::updateBalances(QList<Balance> *balances) {
 
   QString usd;
   QString btc;
 
-  usd.setNum(e->getUSDBalance(),'f',8);
-  btc.setNum(e->getBTCBalance(),'f',8);
+  usd.setNum((*balances)[0].getAmount(),'f',8);
+  btc.setNum((*balances)[0].getAmount(),'f',8);
 
   ui->tableWidgetBalances->item(0,1)->setText(usd);
   ui->tableWidgetBalances->item(1,1)->setText(btc);
 }
 
 //
-void MainWindow::updateOrders() {
+void MainWindow::updateOrders(QList<Order> *activeOrders) {
 
   // TODO: only clear when no orders
   // Clear old data
-  if(ui->tableWidgetOrders->rowCount() == 0 && e->getActiveOrders().isEmpty()) {
+  if(ui->tableWidgetOrders->rowCount() == 0 && activeOrders->isEmpty()) {
 
     ui->tableWidgetOrders->clear();
 
@@ -585,16 +593,16 @@ void MainWindow::updateOrders() {
     ui->tableWidgetOrders->setHorizontalHeaderLabels(labels);
   }
 
-  QList<Order> orders = e->getActiveOrders();
+  // QList<Order> orders = e->getActiveOrders();
 
   // First check if the already present orders are still present in the new list
   for(int i = 0; i < ui->tableWidgetOrders->rowCount(); i++) {
 
     bool alive = false;
 
-    for(int j = 0; j < orders.size(); j++) {
+    for(int j = 0; j < activeOrders->size(); j++) {
 
-      if(ui->tableWidgetOrders->item(i, 4)->text().toUInt() == orders[j].getOrderID()) {
+      if(ui->tableWidgetOrders->item(i, 4)->text().toUInt() == (*activeOrders)[j].getOrderID()) {
 
         alive = true;
         break;
@@ -607,31 +615,31 @@ void MainWindow::updateOrders() {
   }
 
   // TODO: remove orders already present from orders for efficiency
-  ui->tableWidgetOrders->setRowCount(orders.size());
+  ui->tableWidgetOrders->setRowCount(activeOrders->size());
 
   // For each order add it to the table
-  for(int i = 0; i < orders.size(); i++) {
+  for(int i = 0; i < activeOrders->size(); i++) {
 
     // Check if this order already exists, otherwise add it
     if(ui->tableWidgetOrders->rowCount() == 0) {
-      for(int j = 0; j < orders.size(); j++) {
+      for(int j = 0; j < activeOrders->size(); j++) {
 
-        if(ui->tableWidgetOrders->item(j, 4)->text().toUInt() == orders[i].getOrderID())
+        if(ui->tableWidgetOrders->item(j, 4)->text().toUInt() == (*activeOrders)[i].getOrderID())
           continue;
       }
     }
 
     QString time; QDateTime dateTime;
-    dateTime.setTime_t(orders[i].getTimeStamp());
+    dateTime.setTime_t((*activeOrders)[i].getTimeStamp());
     time = dateTime.toString("dd/MM hh:mm:ss");
     QString type("Buy");
-    if(orders[i].getType() == 1)
+    if((*activeOrders)[i].getType() == 1)
       type = "Sell";
-    QString amount;     amount.setNum(orders[i].getPair1()); amount.append(" BTC");
-    QString price;      price.setNum(orders[i].getPair2()); price.append(" USD");
+    QString amount;     amount.setNum((*activeOrders)[i].getPair1()); amount.append(" BTC");
+    QString price;      price.setNum((*activeOrders)[i].getPair2()); price.append(" USD");
     QString remaining;  remaining.setNum(-1); remaining.append(" BTC");
     QString status;     status.setNum(-1);
-    QString orderID;    orderID.setNum(orders[i].getOrderID());
+    QString orderID;    orderID.setNum((*activeOrders)[i].getOrderID());
 
     // Add items to row
     ui->tableWidgetOrders->setItem(i, 0, new QTableWidgetItem(time));
@@ -645,9 +653,9 @@ void MainWindow::updateOrders() {
   }
 
   // Remove cancel button when no orders are present & return it when there are
-  if(orders.size() == 0 && ui->pushButtonCancelOrder->isVisible())
+  if(activeOrders->size() == 0 && ui->pushButtonCancelOrder->isVisible())
     ui->pushButtonCancelOrder->setVisible(false);
-  else if(orders.size() > 0 && !ui->pushButtonCancelOrder->isVisible())
+  else if(activeOrders->size() > 0 && !ui->pushButtonCancelOrder->isVisible())
     ui->pushButtonCancelOrder->setVisible(true);
 }
 
@@ -680,6 +688,7 @@ void MainWindow::buyButtonPressed() {
   double price  = ui->lineEditBuyPrice->text().toDouble();
   double amount = ui->lineEditBuyAmount->text().toDouble();
   double total  = price * amount;
+  uint currency = 0;
 
   // Check USD balance
   bool result;
@@ -711,6 +720,7 @@ void MainWindow::sellButtonPressed() {
   double price  = ui->lineEditSellPrice->text().toDouble();
   double amount = ui->lineEditSellAmount->text().toDouble();
   double total  = price * amount;
+  uint currency = 1;
 
   // Check BTC balance
   bool result;
@@ -750,15 +760,14 @@ void MainWindow::cancelOrderButtonPressed() {
     // Get the row ID
     int rowID = selectedOrders[i].row();
 
-    // Get the orderID from exchangeBot
-    Order order = e->getActiveOrders().at(rowID);
-    uint orderID = order.getOrderID();
+    // Get the orderID from table
+    uint orderID = ui->tableWidgetOrders->item(rowID, 4)->text().toUInt();
 
     // Remove items from table
     ui->tableWidgetOrders->removeRow(rowID);
 
     // Send cancel to exchange
-    e->sendCancelOrder(orderID); //TODO: emitted 4 times?
+    sendCancelOrder(orderID); //TODO: emitted 4 times?
   }
 }
 
@@ -872,7 +881,7 @@ void MainWindow::receiveOrderConfirmed(double price, double amount, int type) {
 
   qDebug() << "UI Received order was confirmed by user";
 
-  sendTradeRequest(type, price, amount);
+  sendCreateOrder(type, price, amount);
 }
 
 //
@@ -917,11 +926,11 @@ void MainWindow::receiveOrderConfirmed(double price, double amount, int type) {
 //   }
 // }
 
-void MainWindow::receiveActiveOrders(QList<Order> activeOrders) { }
+void MainWindow::receiveActiveOrders(QList<Order> activeOrders) { updateOrders(&activeOrders); }
 void MainWindow::receiveOrderHistory(QList<Order> orderHistory) { }
-void MainWindow::receiveBalances(QList<Balance> balances) { }
+void MainWindow::receiveBalances(QList<Balance> balances) { updateBalances(&balances); }
 void MainWindow::receiveTicker(Ticker ticker) { }
-void MainWindow::receiveTradeDepth(TradeDepth tradeDepth) { }
-void MainWindow::receiveTradeHistory() { }
+void MainWindow::receiveTradeDepth(TradeDepth tradeDepth) { updateTradeDepth(&tradeDepth); }
+void MainWindow::receiveTradeHistory(QList<Trade> tradeData, QList<DataPoint> binnedTradeData, QList<QList<double> > MAList) { qDebug() << "new Trade History"; updateTradeList(&tradeData); updateTradePlot(&binnedTradeData, &MAList); }
 void MainWindow::receiveTransactionHistory() { }
-void MainWindow::receiveMessage(int type, QString message); { }
+void MainWindow::receiveMessage(int type, QString message) { }

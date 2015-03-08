@@ -50,6 +50,35 @@ private:
 
 };
 
+class TradeDepth {
+
+public:
+  TradeDepth() {}
+  TradeDepth(QList<Order> Asks, QList<Order> Bids) {
+    asks = Asks; bids = Bids;
+  }
+  QList<Order> getAsks() { return asks; }
+  QList<Order> getBids() { return bids; }
+private:
+  QList<Order> asks;
+  QList<Order> bids;
+};
+
+class Ticker {
+
+public:
+  Ticker( double high = 0,    double low = 0,
+          double avg = 0,     double vol = 0,
+          double vol_cur = 0, double last = 0,
+          double buy = 0,     double sell = 0,
+          uint updated = 0 );
+
+private:
+  double high, low, avg, vol;
+  double vol_cur, last, buy, sell;
+  uint updated;
+};
+
 class MarketData
 {
 
@@ -71,9 +100,10 @@ public:
   uint findClosestBin(uint desiredTime);
 
   TradeDepth              getTradeDepth();
-  QList<Trade>            getTrades();
-  QList<DataPoint>        getPriceList();
+  QList<Trade>            getTradeData();
+  QList<DataPoint>        getBinnedTradeData();
   QList<QList<double> >   getMAList();
+  Ticker                  getTicker();
 
 private:
   Config *c;
@@ -83,9 +113,10 @@ private:
   QList<Order>  asks;
   QList<Order>  bids;
   TradeDepth    tradeDepth;
+  Ticker        ticker;
 
   QList<Trade> tradeData;
-  QList<DataPoint> priceList;
+  QList<DataPoint> binnedTradeData;
 
   QList<QList<double> > MAList;
 
@@ -96,41 +127,6 @@ private:
   QList<double> runEMA(int weight);
   QList<double> runSMA(int size);
 
-};
-
-class TradeDepth {
-
-public:
-  TradeDepth(QList<Order> Asks, QList<Order> Bids) {
-    asks = Asks; bids = Bids;
-  }
-  QList<Order> getAsks() { return asks; }
-  QList<Order> getBids() { return bids; }
-private:
-  QList<Order> asks;
-  QList<Order> bids;
-};
-
-class Ticker {
-
-public:
-  Ticker();
-  Ticker( double high,    double low,
-          double avg,     double vol,
-          double vol_cur, double last,
-          double buy,     double sell,
-          uint updated );
-
-private:
-  double high;
-  double low;
-  double avg;
-  double vol;
-  double vol_cur;
-  double last;
-  double buy;
-  double sell;
-  uint updated;
 };
 
 #endif // MARKETDATA_H

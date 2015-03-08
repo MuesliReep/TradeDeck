@@ -34,7 +34,7 @@ class ExchangeBot : public QObject
   Q_OBJECT
 public:
   ExchangeBot(QObject *parent = 0);
-  ~ExchangeBot();
+  // ~ExchangeBot();
 
 public:
   virtual void startBot() = 0;
@@ -71,6 +71,7 @@ signals:
   void sendBalances(QList<Balance> balances);
   void sendTicker(Ticker ticker);
   void sendTradeDepth(TradeDepth tradeDepth);
+  void sendTradeHistory(QList<Trade> tradeData, QList<DataPoint> binnedTradeData, QList<QList<double> > MAList);
   void sendTransactionHistory();
   void sendMessage(int type, QString message);
 

@@ -55,7 +55,7 @@ QList<double> MarketData::runSMA(int size) {
         break;
 
       // Add the closing price
-      accumulator += priceList[i+j].getClose();
+      accumulator += binnedTradeData[i+j].getClose();
     }
 
     SMAList.prepend(accumulator / (double)size);
@@ -68,7 +68,7 @@ QList<double> MarketData::runSMA(int size) {
 void MarketData::binTradeData() {
 
   // TODO: Check if a list is already active, else create one
-  priceList.clear();
+  binnedTradeData.clear();
 
   // Determine the oldest allowed trade according to the number of data points & bin size
   uint maxAge            = dataPoints * binSize;
@@ -129,18 +129,18 @@ void MarketData::binTradeData() {
     if(!intervalTrades.size()>0) {
 
       // Check if there is a previous value to use
-      if(!priceList.size()>0) {
+      if(!binnedTradeData.size()>0) {
 
-        priceList.prepend(DataPoint(maxIntervalStamp,0,0,0,0,0,0)); // The list is empty, create a zero value datapoint
+        binnedTradeData.prepend(DataPoint(maxIntervalStamp,0,0,0,0,0,0)); // The list is empty, create a zero value datapoint
       } else { // Use the previous value
 
         // Each point uses the previous average because no trades took place
-        double average = priceList[0].getAverage(); // Zero is used because all items are prepended, so the last item will be at zero
+        double average = binnedTradeData[0].getAverage(); // Zero is used because all items are prepended, so the last item will be at zero
 
         DataPoint previousPoint(maxIntervalStamp, average,  average,
                                                   average,  average,
                                                   average,  0); // Volume is zero because no trades took place
-        priceList.prepend(previousPoint);
+        binnedTradeData.prepend(previousPoint);
       }
     } else {
 
@@ -176,8 +176,8 @@ void MarketData::binTradeData() {
       // Create the dataPoint from the gathered values
       DataPoint dataPoint(timeStamp, open, close, high, low, average, volume);
 
-      // Add the new dataPoint to the priceList
-      priceList.prepend(dataPoint);
+      // Add the new dataPoint to the binnedTradeData
+      binnedTradeData.prepend(dataPoint);
     }
   }
 }
@@ -433,28 +433,40 @@ uint MarketData::getOldestTrade() {
   return tradeData[tradeData.size()-1].getTimeStamp();
 }
 
-// Returns a pointer to the ask orders list
-QList<Order> MarketData::getAsks() {
-  return asks;
-}
-
-// Returns a pointer to the bid orders list
-QList<Order> MarketData::getBids() {
-  return bids;
-}
-
-TradeDepth getTradeDepth() {
+TradeDepth MarketData::getTradeDepth() {
   return tradeDepth;
 }
 
-QList<Trade> MarketData::getTrades() {
+QList<Trade> MarketData::getTradeData() {
   return tradeData;
 }
 
-QList<DataPoint>  MarketData::getPriceList() {
-  return priceList;
+QList<DataPoint>  MarketData::getBinnedTradeData() {
+  return binnedTradeData;
 }
 
 QList<QList<double> > MarketData::getMAList() {
   return MAList;
+}
+
+Ticker MarketData::getTicker() {
+  return ticker;
+}
+
+Ticker::Ticker( double High,    double Low,
+                double Avg,     double Vol,
+                double Vol_cur, double Last,
+                double Buy,     double Sell,
+                uint Updated ) {
+
+  high    = High;
+  avg     = Avg;
+  vol_cur = Vol_cur;
+  buy     = Buy;
+  updated = Updated;
+  low     = Low;
+  vol     = Vol;
+  last    = Last;
+  sell    = Sell;
+
 }

@@ -8,14 +8,16 @@ Step 1:
   ☐ Settings dialog
   ☐ When first time opening show dialog with options
   ☐ When first time opening create history sources
-  ☐ Add volume graph
-  ☐ Add trade depth graph
   ✔ Right side axis @done(2015-03-04 21:59) @project(Step 1)
   ✔ Dates on bottom axis @done(2015-03-06 00:10) @project(Step 1)
   ☐ Improve confirm dialog to use UI form
+  ☐ UI widgets should be in seperate classes
+  ☐ Marketdata should be delivered by Exchangebot
+  ☐ binSize should be defined in config
 
 Step 2:
-  ☐ UI widgets should be in seperate classes
+  ☐ Add volume graph
+  ☐ Add trade depth graph
   ☐ Add support for new exchange, start with OKCoin/BitFinex
   ☐ Add support for multiple markets
   ☐ Ability to minimize widgets

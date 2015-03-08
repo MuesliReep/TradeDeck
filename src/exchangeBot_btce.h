@@ -85,7 +85,7 @@ public slots:
   void activeOrdersDataReply(QNetworkReply *reply);
   void orderInfoDataReply(QNetworkReply *reply);
   void cancelOrderDataReply(QNetworkReply *reply);
-  void tradeHistoryDataReply(QNetworkReply *reply);
+  void orderHistoryDataReply(QNetworkReply *reply);
   void transHistoryDataReply(QNetworkReply *reply);
 
   void depthDataReply(QNetworkReply *reply);

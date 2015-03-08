@@ -45,13 +45,15 @@ private:
   void calculateMinimumBuyTrade(double sellPrice, double sellAmount, double fee, double *buyPrice, double *buyAmount, double *buyTotal, double profit = 0.00000001);
   double calculateMinimumSellTrade(double sellPrice, double sellAmount, double fee, double profit = 0.00000001);
 
-  void updateTradeDepth();
-  void updateTradeList();
-  void updateTradePlot();
-  void scaleTradePlot();
+  uint findClosestBin(uint desiredTime, uint binSize);
 
-  void updateBalances();
-  void updateOrders();
+  void updateTradeDepth(TradeDepth *t);
+  void updateTradeList(QList<Trade> *tradeData);
+  void updateTradePlot(QList<DataPoint> *binnedTradeData, QList<QList<double> > *MAList);
+  void scaleTradePlot(QList<DataPoint> *binnedTradeData);
+
+  void updateBalances(QList<Balance> *balances);
+  void updateOrders(QList<Order> *activeOrders);
   void updateTransactionHistory();
 
   void setupPlot();
@@ -93,6 +95,7 @@ public slots:
   void receiveBalances(QList<Balance> balances);
   void receiveTicker(Ticker ticker);
   void receiveTradeDepth(TradeDepth tradeDepth);
+  void receiveTradeHistory(QList<Trade> tradeData, QList<DataPoint> binnedTradeData, QList<QList<double> > MAList);
   void receiveTransactionHistory();
   void receiveMessage(int type, QString message);;
 

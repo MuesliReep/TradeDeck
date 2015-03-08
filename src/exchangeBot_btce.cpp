@@ -80,19 +80,19 @@ void ExchangeBot_btce::startBot() {
 // 5 = updateTradeHistory
 // 6 = updateTransactionHistory
 
-ExchangeBot_btce::ExchangeTask(int Task) {
+ExchangeTask::ExchangeTask(int Task) {
 
   task = Task;
 }
 
-ExchangeBot_btce::ExchangeTask(int Task, QList<QString> Attributes) {
+ExchangeTask::ExchangeTask(int Task, QList<QString> Attributes) {
 
   task = Task;
   attributes = Attributes;
 }
 
-int ExchangeBot_btce::getTask() { return task; }
-QList<QString> ExchangeBot_btce::getTaskAttributes() { return attributes; }
+int ExchangeTask::getTask() { return task; }
+QList<QString> ExchangeTask::getTaskAttributes() { return attributes; }
 
 void ExchangeBot_btce::executeExchangeTask(ExchangeTask exchangeTask) {
 
@@ -325,7 +325,7 @@ void ExchangeBot_btce::updateTradeHistory() {
   d.addHeaderToRequest(&request, QByteArray("Sign"), sign);
 
   // Execute download
-  tradeHistoryDownloadManager = d.doPostDownload(request, data, this, SLOT(tradeHistoryDataReply(QNetworkReply*)));
+  tradeHistoryDownloadManager = d.doPostDownload(request, data, this, SLOT(orderHistoryDataReply(QNetworkReply*)));
 }
 
 //
@@ -422,8 +422,10 @@ void ExchangeBot_btce::updateMarketTicker() {
 //
 void ExchangeBot_btce::parseInfoData(QJsonObject *object) {
 
-  USDBalance = object->value("usd").toDouble();
-  BTCBalance = object->value("btc").toDouble();
+  balances.clear();
+
+  balances.append(Balance("usd", object->value("usd").toDouble()));
+  balances.append(Balance("btc", object->value("btc").toDouble()));
 }
 
 bool ExchangeBot_btce::parseActiveOrdersData(QJsonObject *object) {
@@ -493,7 +495,7 @@ void ExchangeBot_btce::infoDataReply(QNetworkReply *reply) {
       //   activeOrders.clear();
 
       // Send signal to GUI to update
-      sendNewMarketData(3);
+      sendBalances(balances);
     }
     else {
 
@@ -563,7 +565,7 @@ void ExchangeBot_btce::activeOrdersDataReply(QNetworkReply *reply) {
       parseActiveOrdersData(&activeOrdersData);
 
       // Send signal to GUI to update
-      sendNewMarketData(5);
+      sendActiveOrders(activeOrders);
     }
     else {
 
@@ -573,7 +575,7 @@ void ExchangeBot_btce::activeOrdersDataReply(QNetworkReply *reply) {
       parseActiveOrdersData(&activeOrdersData);
 
       // Send signal to GUI to update
-      sendNewMarketData(5);
+      sendActiveOrders(activeOrders);
     }
 
   } else
@@ -653,12 +655,12 @@ void ExchangeBot_btce::cancelOrderDataReply(QNetworkReply *reply) {
     cancelOrderDownloadManager->deleteLater();
 }
 
-void ExchangeBot_btce::tradeHistoryDataReply(QNetworkReply *reply) {
+void ExchangeBot_btce::orderHistoryDataReply(QNetworkReply *reply) {
 
   if(!reply->error()) {
 
     QJsonObject jsonObj;
-    QJsonObject tradeHistoryData;
+    QJsonObject orderHistoryData;
 
     // Extract JSON object from network reply
     getObjectFromDocument(reply, &jsonObj);
@@ -667,12 +669,12 @@ void ExchangeBot_btce::tradeHistoryDataReply(QNetworkReply *reply) {
     if(checkSuccess(&jsonObj)) {
 
       // Extract the info data we want
-      tradeHistoryData = jsonObj.value("return").toObject();
+      orderHistoryData = jsonObj.value("return").toObject();
 
       // Parse new data
 
       // Send signal to GUI to update
-      sendNewMarketData(8);
+      sendOrderHistory(orderHistory);
     }
     else {
 
@@ -705,7 +707,7 @@ void ExchangeBot_btce::transHistoryDataReply(QNetworkReply *reply) {
       // Parse new data
 
       // Send signal to GUI to update
-
+      sendTransactionHistory();
     }
     else {
 
@@ -736,7 +738,7 @@ void ExchangeBot_btce::depthDataReply(QNetworkReply *reply) {
     m.parseRawDepthData(&depthData);
 
     // Send signal to GUI to update
-    sendNewMarketData(1);
+    sendTradeDepth(m.getTradeDepth());
   }
   else
     qDebug() << "Depth Packet error";
@@ -767,7 +769,7 @@ void ExchangeBot_btce::tickerDataReply(QNetworkReply *reply) {
     m.parseRawTickerData(&tickerData);
 
     // Send signal to GUI to update
-    sendNewMarketData(2);
+    sendTicker(m.getTicker());
   }
   else
     qDebug() << "Ticker Packet error";
@@ -796,7 +798,8 @@ void ExchangeBot_btce::tradeDataReply(QNetworkReply *reply) {
     m.parseRawTradeData(&tradeData);
 
     // Send signal to GUI to update
-    sendNewMarketData(0);
+    qDebug() << "Sending trade history now!";
+    sendTradeHistory(m.getTradeData(), m.getBinnedTradeData(), m.getMAList());
   }
   else
     qDebug() << "Trade Packet error";
@@ -813,7 +816,7 @@ void ExchangeBot_btce::tradeDataReply(QNetworkReply *reply) {
 //           UI Commands            //
 //----------------------------------//
 
-void ExchangeBot_btce::receiveTradeRequest(int type, double price, double amount) {
+void ExchangeBot_btce::receiveCreateOrder(int type, double price, double amount) {
 
   QString pair = "btc_usd";
   QString typeS, priceS, amountS;
@@ -836,19 +839,6 @@ void ExchangeBot_btce::receiveCancelOrder(uint orderID) {
   addExchangeTask(ExchangeTask(4, attr), true);
 }
 
-void ExchangeBot_btce::receiveCreateOrder(int type, double price, double amount) {
-
-}
-
 //----------------------------------//
 //         Getters & Setters        //
 //----------------------------------//
-
-MarketData* ExchangeBot_btce::getMarketData() {
-
-  return &m;
-}
-
-QList<Order> ExchangeBot_btce::getActiveOrders() {
-  return activeOrders;
-}

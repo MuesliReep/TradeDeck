@@ -3,12 +3,10 @@
 
 ExchangeBot::ExchangeBot(QObject *parent) : QObject(parent) {
 
-  // Start timers
-  timer = new QTimer(this);
-  timer2 = new QTimer(this);
+}
 
-  // connect(timer, SIGNAL(timeout()), this, SLOT(marketUpdateTick()));
-  // connect(timer2, SIGNAL(timeout()), this, SLOT(privateUpdateTick()));
+ExchangeBot::~ExchangeBot() {
+  
 }
 
 // Sets the configuration for this Exchange Bot

@@ -571,7 +571,7 @@ void MainWindow::updateBalances(QList<Balance> *balances) {
   QString btc;
 
   usd.setNum((*balances)[0].getAmount(),'f',8);
-  btc.setNum((*balances)[0].getAmount(),'f',8);
+  btc.setNum((*balances)[1].getAmount(),'f',8);
 
   ui->tableWidgetBalances->item(0,1)->setText(usd);
   ui->tableWidgetBalances->item(1,1)->setText(btc);
@@ -931,6 +931,6 @@ void MainWindow::receiveOrderHistory(QList<Order> orderHistory) { }
 void MainWindow::receiveBalances(QList<Balance> balances) { updateBalances(&balances); }
 void MainWindow::receiveTicker(Ticker ticker) { }
 void MainWindow::receiveTradeDepth(TradeDepth tradeDepth) { updateTradeDepth(&tradeDepth); }
-void MainWindow::receiveTradeHistory(QList<Trade> tradeData, QList<DataPoint> binnedTradeData, QList<QList<double> > MAList) { qDebug() << "new Trade History"; updateTradeList(&tradeData); updateTradePlot(&binnedTradeData, &MAList); }
+void MainWindow::receiveTradeHistory(QList<Trade> tradeData, QList<DataPoint> binnedTradeData, QList<QList<double> > MAList) { updateTradeList(&tradeData); updateTradePlot(&binnedTradeData, &MAList); }
 void MainWindow::receiveTransactionHistory() { }
 void MainWindow::receiveMessage(int type, QString message) { }

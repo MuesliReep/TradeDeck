@@ -3,6 +3,8 @@
 
 #include "exchangeBot.h"
 
+#include <QObject>
+
 class ExchangeTask {
 
 public:
@@ -18,7 +20,7 @@ private:
 
 class ExchangeBot_btce : public ExchangeBot
 {
-
+  Q_OBJECT
 public:
   ExchangeBot_btce(QObject *parent = 0) : ExchangeBot(parent) {}
   // ~ExchangeBot_btce();
@@ -96,8 +98,8 @@ public slots:
   void receiveCreateOrder(int type, double price, double amount);
 
 private slots:
-  void marketUpdateTick();
-  void privateUpdateTick();
+  void updateTick();
+  void updateTick2();
 
 signals:
 

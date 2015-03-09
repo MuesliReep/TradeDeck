@@ -9,7 +9,7 @@
 // }
 
 //
-void ExchangeBot_btce::marketUpdateTick() {
+void ExchangeBot_btce::updateTick() {
 
   // Make sure the cool down timer has expired
   if(!checkCoolDownExpiration(true))
@@ -33,7 +33,7 @@ void ExchangeBot_btce::marketUpdateTick() {
 }
 
 //
-void ExchangeBot_btce::privateUpdateTick() {
+void ExchangeBot_btce::updateTick2() {
 
   // Work through the list of tasks here
   if(exchangeTasks.size() > 0) {
@@ -64,7 +64,13 @@ void ExchangeBot_btce::startBot() {
   QList<QString> attr; attr.append(QString("btc_usd"));
   addExchangeTask(ExchangeTask(2, attr)); // Active orders
 
-  // Start the interval timer
+  // Start the interval timers
+  timer  = new QTimer(this);
+  timer2 = new QTimer(this);
+
+  connect(timer,  SIGNAL(timeout()), this, SLOT(updateTick()));
+  connect(timer2, SIGNAL(timeout()), this, SLOT(updateTick2()));
+
   timer->start(c->getCoolDownTime()*1000);
   timer2->start(1*1100); // TODO: determine correct amount
 }
@@ -798,7 +804,6 @@ void ExchangeBot_btce::tradeDataReply(QNetworkReply *reply) {
     m.parseRawTradeData(&tradeData);
 
     // Send signal to GUI to update
-    qDebug() << "Sending trade history now!";
     sendTradeHistory(m.getTradeData(), m.getBinnedTradeData(), m.getMAList());
   }
   else

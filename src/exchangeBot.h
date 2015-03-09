@@ -34,9 +34,8 @@ class ExchangeBot : public QObject
   Q_OBJECT
 public:
   ExchangeBot(QObject *parent = 0);
-  // ~ExchangeBot();
+  virtual ~ExchangeBot();
 
-public:
   virtual void startBot() = 0;
   void setConfig(Config *C);
 

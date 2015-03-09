@@ -293,10 +293,9 @@ void MarketData::parseRawDepthData(QJsonObject *rawData) {
   jAsks = rawData->value("asks").toArray();
   jBids = rawData->value("bids").toArray();
 
-  // Erase both QLists in preperation for new data
-  // TODO: Look into appending data to existing list
-  asks.clear();
-  bids.clear();
+  // Create new asks and bids lists
+  QList<Order> asks;
+  QList<Order> bids;
 
   // Populate ask orders list
   for(int i=0;i<jAsks.size();i++) {
@@ -313,6 +312,9 @@ void MarketData::parseRawDepthData(QJsonObject *rawData) {
     double pair2 = jBids[i].toArray()[1].toDouble();
     bids.append(Order("BTC/USD",pair1,pair2));
   }
+
+  // Create new tradeDepth object
+  tradeDepth = TradeDepth(asks, bids);
 }
 
 // Parses new market ticker data and overwrites current data

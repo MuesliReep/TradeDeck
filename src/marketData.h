@@ -110,8 +110,6 @@ private:
   // Ticker t;
   QString tradeDataFileName = "btce_USD-BTC.json";
 
-  QList<Order>  asks;
-  QList<Order>  bids;
   TradeDepth    tradeDepth;
   Ticker        ticker;
 

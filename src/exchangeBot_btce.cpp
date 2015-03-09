@@ -49,6 +49,8 @@ void ExchangeBot_btce::updateTick2() {
 // Starts the Exchange Bot
 void ExchangeBot_btce::startBot() {
 
+   infoDownloadManager = new QNetworkAccessManager(this);
+
   // TODO: gather historical data
   // Check last trade timestamp to fill in the gap between last run and now
   // Also check the oldest trade timestamp to get full data set
@@ -171,7 +173,9 @@ void ExchangeBot_btce::getInfo() {
   d.addHeaderToRequest(&request, QByteArray("Sign"), sign);
 
   // Execute download
-  infoDownloadManager = d.doPostDownload(request, data, this, SLOT(infoDataReply(QNetworkReply*)));
+  // infoDownloadManager = d.doPostDownload(request, data, this, SLOT(infoDataReply(QNetworkReply*)));
+  d.doPostDownload(request, infoDownloadManager, data, this, SLOT(infoDataReply(QNetworkReply*)));
+  // downloadManagers.append(infoDownloadManager);
 }
 
 //
@@ -511,9 +515,15 @@ void ExchangeBot_btce::infoDataReply(QNetworkReply *reply) {
   } else
     qDebug() << "getInfo Packet error";
 
+    // qDebug() << "downloadManagers size before: " << downloadManagers.size();
+
     reply->deleteLater();
-    if(infoDownloadManager != NULL)
-        infoDownloadManager->deleteLater();
+    // if(infoDownloadManager != NULL)
+        // infoDownloadManager->deleteLater();
+
+    disconnect(infoDownloadManager, 0, this, 0);
+
+    // qDebug() << "downloadManagers size after: " << downloadManagers.size();
 }
 
 void ExchangeBot_btce::createTradeDataReply(QNetworkReply *reply) {

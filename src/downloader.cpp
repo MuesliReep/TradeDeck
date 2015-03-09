@@ -62,6 +62,14 @@ QNetworkAccessManager* Downloader::doPostDownload(QNetworkRequest request, QByte
   return manager;
 }
 
+void Downloader::doPostDownload(QNetworkRequest request, QNetworkAccessManager *manager, QByteArray data, QObject * receiver, const char * method) {
+
+  manager->post(request, data);
+
+  connect(manager, SIGNAL(finished(QNetworkReply*)),
+  receiver, method);
+}
+
 // Checks the validity of a network reply
 bool Downloader::checkReply(QNetworkReply *reply) {
 

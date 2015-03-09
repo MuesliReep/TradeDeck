@@ -30,6 +30,7 @@ public:
   // void doDownload(QNetworkRequest request);
   QNetworkAccessManager* doDownload(QNetworkRequest request, QObject* receiver, const char * method);
   QNetworkAccessManager* doPostDownload(QNetworkRequest request, QByteArray data, QObject* receiver, const char * method);
+  void doPostDownload(QNetworkRequest request, QNetworkAccessManager *manager, QByteArray data, QObject * receiver, const char * method);
 
   bool checkReply(QNetworkReply *reply);
 

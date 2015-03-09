@@ -36,6 +36,7 @@ private:
   int pApiQueue;
 
   QList<ExchangeTask> exchangeTasks;
+  QList<QNetworkAccessManager*> downloadManagers;
 
   QNetworkAccessManager* infoDownloadManager;
   QNetworkAccessManager* createTradeDownloadManager;

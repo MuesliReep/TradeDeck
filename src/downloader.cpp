@@ -50,6 +50,14 @@ QNetworkAccessManager* Downloader::doDownload(QNetworkRequest request, QObject *
   return manager;
 }
 
+void Downloader::doDownload(QNetworkRequest request, QNetworkAccessManager *manager, QObject * receiver, const char * method) {
+
+  manager->get(request);
+
+  connect(manager, SIGNAL(finished(QNetworkReply*)),
+  receiver, method);
+}
+
 QNetworkAccessManager* Downloader::doPostDownload(QNetworkRequest request, QByteArray data, QObject * receiver, const char * method) {
 
   QNetworkAccessManager *manager = new QNetworkAccessManager(this);

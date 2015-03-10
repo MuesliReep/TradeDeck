@@ -49,7 +49,17 @@ void ExchangeBot_btce::updateTick2() {
 // Starts the Exchange Bot
 void ExchangeBot_btce::startBot() {
 
-   infoDownloadManager = new QNetworkAccessManager(this);
+  depthDownloadManager  = new QNetworkAccessManager(this);
+  tickerDownloadManager = new QNetworkAccessManager(this);
+  tradeDownloadManager  = new QNetworkAccessManager(this);
+
+  infoDownloadManager         = new QNetworkAccessManager(this);
+  createTradeDownloadManager  = new QNetworkAccessManager(this);
+  activeOrdersDownloadManager = new QNetworkAccessManager(this);
+  orderInfoDownloadManager    = new QNetworkAccessManager(this);
+  cancelOrderDownloadManager  = new QNetworkAccessManager(this);
+  tradeHistoryDownloadManager = new QNetworkAccessManager(this);
+  transHistoryDownloadManager = new QNetworkAccessManager(this);
 
   // TODO: gather historical data
   // Check last trade timestamp to fill in the gap between last run and now
@@ -218,7 +228,8 @@ void ExchangeBot_btce::createTrade(QString Pair, int Type, double Price, double 
   d.addHeaderToRequest(&request, QByteArray("Sign"), sign);
 
   // Execute download
-  createTradeDownloadManager = d.doPostDownload(request, data, this, SLOT(createTradeDataReply(QNetworkReply*)));
+  // createTradeDownloadManager = d.doPostDownload(request, data, this, SLOT(createTradeDataReply(QNetworkReply*)));
+  d.doPostDownload(request, createTradeDownloadManager, data, this, SLOT(createTradeDataReply(QNetworkReply*)));
 }
 
 //
@@ -245,7 +256,8 @@ void ExchangeBot_btce::getActiveOrders(QString pair) {
   d.addHeaderToRequest(&request, QByteArray("Sign"), sign);
 
   // Execute download
-  activeOrdersDownloadManager = d.doPostDownload(request, data, this, SLOT(activeOrdersDataReply(QNetworkReply*)));
+  // activeOrdersDownloadManager = d.doPostDownload(request, data, this, SLOT(activeOrdersDataReply(QNetworkReply*)));
+  d.doPostDownload(request, activeOrdersDownloadManager, data, this, SLOT(activeOrdersDataReply(QNetworkReply*)));
 }
 
 //
@@ -270,7 +282,8 @@ void ExchangeBot_btce::getOrderInfo(uint orderID) {
   d.addHeaderToRequest(&request, QByteArray("Sign"), sign);
 
   // Execute download
-  orderInfoDownloadManager = d.doPostDownload(request, data, this, SLOT(orderInfoDataReply(QNetworkReply*)));
+  // orderInfoDownloadManager = d.doPostDownload(request, data, this, SLOT(orderInfoDataReply(QNetworkReply*)));
+  d.doPostDownload(request, orderInfoDownloadManager, data, this, SLOT(orderInfoDataReply(QNetworkReply*)));
 }
 
 //
@@ -300,7 +313,8 @@ void ExchangeBot_btce::cancelOrder(uint OrderID) {
   d.addHeaderToRequest(&request, QByteArray("Sign"), sign);
 
   // Execute download
-  cancelOrderDownloadManager = d.doPostDownload(request, data, this, SLOT(cancelOrderDataReply(QNetworkReply*)));
+  // cancelOrderDownloadManager = d.doPostDownload(request, data, this, SLOT(cancelOrderDataReply(QNetworkReply*)));
+  d.doPostDownload(request, cancelOrderDownloadManager, data, this, SLOT(cancelOrderDataReply(QNetworkReply*)));
 }
 
 // Updates the users trade history on the exchange
@@ -335,7 +349,8 @@ void ExchangeBot_btce::updateTradeHistory() {
   d.addHeaderToRequest(&request, QByteArray("Sign"), sign);
 
   // Execute download
-  tradeHistoryDownloadManager = d.doPostDownload(request, data, this, SLOT(orderHistoryDataReply(QNetworkReply*)));
+  // tradeHistoryDownloadManager = d.doPostDownload(request, data, this, SLOT(orderHistoryDataReply(QNetworkReply*)));
+  d.doPostDownload(request, tradeHistoryDownloadManager, data, this, SLOT(orderHistoryDataReply(QNetworkReply*)));
 }
 
 //
@@ -369,7 +384,8 @@ void ExchangeBot_btce::updateTransactionHistory() {
   d.addHeaderToRequest(&request, QByteArray("Sign"), sign);
 
   // Execute download
-  transHistoryDownloadManager = d.doPostDownload(request, data, this, SLOT(transHistoryDataReply(QNetworkReply*)));
+  // transHistoryDownloadManager = d.doPostDownload(request, data, this, SLOT(transHistoryDataReply(QNetworkReply*)));
+  d.doPostDownload(request, transHistoryDownloadManager, data, this, SLOT(transHistoryDataReply(QNetworkReply*)));
 }
 
 //
@@ -402,7 +418,8 @@ void ExchangeBot_btce::updateMarketTrades(uint limit) {
   QNetworkRequest request = d.generateRequest(QUrl("https://btc-e.com/api/3/trades/btc_usd?limit=2000"));
 
   // Execute the download
-  tradeDownloadManager = d.doDownload(request, this, SLOT(tradeDataReply(QNetworkReply*)));
+  // tradeDownloadManager = d.doDownload(request, this, SLOT(tradeDataReply(QNetworkReply*)));
+  d.doDownload(request, tradeDownloadManager, this, SLOT(tradeDataReply(QNetworkReply*)));
 }
 
 // Updates the market depth data
@@ -412,7 +429,8 @@ void ExchangeBot_btce::updateMarketDepth() {
   QNetworkRequest request = d.generateRequest(QUrl("https://btc-e.com/api/3/depth/btc_usd?limit=20"));
 
   // Execute the download
-  depthDownloadManager = d.doDownload(request, this, SLOT(depthDataReply(QNetworkReply*)));
+  // depthDownloadManager = d.doDownload(request, this, SLOT(depthDataReply(QNetworkReply*)));
+  d.doDownload(request, depthDownloadManager, this, SLOT(depthDataReply(QNetworkReply*)));
 }
 
 // Updates the market ticker data
@@ -422,7 +440,8 @@ void ExchangeBot_btce::updateMarketTicker() {
   QNetworkRequest request = d.generateRequest(QUrl("https://btc-e.com/api/3/ticker/btc_usd"));
 
   // Execute the download
-  tickerDownloadManager = d.doDownload(request, this, SLOT(depthDataReply(tickerDataReply*)));
+  // tickerDownloadManager = d.doDownload(request, this, SLOT(depthDataReply(tickerDataReply*)));
+  d.doDownload(request, tickerDownloadManager, this, SLOT(depthDataReply(QNetworkReply*)));
 }
 
 //----------------------------------//
@@ -558,7 +577,9 @@ void ExchangeBot_btce::createTradeDataReply(QNetworkReply *reply) {
     qDebug() << "Trade Packet error";
 
     reply->deleteLater();
-    createTradeDownloadManager->deleteLater();
+
+    disconnect(createTradeDownloadManager, 0, this, 0);
+    // createTradeDownloadManager->deleteLater();
 }
 
 void ExchangeBot_btce::activeOrdersDataReply(QNetworkReply *reply) {
@@ -598,7 +619,9 @@ void ExchangeBot_btce::activeOrdersDataReply(QNetworkReply *reply) {
     qDebug() << "ActiveOrders Packet error";
 
     reply->deleteLater();
-    activeOrdersDownloadManager->deleteLater();
+
+    disconnect(activeOrdersDownloadManager, 0, this, 0);
+    // activeOrdersDownloadManager->deleteLater();
 }
 
 void ExchangeBot_btce::orderInfoDataReply(QNetworkReply *reply) {
@@ -631,7 +654,9 @@ void ExchangeBot_btce::orderInfoDataReply(QNetworkReply *reply) {
     qDebug() << "OrderInfo Packet error";
 
     reply->deleteLater();
-    orderInfoDownloadManager->deleteLater();
+
+    disconnect(orderInfoDownloadManager, 0, this, 0);
+    // orderInfoDownloadManager->deleteLater();
 }
 
 void ExchangeBot_btce::cancelOrderDataReply(QNetworkReply *reply) {
@@ -668,7 +693,9 @@ void ExchangeBot_btce::cancelOrderDataReply(QNetworkReply *reply) {
     qDebug() << "CancelOrder Packet error";
 
     reply->deleteLater();
-    cancelOrderDownloadManager->deleteLater();
+
+    disconnect(cancelOrderDownloadManager, 0, this, 0);
+    // cancelOrderDownloadManager->deleteLater();
 }
 
 void ExchangeBot_btce::orderHistoryDataReply(QNetworkReply *reply) {
@@ -701,7 +728,9 @@ void ExchangeBot_btce::orderHistoryDataReply(QNetworkReply *reply) {
     qDebug() << "TradeHistory Packet error";
 
     reply->deleteLater();
-    tradeHistoryDownloadManager->deleteLater();
+
+    disconnect(tradeHistoryDownloadManager, 0, this, 0);
+    // tradeHistoryDownloadManager->deleteLater();
 }
 
 void ExchangeBot_btce::transHistoryDataReply(QNetworkReply *reply) {
@@ -734,7 +763,9 @@ void ExchangeBot_btce::transHistoryDataReply(QNetworkReply *reply) {
     qDebug() << "TransHistory Packet error";
 
     reply->deleteLater();
-    transHistoryDownloadManager->deleteLater();
+
+    disconnect(transHistoryDownloadManager, 0, this, 0);
+    // transHistoryDownloadManager->deleteLater();
 }
 
 void ExchangeBot_btce::depthDataReply(QNetworkReply *reply) {
@@ -759,13 +790,13 @@ void ExchangeBot_btce::depthDataReply(QNetworkReply *reply) {
   else
     qDebug() << "Depth Packet error";
 
-  // Disconnect the signal and release
-  // disconnect(depthDownloadManager, 0, this, 0);
-
   reply->deleteLater();
 
-  if(depthDownloadManager != NULL)
-      depthDownloadManager->deleteLater();
+  // Disconnect the signal and release
+  disconnect(depthDownloadManager, 0, this, 0);
+
+  // if(depthDownloadManager != NULL)
+      // depthDownloadManager->deleteLater();
 }
 
 void ExchangeBot_btce::tickerDataReply(QNetworkReply *reply) {
@@ -790,11 +821,12 @@ void ExchangeBot_btce::tickerDataReply(QNetworkReply *reply) {
   else
     qDebug() << "Ticker Packet error";
 
-  // Disconnect the signal and release
-  // disconnect(tickerDownloadManager, 0, this, 0);
-
   reply->deleteLater();
-  tickerDownloadManager->deleteLater();
+
+  // Disconnect the signal and release
+  disconnect(tickerDownloadManager, 0, this, 0);
+
+  // tickerDownloadManager->deleteLater();
 }
 
 void ExchangeBot_btce::tradeDataReply(QNetworkReply *reply) {
@@ -819,12 +851,13 @@ void ExchangeBot_btce::tradeDataReply(QNetworkReply *reply) {
   else
     qDebug() << "Trade Packet error";
 
-  // Disconnect the signal and release
-  // disconnect(tradeDownloadManager, 0, this, 0);
-
   reply->deleteLater();
-  if(tradeDownloadManager != NULL)
-    tradeDownloadManager->deleteLater();
+
+  // Disconnect the signal and release
+  disconnect(tradeDownloadManager, 0, this, 0);
+
+  // if(tradeDownloadManager != NULL)
+    // tradeDownloadManager->deleteLater();
 }
 
 //----------------------------------//

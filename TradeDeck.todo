@@ -14,7 +14,7 @@ Step 1:
   ☐ UI widgets should be in seperate classes
   ☐ Marketdata should be delivered by Exchangebot
   ☐ binSize should be defined in config
-  ☐ QList for QNetworkAccessManagers
+  ✔ Reuse QNetworkAccessManagers @done(2015-03-10 01:53) @project(Step 1)
 
 Step 2:
   ☐ Add volume graph

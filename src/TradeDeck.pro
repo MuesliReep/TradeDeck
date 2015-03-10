@@ -42,7 +42,8 @@ HEADERS  += qcustomplot.h \
     settingsDialog.h
 
 FORMS    += mainwindow.ui \
-    settingsDialog.ui
+    settingsDialog.ui \
+    confirmDialog.ui
 
 OTHER_FILES +=
 

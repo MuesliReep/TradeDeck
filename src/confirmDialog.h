@@ -1,27 +1,24 @@
 #ifndef CONFIRMDIALOG_H
 #define CONFIRMDIALOG_H
 
-#include <QWidget>
 #include <QDialog>
-#include <QFrame>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <QDebug>
-#include <QPushButton>
-#include <QLabel>
+
+namespace Ui {
+class ConfirmDialog;
+}
 
 class ConfirmDialog : public QDialog
 {
   Q_OBJECT
 
 public:
-  ConfirmDialog(double Price, double Amount, double Total, int Type, QWidget *parent = 0);
+  explicit ConfirmDialog(double Price, double Amount, double Total, int Type, QWidget *parent = 0);
   ~ConfirmDialog();
 
 private:
-  // QHBoxLayout *footerLayout;
-  // QVBoxLayout *bodyLayout;
-  // QHBoxLayout *headerLayout;
+  Ui::ConfirmDialog *ui;
+
   double price;
   double amount;
   int type;

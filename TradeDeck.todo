@@ -10,7 +10,7 @@ Step 1:
   ☐ When first time opening create history sources
   ✔ Right side axis @done(2015-03-04 21:59) @project(Step 1)
   ✔ Dates on bottom axis @done(2015-03-06 00:10) @project(Step 1)
-  ☐ Improve confirm dialog to use UI form
+  ✔ Improve confirm dialog to use UI form @done(2015-03-10 05:43) @project(Step 1)
   ☐ UI widgets should be in seperate classes
   ☐ Marketdata should be delivered by Exchangebot
   ☐ binSize should be defined in config

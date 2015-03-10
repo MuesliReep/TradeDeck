@@ -7,6 +7,10 @@ ConfirmDialog::ConfirmDialog(double Price, double Amount, double Total, int Type
 {
     ui->setupUi(this);
 
+    price  = Price;
+    amount = Amount;
+    type   = Type;
+
     // Set the content
     QString priceS;
     QString amountS;

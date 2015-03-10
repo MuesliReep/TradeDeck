@@ -754,11 +754,16 @@ void MainWindow::cancelOrderButtonPressed() {
   QItemSelectionModel *selection = ui->tableWidgetOrders->selectionModel();
   QModelIndexList selectedOrders = selection->selectedIndexes();
 
+  int rowID = -1;
+
   // Process each item
   for(int i = 0; i < selectedOrders.size(); i++) {
 
-    // Get the row ID
-    int rowID = selectedOrders[i].row();
+    // Get the row ID but prevent working on the same row twice
+    if(!rowID == selectedOrders[i].row())
+      rowID = selectedOrders[i].row();
+    else
+      continue;
 
     // Get the orderID from table
     uint orderID = ui->tableWidgetOrders->item(rowID, 4)->text().toUInt();

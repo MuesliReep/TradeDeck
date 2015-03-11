@@ -1,9 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(Config *C, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow) {
+
+    c = C;
 
     ui->setupUi(this);
 
@@ -779,7 +781,7 @@ void MainWindow::cancelOrderButtonPressed() {
 //
 void MainWindow::settingsButtonPressed() {
 
-  SettingsDialog *dialog = new SettingsDialog();
+  SettingsDialog *dialog = new SettingsDialog(c);
   dialog->exec();
 }
 

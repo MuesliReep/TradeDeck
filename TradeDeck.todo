@@ -28,7 +28,7 @@ Step 2:
   ☐ Implement history sources
   ☐ Options to configure SMA values
   ☐ Options to configure Bin interval eg: 1/5/15/30 min or custom even?
-  ☐ Widget to watch wallet balances
+  ☐ Widget to watch wallet balances + Shapeshifter.io
 
 Step 3:
   ☐ Widgets should be movable/dockable

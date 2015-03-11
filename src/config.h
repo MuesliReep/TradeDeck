@@ -48,6 +48,9 @@ public:
   QString getApiKey();
   QString getApiSecret();
 
+  void setApiKey(QString);
+  void setApiSecret(QString);
+
   void setCoolDownTime(uint CoolDownTime);
   uint getCoolDownTime();
 

@@ -27,7 +27,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-  explicit MainWindow(QWidget *parent = 0);
+  explicit MainWindow(Config *C, QWidget *parent = 0);
   ~MainWindow();
 
   void setExchangeBots(ExchangeBot *E);
@@ -35,6 +35,7 @@ public:
 private:
   Ui::MainWindow *ui;
 
+  Config      *c;
   ExchangeBot *e;
 
   QCPFinancial  *candlesticks;

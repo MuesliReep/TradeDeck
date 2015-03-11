@@ -22,7 +22,7 @@
   <property name="styleSheet">
    <string notr="true">QWidget {background-color:rgb(30, 43, 52);  color: rgb(183,190,195);} QLineEdit{border:1px solid gray; padding: 0 5px; font:12px} QPushButton{background-color: rgb(137,145,152); border-style: none; font: 16px} QPushButton:pressed{ background-color: rgb(30, 43, 52);}</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_5">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -35,26 +35,10 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="0" column="0">
+   <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="styleSheet">
-      <string notr="true">QWidget {background-color: rgb(47, 61, 69); color: rgb(183,190,195);} 
-QLineEdit{
-	border:1px solid gray; 
-	padding: 0 5px; 
-	font:12px;}
-QPushButton{
-	background-color: rgb(137,145,152); 
-	border-style: none; font: 16px;} 
-QPushButton:pressed{ 
-	background-color: rgb(30, 43, 52);}
-QTabWidget::tab{
-	background-color: rgb(47, 61, 69);} QTabWidget::pane{border:0px;} 
-QTabBar::tab {
-	min-width: 75px; 
-	min-height: 75px; 
-	font: 16px;} 
-QTabBar::tab:selected {background-color: rgb(47, 61, 69);} QTabBar::tab:!selected {background-color: rgb(30, 43, 52);} QTabWidget::tab-bar {color: rgb(183,190,195);}</string>
+      <string notr="true">QWidget {background-color: rgb(47, 61, 69); color: rgb(183,190,195);} QLineEdit{	border:1px solid gray; 	padding: 0 5px; 	font:12px;}QPushButton{	background-color: rgb(137,145,152); 	border-style: none; font: 16px;} QPushButton:pressed{ 	background-color: rgb(30, 43, 52);}QTabWidget::tab{	background-color: rgb(47, 61, 69);} QTabWidget::pane{border:0px;} QTabBar::tab {	min-width: 75px; 	min-height: 75px; 	font: 16px;} QTabBar::tab:selected {background-color: rgb(47, 61, 69);} QTabBar::tab:!selected {background-color: rgb(30, 43, 52);} QTabWidget::tab-bar {color: rgb(183,190,195);}</string>
      </property>
      <property name="tabPosition">
       <enum>QTabWidget::West</enum>
@@ -109,7 +93,7 @@ QTabBar::tab:selected {background-color: rgb(47, 61, 69);} QTabBar::tab:!selecte
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineEdit"/>
+          <widget class="QLineEdit" name="apiKeyLineEdit"/>
          </item>
         </layout>
        </item>
@@ -123,7 +107,7 @@ QTabBar::tab:selected {background-color: rgb(47, 61, 69);} QTabBar::tab:!selecte
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineEdit_2"/>
+          <widget class="QLineEdit" name="secretLineEdit"/>
          </item>
          <item>
           <widget class="QCheckBox" name="checkBox">
@@ -133,6 +117,19 @@ QTabBar::tab:selected {background-color: rgb(47, 61, 69);} QTabBar::tab:!selecte
           </widget>
          </item>
         </layout>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -157,7 +154,7 @@ QTabBar::tab:selected {background-color: rgb(47, 61, 69);} QTabBar::tab:!selecte
             </font>
            </property>
            <property name="text">
-            <string>TextLabel</string>
+            <string>Graph Settings</string>
            </property>
           </widget>
          </item>
@@ -174,6 +171,75 @@ QTabBar::tab:selected {background-color: rgb(47, 61, 69);} QTabBar::tab:!selecte
             <string>TextLabel</string>
            </property>
           </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_3">
+      <attribute name="title">
+       <string>3</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QLabel" name="label_4">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>40</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>16</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Statistics</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="Line" name="line_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>Uptime:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </item>

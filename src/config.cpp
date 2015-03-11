@@ -123,6 +123,8 @@ void Config::setLastLoadedTimeStamp(uint LastLoadedTimeStamp) { lastLoadedTimeSt
 
 QString Config::getApiKey() { return apiKey; }
 QString Config::getApiSecret() { return apiSecret; }
+void    Config::setApiKey(QString ApiKey){ apiKey = ApiKey; }
+void    Config::setApiSecret(QString ApiSecret){ apiSecret = ApiSecret; }
 
 int  Config::getHistorySource() { return historySourceID; }
 uint Config::getHistoryCoolDownTime() { return historyCoolDownTime; }

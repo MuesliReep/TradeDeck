@@ -26,7 +26,9 @@ SOURCES += main.cpp\
     trade.cpp \
     marketHistory.cpp \
     confirmDialog.cpp \
-    settingsDialog.cpp
+    settingsDialog.cpp \
+    widgetBalances.cpp \
+    build-TradeDeck-Desktop_Qt_5_3_MinGW_32bit-Debug/dockwidgettest.cpp
 
 HEADERS  += qcustomplot.h \
     mainwindow.h \
@@ -39,11 +41,15 @@ HEADERS  += qcustomplot.h \
     trade.h \
     marketHistory.h \
     confirmDialog.h \
-    settingsDialog.h
+    settingsDialog.h \
+    widgetBalances.h \
+    build-TradeDeck-Desktop_Qt_5_3_MinGW_32bit-Debug/dockwidgettest.h
 
 FORMS    += mainwindow.ui \
     settingsDialog.ui \
-    confirmDialog.ui
+    confirmDialog.ui \
+    widgetBalances.ui \
+    build-TradeDeck-Desktop_Qt_5_3_MinGW_32bit-Debug/dockwidgettest.ui
 
 OTHER_FILES +=
 

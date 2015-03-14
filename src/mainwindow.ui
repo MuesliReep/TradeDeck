@@ -1689,7 +1689,7 @@
          </widget>
         </item>
         <item>
-         <widget class="DockWidgetTest" name="widgetFiller" native="true"/>
+         <widget class="WidgetBalances" name="widgetFiller" native="true"/>
         </item>
        </layout>
       </item>
@@ -1707,9 +1707,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>DockWidgetTest</class>
+   <class>WidgetBalances</class>
    <extends>QWidget</extends>
-   <header>dockwidgettest.h</header>
+   <header>widgetBalances.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

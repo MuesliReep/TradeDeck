@@ -25,6 +25,12 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget {
+	background-color:rgb(30, 43, 52);  
+	color: rgb(183,190,195);}
+QLineEdit{border:1px solid gray; padding: 0 5px; font:12px} QPushButton{background-color: rgb(137,145,152); border-style: none; font: 16px} QPushButton:pressed{ background-color: rgb(30, 43, 52);}</string>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="leftMargin">
     <number>0</number>
@@ -52,6 +58,21 @@
        <height>40</height>
       </size>
      </property>
+     <property name="styleSheet">
+      <string notr="true">QWidget {
+	background-color:rgb(47, 61, 69); }
+QLabel {
+	color:rgb(183,190,195);
+	padding: 0 5px;
+	font: 16;} 
+QPushButton{
+	background-color: rgb(244, 67, 54);
+	border-style: none;
+	color: rgb(255,255,255);
+ 	font: 16px;}
+QPushButton:pressed{
+	background-color: rgb(47, 61, 69);}</string>
+     </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="leftMargin">
        <number>9</number>
@@ -69,7 +90,9 @@
        <widget class="QLabel" name="label">
         <property name="font">
          <font>
-          <pointsize>12</pointsize>
+          <weight>2</weight>
+          <italic>false</italic>
+          <bold>false</bold>
          </font>
         </property>
         <property name="text">
@@ -82,6 +105,17 @@
    </item>
    <item>
     <widget class="QTableWidget" name="tableWidgetBalances">
+     <property name="styleSheet">
+      <string notr="true">QTableWidget {
+	gridline-color: rgb(52, 64, 73); 
+	background-color: rgb(30, 43, 52);
+	 color: rgb(183,190,195);}
+QHeaderView {
+	background-color:rgb(30, 43, 52);
+	color: rgb(183,190,195);} 
+QHeaderView::section {
+	background-color:rgb(30, 43, 52);}</string>
+     </property>
      <property name="rowCount">
       <number>2</number>
      </property>
@@ -92,6 +126,26 @@
      <row/>
      <column/>
      <column/>
+     <item row="0" column="0">
+      <property name="text">
+       <string>USD</string>
+      </property>
+     </item>
+     <item row="0" column="1">
+      <property name="text">
+       <string>N/A</string>
+      </property>
+     </item>
+     <item row="1" column="0">
+      <property name="text">
+       <string>BTC</string>
+      </property>
+     </item>
+     <item row="1" column="1">
+      <property name="text">
+       <string>N/A</string>
+      </property>
+     </item>
     </widget>
    </item>
   </layout>

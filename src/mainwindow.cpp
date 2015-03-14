@@ -125,6 +125,9 @@ void MainWindow::setExchangeBots(ExchangeBot *E) {
   connect(e,SIGNAL(sendTransactionHistory()),         this,SLOT(receiveTransactionHistory()));
   connect(e,SIGNAL(sendMessage(int, QString)),        this,SLOT(receiveMessage(int, QString)));
 
+  // Connect bot to UI widgets
+  connect(e,SIGNAL(sendBalances(QList<Balance>)),     this,SLOT(receiveBalances(QList<Balance>))); // TODO: connect to balance widget
+
   // Connect UI signals to bot
   connect(this,SIGNAL(sendCancelOrder(uint)),                e,SLOT(receiveCancelOrder(uint)));
   connect(this,SIGNAL(sendCreateOrder(int, double, double)), e,SLOT(receiveCreateOrder(int, double, double)));
@@ -288,6 +291,11 @@ void MainWindow::setupAsksTable() {
 
 //
 void MainWindow::setupBidsTable() {
+
+}
+
+//
+void MainWindow::setupUIWidgets() {
 
 }
 

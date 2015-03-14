@@ -17,7 +17,7 @@ Step 1:
   ☐ binSize should be defined in config
   ✔ Reuse QNetworkAccessManagers @done(2015-03-10 01:53) @project(Step 1)
   ☐ Add notification bar
-  ☐
+  ☐ Double click on active trades shows additional information
 
 Step 2:
   ☐ Add volume graph

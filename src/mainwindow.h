@@ -64,6 +64,7 @@ private:
   void setupAsksTable();
   void setupBidsTable();
 
+  void setupUIWidgets();
   void setupUISignals();
 
 private slots:

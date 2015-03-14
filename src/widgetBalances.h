@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+#include "exchangeBot.h"
+
 namespace Ui {
 class WidgetBalances;
 }
@@ -17,6 +19,11 @@ public:
 
 private:
     Ui::WidgetBalances *ui;
+    void setup();
+
+public slots:
+  void updateBalances(QList<Balance> *balances);
+
 };
 
 #endif // WIDGETBALANCES_H

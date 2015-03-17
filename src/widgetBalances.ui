@@ -64,7 +64,7 @@ QLineEdit{border:1px solid gray; padding: 0 5px; font:12px} QPushButton{backgrou
 QLabel {
 	color:rgb(183,190,195);
 	padding: 0 5px;
-	font: 16;} 
+	font: 12;} 
 QPushButton{
 	background-color: rgb(244, 67, 54);
 	border-style: none;
@@ -90,7 +90,7 @@ QPushButton:pressed{
        <widget class="QLabel" name="label">
         <property name="font">
          <font>
-          <weight>2</weight>
+          <weight>1</weight>
           <italic>false</italic>
           <bold>false</bold>
          </font>
@@ -116,12 +116,27 @@ QHeaderView {
 QHeaderView::section {
 	background-color:rgb(30, 43, 52);}</string>
      </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="lineWidth">
+      <number>0</number>
+     </property>
      <property name="rowCount">
       <number>2</number>
      </property>
      <property name="columnCount">
       <number>2</number>
      </property>
+     <attribute name="horizontalHeaderVisible">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="verticalHeaderVisible">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="verticalHeaderStretchLastSection">
+      <bool>false</bool>
+     </attribute>
      <row/>
      <row/>
      <column/>
@@ -135,6 +150,12 @@ QHeaderView::section {
       <property name="text">
        <string>N/A</string>
       </property>
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
      </item>
      <item row="1" column="0">
       <property name="text">
@@ -144,6 +165,12 @@ QHeaderView::section {
      <item row="1" column="1">
       <property name="text">
        <string>N/A</string>
+      </property>
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
       </property>
      </item>
     </widget>

@@ -16,6 +16,8 @@
 #include "confirmDialog.h"
 #include "settingsDialog.h"
 
+#include "widgetBalances.h"
+
 #include "qcustomplot.h"
 
 namespace Ui {
@@ -37,6 +39,8 @@ private:
 
   Config      *c;
   ExchangeBot *e;
+
+  WidgetBalances *wB;
 
   QCPFinancial  *candlesticks;
   QCPGraph      *MA1;

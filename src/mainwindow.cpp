@@ -17,6 +17,7 @@ MainWindow::MainWindow(Config *C, QWidget *parent) :
     setupBidsTable();
 
     // Setup UI signals & slots
+    setupUIWidgets();
     setupUISignals();
 
     // Set colours
@@ -126,7 +127,7 @@ void MainWindow::setExchangeBots(ExchangeBot *E) {
   connect(e,SIGNAL(sendMessage(int, QString)),        this,SLOT(receiveMessage(int, QString)));
 
   // Connect bot to UI widgets
-  connect(e,SIGNAL(sendBalances(QList<Balance>)),     this,SLOT(receiveBalances(QList<Balance>))); // TODO: connect to balance widget
+  // connect(e,SIGNAL(sendBalances(QList<Balance>)),     wB,SLOT(updateBalances(QList<Balance>))); // TODO: connect to balance widget
 
   // Connect UI signals to bot
   connect(this,SIGNAL(sendCancelOrder(uint)),                e,SLOT(receiveCancelOrder(uint)));
@@ -297,6 +298,7 @@ void MainWindow::setupBidsTable() {
 //
 void MainWindow::setupUIWidgets() {
 
+  wB = ui->balancesWidget_2;
 }
 
 //
@@ -943,7 +945,7 @@ void MainWindow::receiveOrderConfirmed(double price, double amount, int type) {
 
 void MainWindow::receiveActiveOrders(QList<Order> activeOrders) { updateOrders(&activeOrders); }
 void MainWindow::receiveOrderHistory(QList<Order> orderHistory) { }
-void MainWindow::receiveBalances(QList<Balance> balances) { updateBalances(&balances); }
+void MainWindow::receiveBalances(QList<Balance> balances) { updateBalances(&balances); wB->updateBalances(&balances); }
 void MainWindow::receiveTicker(Ticker ticker) { }
 void MainWindow::receiveTradeDepth(TradeDepth tradeDepth) { updateTradeDepth(&tradeDepth); }
 void MainWindow::receiveTradeHistory(QList<Trade> tradeData, QList<DataPoint> binnedTradeData, QList<QList<double> > MAList) { updateTradeList(&tradeData); updateTradePlot(&binnedTradeData, &MAList); }

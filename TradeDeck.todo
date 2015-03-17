@@ -18,6 +18,11 @@ Step 1:
   ✔ Reuse QNetworkAccessManagers @done(2015-03-10 01:53) @project(Step 1)
   ☐ Add notification bar
   ☐ Double click on active trades shows additional information
+  ☐ Fix buy button, is linked to sell now?
+  ☐ Fix chart binsize, candles are overlapping now
+  ☐ Implement transHistoryDataReply()
+  ☐ Implement orderInfoDataReply()
+  ☐ Implement check API privileges
 
 Step 2:
   ☐ Add volume graph
@@ -32,6 +37,7 @@ Step 2:
   ☐ Options to configure SMA values
   ☐ Options to configure Bin interval eg: 1/5/15/30 min or custom even?
   ☐ Widget to watch wallet balances + Shapeshift.io
+  ☐ On succesful trade creation send signal to UI
 
 Step 3:
   ☐ Widgets should be movable/dockable

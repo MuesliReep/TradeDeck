@@ -74,7 +74,8 @@ void ExchangeBot_btce::startBot() {
   // Add initial tasks to queue
   addExchangeTask(ExchangeTask(0));       // getInfo
   QList<QString> attr; attr.append(QString("btc_usd"));
-  addExchangeTask(ExchangeTask(2, attr)); // Active orders
+  addExchangeTask(ExchangeTask(2, attr)); // getActiveOrders
+  addExchangeTask(ExchangeTask(5));       // updateTransactionHistory
 
   // Start the interval timers
   timer  = new QTimer(this);
@@ -154,7 +155,7 @@ void ExchangeBot_btce::getActiveOrdersTask(ExchangeTask *exchangeTask) {
 }
 void ExchangeBot_btce::getOrderInfoTask(ExchangeTask *exchangeTask)              { getOrderInfo(exchangeTask->getTaskAttributes().at(0).toUInt()); }
 void ExchangeBot_btce::cancelOrderTask(ExchangeTask *exchangeTask)               { cancelOrder(exchangeTask->getTaskAttributes().at(0).toUInt()); }
-void ExchangeBot_btce::updateTradeHistoryTask(ExchangeTask *exchangeTask)        { updateTradeHistory(); }
+void ExchangeBot_btce::updateTradeHistoryTask(ExchangeTask *exchangeTask)        { updateTradeHistory(); addExchangeTask(ExchangeTask(5)); }
 void ExchangeBot_btce::updateTransactionHistoryTask(ExchangeTask *exchangeTask)  { updateTransactionHistory(); }
 
 //----------------------------------//
@@ -201,7 +202,7 @@ void ExchangeBot_btce::createTrade(QString Pair, int Type, double Price, double 
   pair.append(Pair);
 
   QByteArray type("type=");
-  if(type == 0)
+  if(Type == 0)
     type.append("buy");
   else
     type.append("sell");
@@ -574,12 +575,12 @@ void ExchangeBot_btce::createTradeDataReply(QNetworkReply *reply) {
     }
 
   } else
-    qDebug() << "Trade Packet error";
+  qDebug() << "Trade Packet error";
 
-    reply->deleteLater();
+  reply->deleteLater();
 
-    disconnect(createTradeDownloadManager, 0, this, 0);
-    // createTradeDownloadManager->deleteLater();
+  disconnect(createTradeDownloadManager, 0, this, 0);
+  // createTradeDownloadManager->deleteLater();
 }
 
 void ExchangeBot_btce::activeOrdersDataReply(QNetworkReply *reply) {

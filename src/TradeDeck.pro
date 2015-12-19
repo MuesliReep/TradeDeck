@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     marketHistory.cpp \
     confirmDialog.cpp \
     settingsDialog.cpp \
-    widgetBalances.cpp
+    widgetBalances.cpp \
+    widgetTrades.cpp
 
 HEADERS  += qcustomplot.h \
     mainwindow.h \
@@ -41,12 +42,14 @@ HEADERS  += qcustomplot.h \
     marketHistory.h \
     confirmDialog.h \
     settingsDialog.h \
-    widgetBalances.h
+    widgetBalances.h \
+    widgetTrades.h
 
 FORMS    += mainwindow.ui \
     settingsDialog.ui \
     confirmDialog.ui \
-    widgetBalances.ui
+    widgetBalances.ui \
+    widgetTrades.ui
 
 OTHER_FILES +=
 
